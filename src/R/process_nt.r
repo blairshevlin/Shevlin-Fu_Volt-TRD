@@ -31,7 +31,7 @@ library(here)
 library(RColorBrewer)
 
 # Primary directories
-dir = path(here()) / "Shevlin-Fu_Volt-TRD"
+dir = path(here())
 
 beh_dir = dir / "data" /"behavior"
 in_nt = dir / "data" / "nt" / "raw"
@@ -119,20 +119,32 @@ rl_proc = rl_nt %>%
 rl.EST = rl_proc %>%
   filter(!is.na(nM),
          rt < 10,
-         sample %in% c(50:56)) %>%
+         ) %>%
   mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim")),
          nt = factor(nt, levels = c("SE","DA","NE")),
          event = factor(event,levels=c("Cue","Choice","Reward"))) %>%
-  group_by(idx,stim,trial,nt,event,block,cond,opt,rt,prev_rew_raw,trial_within_block,outcome,reversal) %>%
-  summarise(O = sum(nM[sample>51]),
-            Oz = sum(nMz[sample>51]),
-            R = sum(nM[sample>51]) - (nM[sample==50] * length(c(51:56))),
-            Rz = sum(nMz[sample>51]) - (nMz[sample==50] * length(c(51:56))))
+  group_by(idx,stim,trial,nt,event,cond,block,opt,rt,prev_rew_raw,trial_within_block,outcome,reversal) %>%
+  summarise(# Overall estimate (window)
+            O = sum(nM[(sample<56 & sample>51)]),
+            Oz = sum(nMz[(sample<56 & sample>51)]),
+            # Relative estimate (window)
+            R = sum(nM[(sample<56 & sample>51)]) - (nM[sample==50] * length(c(51:56))),
+            Rz = sum(nMz[(sample<56 & sample>51)]) - (nMz[sample==50] * length(c(51:56))),
+            # Peak estimate over trial
+            P = max(nM), 
+            Pz = max(nMz),
+            # Avg estimate over trial
+            M = mean(nM),
+            Mz = mean(nMz),
+            # Total estimate over trial
+            Tot = sum(nM),
+            Totz = sum(nMz)
+            )
 
 ug.EST = ug_proc %>%
   filter(!is.na(nM),
          rt < 10,
-         sample %in% c(30:36)) %>%
+         ) %>%
   mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim")),
          nt = factor(nt, levels = c("SE","DA","NE")),
          event = factor(event,levels=c("Offer","Choice")),
@@ -141,10 +153,20 @@ ug.EST = ug_proc %>%
          offer_bin = factor(offer_bin,
                             levels = c("Low","Middle","High"))) %>%
   group_by(idx,stim,trial,nt,event,rej,rt,offer,prev_offer_raw,offer_bin) %>%
-  summarise(O = sum(nM[sample>31]),
-            Oz = sum(nMz[sample>31]),
-            R = sum(nM[sample>31]) - (nM[sample==30] * length(c(31:36))),
-            Rz = sum(nMz[sample>31]) - (nMz[sample==30] * length(c(31:36))))
+  summarise(O = sum(nM[(sample<36 & sample>31)]),
+            Oz = sum(nMz[(sample<36 & sample>31)]),
+            R = sum(nM[(sample<36 & sample>31)]) - (nM[sample==30] * length(c(31:36))),
+            Rz = sum(nMz[(sample<36 & sample>31)]) - (nMz[sample==30] * length(c(31:36))),
+            # Peak estimate over trial
+            P = max(nM), 
+            Pz = max(nMz),
+            # Avg estimate over trial
+            M = mean(nM),
+            Mz = mean(nMz),
+            # Total estimate over trial
+            Tot = sum(nM),
+            Totz = sum(nMz)
+            )
 
 # Generate summary data - focusing only on reward events (RL) and offer events (UG)
 rl.EST.Reward = rl.EST %>%
@@ -159,57 +181,4 @@ ug.EST.Offer = ug.EST %>%
 
 ug.EST.Offer = merge(id_colors, ug.EST.Offer)
 
-# Generate means for NT data
-rl.oz.means = rl.EST.Reward %>%
-  select(!c(O, R) ) %>%
-  mutate( stim = factor(stim, levels=c("Pre-Stim","Post-Stim")),
-          choice = factor(1 * (opt==1),levels=c(0,1),labels=c("sub","opt") )
-  ) %>%
-  group_by(idx, stim, block,cond, nt) %>%
-  mutate(idx = factor(idx),
-  ) %>%
-  ungroup() %>%
-  pivot_wider(names_from = nt, values_from = c(Oz,Rz)) %>%
-  group_by(idx,stim) %>%
-  summarise(mOZ_DA = mean(Oz_DA),
-            mOZ_SE = mean(Oz_SE),
-            mOZ_NE = mean(Oz_NE),
-            mRT = mean(log(rt)),
-            mChoice = mean(choice=="opt")
-  )%>%
-  mutate(task = "RL", idx= as.numeric(idx))
-
-# Everything is the same?
-ug.oz.means = ug.EST.Offer %>%
-    select(!c(O, R) ) %>%
-     mutate( stim = factor(stim, levels=c("Pre-Stim","Post-Stim")),
-          choice = factor(1 * (rej==0),levels=c(0,1),labels=c("reject","accept") )
-  ) %>%
-    pivot_wider(names_from = nt, values_from = c(Oz,Rz)) %>%
-  group_by(idx,stim) %>%
-  summarise(mOZ_DA = mean(Oz_DA),
-            mOZ_SE = mean(Oz_SE),
-            mOZ_NE = mean(Oz_NE),
-            mRT = mean(log(rt)),
-            mChoice = mean(choice=="accept")) %>%
-  mutate(task = "UG", idx= as.numeric(idx))
-
-nt.means = rbind(rl.oz.means,ug.oz.means) %>%
-  select(!c(mChoice,mRT)) %>%
-  mutate(DA = mOZ_DA,
-         SE = mOZ_SE,
-         NE = mOZ_NE,
-        task = factor(task, levels = c("RL","UG")),
-         stim = factor(stim,levels=c("Pre-Stim",'Post-Stim'),
-                       labels = c("Pre","Post"))) %>%
-  select(!c(mOZ_SE,mOZ_DA,mOZ_NE)) %>%
-  pivot_wider(values_from = c(DA, SE, NE), names_from = stim) %>%
-  mutate(deltaDA = DA_Post - DA_Pre, 
-         deltaSE = SE_Post - SE_Pre,
-         deltaNE = NE_Post - NE_Pre) %>%
-  pivot_wider(names_from = task, values_from = c(DA_Pre,DA_Post,deltaDA,
-                                                 SE_Pre,SE_Post,deltaSE,
-                                                 NE_Pre,NE_Post,deltaNE)) %>%ungroup()
-
-
-save(ug_proc,rl_proc, nt.means, file = out_nt / "UG_RL_NT-Continuous_7-14-25.RData")
+save(rl.EST.Reward,rl.EST.Reward, file = out_nt / "UG_RL_NT-Continuous_7-14-25.RData")
