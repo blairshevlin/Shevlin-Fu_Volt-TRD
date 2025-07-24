@@ -181,4 +181,4 @@ ug.EST.Offer = ug.EST %>%
 
 ug.EST.Offer = merge(id_colors, ug.EST.Offer)
 
-save(rl.EST.Reward,rl.EST.Reward, file = out_nt / "UG_RL_NT-Continuous_7-14-25.RData")
+save(rl.EST.Reward,ug.EST.Offer, file = out_nt / "UG_RL_NT-Continuous_7-14-25.RData")

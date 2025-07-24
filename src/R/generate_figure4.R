@@ -87,7 +87,7 @@ cl.df = read.csv(clin_dir / "clinical-data_deid_07-10-25.csv" )
 
 
 ug.nt.cl = 
-  ug.EST %>%
+  ug.EST.Offer %>%
   pivot_longer(cols = c("Oz","Rz","Pz","Mz","Totz"),
                names_to = "nt_metric", values_to = "nt_val") %>%
   group_by(idx,stim,nt,nt_metric) %>%
@@ -112,7 +112,7 @@ ug.nt.cl =
   ) 
 
 rl.nt.cl = 
-  rl.EST %>%
+  rl.EST.Reward %>%
   pivot_longer(cols = c("Oz","Rz","Pz","Mz","Totz"),
                names_to = "nt_metric", values_to = "nt_val") %>%
   group_by(idx,stim,nt,nt_metric) %>%
