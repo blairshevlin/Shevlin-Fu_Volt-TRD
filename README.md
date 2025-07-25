@@ -29,6 +29,8 @@ All required packages are managed through `setup.R`. Run this script before any 
 source("setup.R")
 ```
 
+Installation should take less than one minute.
+
 ## Data Structure
 
 All data are in the `data/` folder. All data have been deidentified.
@@ -45,7 +47,9 @@ All code for generating figures and conducting statistical analyses are in the `
 - `process_nt.r` - Converts raw estimates into processed data used for all analyses
   - **Note:** Requires access to `data/nt/raw/`. This script will not run until raw data is released upon publication
 - `statistical_tests.R` - Runs all statistical analyses reported in the main text
-- `generate_figureXX.R` - Generates the corresponding figure (XX = figure number from main text)
+- `generate_figureXX.R` - Generates the corresponding figure (XX = figure number from main text).
+
+Run time for each script is less than 5 minutes.
 
 ## Usage
 
