@@ -19,6 +19,12 @@
 # ====         ================                       ======================
 # 2025/05/05    Blair Shevlin                           wrote original code
 # 2025/07/24    Blair Shevlin                           updated to use new NT data
+# 2025/09/16    Blair Shevlin                           updated to use revised NT data
+# 2025/09/17    Blair Shevlin                           robustness tests for clinical predictions
+# 2025/10/1     Blair Shevlin                           statistical tests comparing post-stim OR to baseline
+# 2025/11/14    Blair Shevlin                           adding effect sizes
+# 2025/11/18    Blair Shevlin                           added task x sess analysis
+
 
 rm(list = ls())
 
@@ -48,7 +54,16 @@ beh_dir = dir / "data" / "behavior"
 clin_dir = dir / "data" / "clinical"
 
 # Subject-level NT Data
-load(nt_dir / "UG_RL_NT-Continuous_7-14-25.RData")
+load(nt_dir / "UG_RL_NT-Continuous_9-23-25.RData")
+
+# Generate summary data - focusing only on reward events (RL) and offer events (UG)
+rl.EST.Reward = rl.EST %>%
+  filter(event == "Reward") %>%
+  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim")))
+
+ug.EST.Offer = ug.EST %>%
+  filter(event == "Offer") %>%
+  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim"))) 
 
 # IDs
 ids_final = unique(ug.EST.Offer$idx)
@@ -77,7 +92,9 @@ rl.EST.pr = rl.EST.Reward %>%
          rew = ifelse(outcome==1,
                       ifelse(block_type=="Negative",0,10),
                       ifelse(block_type=="Positive",0,-10)),
-         rew_f = factor(rew, levels=c(0,-10,10)))
+         rew_f = factor(rew, levels=c(0,-10,10)),
+         trial_z = scale(trial)[,1]
+         )
 
 ug.EST.pr = ug.EST.Offer %>%
   mutate(offer_bin_f = factor(offer_bin, levels = c("Middle","Low","High")),
@@ -85,8 +102,30 @@ ug.EST.pr = ug.EST.Offer %>%
          offer_change = offer - prev_offer_raw,
          offer_change_z = scale(offer_change)[,1],
          offer_change_f = factor(ifelse(offer_change > 0, "improve","worse"),
-                                 levels=c("worse","improve"))
+                                 levels=c("worse","improve")),
+        trial_z = scale(trial)[,1]
   )
+
+# Summarise NT change
+rl.EST.pr %>% 
+  mutate(nt = factor(nt, levels = c("DA","SE","NE"))) %>%
+  group_by(idx, nt) %>%
+  summarise(
+    nt_change = mean(Oz[stim == "Post-Stim"]) - mean(Oz[stim == "Pre-Stim"]),
+    n = n(),
+    se = sd(Oz[stim == "Post-Stim"] - Oz[stim == "Pre-Stim"]) / sqrt(n)
+  ) %>% 
+  as.data.frame()
+
+ug.EST.pr %>% 
+  mutate(nt = factor(nt, levels = c("DA","SE","NE"))) %>%
+  group_by(idx, nt) %>%
+  summarise(
+    nt_change = mean(Oz[stim == "Post-Stim"]) - mean(Oz[stim == "Pre-Stim"]),
+    n = n(),
+    se = sd(Oz[stim == "Post-Stim"] - Oz[stim == "Pre-Stim"]) / sqrt(n)
+  ) %>% 
+  as.data.frame()
 
 # Set up contrast coding for stim
 contrasts(rl.EST.pr$stim) <- c(-1,1)
@@ -110,8 +149,143 @@ ug.SE.anova=aov(oz ~ stim * offer_bin_f,
 
 summary(rl.DA.anova)
 summary(rl.SE.anova)
+
 summary(ug.DA.anova)
 summary(ug.SE.anova)
+
+# Effect sizes
+eta_squared(rl.DA.anova, partial = TRUE)
+eta_squared(rl.SE.anova, partial = TRUE)
+eta_squared(ug.DA.anova, partial = TRUE)
+eta_squared(ug.SE.anova, partial = TRUE)
+
+# Test task-by-stim interaction
+rl.premerge = rl.EST.pr %>%
+  select(idx,stim,nt,Oz,trial_z) %>%
+  mutate(task = "RL")
+ug.premerge = ug.EST.pr %>%
+  select(idx,stim,nt,Oz,trial_z) %>%
+  mutate(task = "UG")
+
+task.merge = rbind(rl.premerge,ug.premerge) %>% 
+            mutate(task = factor(task))
+
+task.merge.aov = task.merge %>% group_by(idx,stim,nt,task) %>%
+  summarise(oz = mean(Oz))         
+
+DA.anova=aov(oz ~ stim * task,
+                data = task.merge.aov[task.merge.aov$nt == "DA",])
+SE.anova=aov(oz ~ stim * task,
+                data = task.merge.aov[task.merge.aov$nt == "SE",])  
+
+summary(DA.anova)
+summary(SE.anova)    
+
+TukeyHSD(DA.anova)
+TukeyHSD(SE.anova)
+
+
+rl.lm.DA = lmer(Oz ~ stim * trial_z +
+                    (1+stim|idx),
+               data = task.merge[task.merge$nt == "DA" & task.merge$task == "RL",],
+               REML=F,
+               control = lmerControl(optimizer = "bobyqa"))
+rl.lm.SE = lmer(Oz ~ stim * trial_z +
+                    (1+stim|idx),
+                  data = task.merge[task.merge$nt == "SE" & task.merge$task == "RL",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))
+rl.lm.NE = lmer(Oz ~ stim * trial_z +
+                    (1+stim|idx),
+                  data = task.merge[task.merge$nt == "NE" & task.merge$task == "RL",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))
+
+ug.lm.DA = lmer(Oz ~ stim * trial_z +
+                    (1+stim|idx),
+               data = task.merge[task.merge$nt == "DA" & task.merge$task == "UG",],
+               REML=F,
+               control = lmerControl(optimizer = "bobyqa"))
+ug.lm.SE = lmer(Oz ~ stim * trial_z +
+                    (1+stim|idx),
+                  data = task.merge[task.merge$nt == "SE" & task.merge$task == "UG",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))
+ug.lm.NE = lmer(Oz ~ stim * trial_z +
+                  (1+stim|idx),
+                  data = task.merge[task.merge$nt == "NE" & task.merge$task == "UG",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))  
+
+summary(rl.lm.DA)                  
+summary(rl.lm.SE)                  
+summary(rl.lm.NE) 
+
+summary(ug.lm.DA)                  
+summary(ug.lm.SE)  
+summary(ug.lm.NE)  
+
+sess.lm.DA = lmer(Oz ~ stim * task *  trial_z +
+                    (1+stim+task|idx),
+               data = task.merge[task.merge$nt == "DA",],
+               REML=F,
+               control = lmerControl(optimizer = "bobyqa"))
+sess.lm.SE = lmer(Oz ~ stim * task * trial_z +
+                    (1+stim+task|idx),
+                  data = task.merge[task.merge$nt == "SE",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))
+sess.lm.NE = lmer(Oz ~ stim * task * trial_z +
+                    (1+stim+task|idx),
+                  data = task.merge[task.merge$nt == "NE",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))
+
+summary(sess.lm.DA)
+summary(sess.lm.SE)
+summary(sess.lm.NE)
+
+sess.lm.SE %>%
+    tidy(effects = "fixed") %>%
+    mutate(p_adjusted = p.adjust(p.value) )
+
+# Simple slopes analysis for stim effects
+da_stim <- emmeans(sess.lm.DA, ~ stim * task)
+se_stim <- emmeans(sess.lm.SE, ~ stim * task)
+ne_stim <- emmeans(sess.lm.NE, ~ stim * task)
+
+pairs(da_stim, by = "task")
+pairs(se_stim, by = "task")
+pairs(ne_stim, by = "task")
+
+###
+# Test Order effects #
+task.merge = task.merge %>%
+  mutate(order = ifelse(stim == "Pre-Stim", ifelse(task == "RL", "Task 1", "Task 2"),
+                        ifelse(task == "RL", "Task 2", "Task 1")),
+         order = factor(order))
+
+order.lm.DA = lmer(Oz ~ stim * order  +
+                    (1+stim+order|idx),
+               data = task.merge[task.merge$nt == "DA",],
+               REML=F,
+               control = lmerControl(optimizer = "bobyqa"))
+order.lm.SE = lmer(Oz ~ stim * order * trial_z +
+                    (1+stim+order|idx),
+                  data = task.merge[task.merge$nt == "SE",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))
+order.lm.NE = lmer(Oz ~ stim * order * trial_z +
+                    (1+stim+order|idx),
+                  data = task.merge[task.merge$nt == "NE",],
+                  REML=F,
+                  control = lmerControl(optimizer = "bobyqa"))
+
+summary(order.lm.DA) # No main effect of order or interactions with stim
+summary(order.lm.SE) # No main effect of order or interactions with stim (but interaction with trial)
+summary(order.lm.NE) # No main effect of order or interaction with stim
+
+
 
 ##################
 # BEH PROCESSING #
@@ -119,6 +293,7 @@ summary(ug.SE.anova)
 
 # Get session-level averages
 ug.beh.means = ug.beh %>% group_by(idx,sess) %>%
+  filter(rt < 10) %>%
   summarise(mChoice = mean(rej==0),
             mRT = mean(rt),
             mLogRT = mean(log(rt))) %>%   
@@ -127,6 +302,7 @@ ug.beh.means = ug.beh %>% group_by(idx,sess) %>%
   as.data.frame()
 
 ug.mood.means = ug.beh %>% group_by(idx,sess) %>%
+  filter(rt_mood < 10) %>%
   filter(!is.na(rt_mood)) %>%
   summarise(mMood = mean(mood),
             mRT = mean(rt_mood ),
@@ -136,6 +312,7 @@ ug.mood.means = ug.beh %>% group_by(idx,sess) %>%
   as.data.frame()
 
 rl.beh.means = rl.beh %>%
+  filter(rt < 10) %>%
   group_by(idx,sess) %>%
   summarise(mChoice = mean(opt),
             mRT = mean(rt),
@@ -167,14 +344,19 @@ calculate_t <- function(data, value_col, time_col, baseline_level,
   )
   
   # Perform paired t-test
-  t_test <- wilcox.test(merged_data[[paste0(value_col, ".x")]], 
-                   merged_data[[paste0(value_col, ".y")]], 
+  t_test <- t.test(merged_data[[paste0(value_col, ".y")]],
+                    merged_data[[paste0(value_col, ".x")]],
                    paired = paired,
                    alternative = alternative)
   
   return(t_test)
 }
 
+# RL - RT
+calculate_t(rl.beh.means,value_col = "mLogRT", time_col = "sess",
+            baseline_level = "Baseline",
+            comparison_level = "Post-Stim")
+
 calculate_t(rl.beh.means,value_col = "mLogRT", time_col = "sess",
             baseline_level = "Baseline",
             comparison_level = "Month 1")
@@ -186,6 +368,18 @@ calculate_t(rl.beh.means,value_col = "mLogRT", time_col = "sess",
 calculate_t(rl.beh.means,value_col = "mLogRT", time_col = "sess",
             baseline_level = "Baseline",
             comparison_level = "Month 6")
+            
+rl.beh.means %>% group_by(sess) %>%
+  summarise(meanRT = mean(mRT),
+            sdRT = sd(mRT),
+            n = n(),
+            seRT = sdRT/sqrt(n),
+            ciLower = meanRT - qt(0.975, df=n-1)*seRT,
+            ciUpper = meanRT + qt(0.975, df=n-1)*seRT)
+# UG - RT
+calculate_t(ug.beh.means,value_col = "mLogRT", time_col = "sess",
+            baseline_level = "Baseline",
+            comparison_level = "Post-Stim")
 
 calculate_t(ug.beh.means,value_col = "mLogRT", time_col = "sess",
             baseline_level = "Baseline",
@@ -199,6 +393,19 @@ calculate_t(ug.beh.means,value_col = "mLogRT", time_col = "sess",
             baseline_level = "Baseline",
             comparison_level = "Month 6")
 
+ug.beh.means %>% group_by(sess) %>%
+  summarise(meanRT = mean(mRT),
+            sdRT = sd(mRT),
+            n = n(),
+            seRT = sdRT/sqrt(n),
+            ciLower = meanRT - qt(0.975, df=n-1)*seRT,
+            ciUpper = meanRT + qt(0.975, df=n-1)*seRT)
+
+# RL - Choice
+calculate_t(rl.beh.means,value_col = "mChoice", time_col = "sess",
+            baseline_level = "Baseline",
+            comparison_level = "Post-Stim")
+
 calculate_t(rl.beh.means,value_col = "mChoice", time_col = "sess",
             baseline_level = "Baseline",
             comparison_level = "Month 1")
@@ -210,15 +417,82 @@ calculate_t(rl.beh.means,value_col = "mChoice", time_col = "sess",
 calculate_t(rl.beh.means,value_col = "mChoice", time_col = "sess",
             baseline_level = "Baseline",
             comparison_level = "Month 6")
+
+rl.beh.means %>% group_by(sess) %>%
+  summarise(mOpt = mean(mChoice),
+            sdOpt = sd(mChoice),
+            n = n(),
+            seAccept = sdOpt/sqrt(n),
+            ciLower = mOpt - qt(0.975, df=n-1)*sdOpt,
+            ciUpper = mOpt + qt(0.975, df=n-1)*sdOpt)
+
+# UG - Choice
+calculate_t(ug.beh.means,value_col = "mChoice", time_col = "sess",
+            baseline_level = "Baseline",
+            comparison_level = "Post-Stim")
+
+calculate_t(ug.beh.means,value_col = "mChoice", time_col = "sess",
+            baseline_level = "Baseline",
+            comparison_level = "Month 1")
+
+calculate_t(ug.beh.means,value_col = "mChoice", time_col = "sess",
+            baseline_level = "Baseline",
+            comparison_level = "Month 3")
 
 calculate_t(ug.beh.means,value_col = "mChoice", time_col = "sess",
             baseline_level = "Baseline",
             comparison_level = "Month 6")
 
+ug.beh.means %>% group_by(sess) %>%
+  summarise(mAccept = mean(mChoice),
+            sdAccept = sd(mChoice),
+            n = n(),
+            seAccept = sdAccept/sqrt(n),
+            ciLower = mAccept - qt(0.975, df=n-1)*seAccept,
+            ciUpper = mAccept + qt(0.975, df=n-1)*seAccept)
+
+# UG - Mood
+calculate_t(ug.mood.means,value_col = "mMood", time_col = "sess",
+            baseline_level = "Pre-Stim",
+            comparison_level = "Post-Stim")
+calculate_t(ug.mood.means,value_col = "mMood", time_col = "sess",
+            baseline_level = "Baseline",
+            comparison_level = "Post-Stim")
 calculate_t(ug.mood.means,value_col = "mMood", time_col = "sess",
             baseline_level = "Month 6",
             comparison_level = "Baseline")
 
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Baseline"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Pre-Stim"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Post-Stim"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Week 1"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Month 1"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Month 2"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Month 3"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Month 4"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Month 5"]),2)
+round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Month 6"]),2)
+
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Baseline"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Pre-Stim"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Post-Stim"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Week 1"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Month 1"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Month 2"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Month 3"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Month 4"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Month 5"]),2)
+round(mean(ug.mood.means$mMood[ug.mood.means$sess == "Month 6"]),2)
+
+
+ug.mood.means %>% group_by(sess) %>%
+  dplyr::summarise(mMood = round(mean(mMood),3),
+           # sdMood = sd(mMood, na.rm = T),
+            n = n(),
+            #seMood = sdMood/sqrt(n),
+            #ciLower = mMood - qt(0.975, df=n-1)*seMood,
+            #ciUpper = mMood + qt(0.975, df=n-1)*seMood
+            )
 
 #################
 # NT ~ BEHAVIOR #
@@ -245,7 +519,6 @@ ug.nt = ug.EST.Offer %>%
   reframe(DA = dff[nt == "DA"],
           SE = dff[nt == "SE"])
 
-
 rl.beh.change = 
   rl.beh.means %>%
   mutate(mRT = mLogRT) %>%
@@ -267,12 +540,14 @@ rl.beh.change =
     mRT_M3_Change = `mRT_Month 3` - mRT_Baseline,
     mRT_M4_Change = `mRT_Month 4` - mRT_Baseline,
     mRT_M5_Change = `mRT_Month 5` - mRT_Baseline,
-    mRT_M6_Change = `mRT_Month 6` - mRT_Baseline
+    mRT_M6_Change = `mRT_Month 6` - mRT_Baseline,
+    mChoice_OR_Change = `mChoice_Post-Stim` - `mChoice_Pre-Stim`,
+    mRT_OR_Change = `mRT_Post-Stim` - `mRT_Pre-Stim`
   ) %>%
   select(c(idx,mChoice_PostStim_Change,mChoice_W1_Change,mChoice_M1_Change,mChoice_M2_Change,
            mChoice_M3_Change,mChoice_M4_Change,mChoice_M5_Change,mChoice_M6_Change,
            mRT_PostStim_Change,mRT_W1_Change,mRT_M1_Change,mRT_M2_Change,
-           mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change,
+           mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change,mChoice_OR_Change,mRT_OR_Change
   ))
 
 rl.beh.nt = merge(rl.beh.change, rl.nt) 
@@ -282,7 +557,7 @@ rl.beh.nt.long = rl.beh.nt %>%
   pivot_longer(cols = c(mChoice_PostStim_Change,mChoice_W1_Change,mChoice_M1_Change,mChoice_M2_Change,
                         mChoice_M3_Change,mChoice_M4_Change,mChoice_M5_Change,mChoice_M6_Change,
                         mRT_PostStim_Change,mRT_W1_Change,mRT_M1_Change,mRT_M2_Change,
-                        mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change), names_to = "change") %>%
+                        mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change,mChoice_OR_Change,mRT_OR_Change), names_to = "change") %>%
   mutate(month = str_extract(change, "(?<=_)[^_]+(?=_)"),
          beh = ifelse(grepl("mChoice", change), "choice", "rt"))
 
@@ -307,12 +582,14 @@ ug.beh.change =
     mRT_M3_Change = `mRT_Month 3` - mRT_Baseline,
     mRT_M4_Change = `mRT_Month 4` - mRT_Baseline,
     mRT_M5_Change = `mRT_Month 5` - mRT_Baseline,
-    mRT_M6_Change = `mRT_Month 6` - mRT_Baseline
+    mRT_M6_Change = `mRT_Month 6` - mRT_Baseline,
+    mChoice_OR_Change = `mChoice_Post-Stim` - `mChoice_Pre-Stim`,
+    mRT_OR_Change = `mRT_Post-Stim` - `mRT_Pre-Stim`
   ) %>%
   select(c(idx,mChoice_PostStim_Change,mChoice_W1_Change,mChoice_M1_Change,mChoice_M2_Change,
            mChoice_M3_Change,mChoice_M4_Change,mChoice_M5_Change,mChoice_M6_Change,
            mRT_PostStim_Change,mRT_W1_Change,mRT_M1_Change,mRT_M2_Change,
-           mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change ))
+           mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change,mChoice_OR_Change,mRT_OR_Change ))
 
 ug.beh.nt = merge(ug.beh.change, ug.nt) 
 
@@ -321,7 +598,7 @@ ug.beh.nt.long = ug.beh.nt %>%
   pivot_longer(cols = c(mChoice_PostStim_Change,mChoice_W1_Change,mChoice_M1_Change,mChoice_M2_Change,
                         mChoice_M3_Change,mChoice_M4_Change,mChoice_M5_Change,mChoice_M6_Change,
                         mRT_PostStim_Change,mRT_W1_Change,mRT_M1_Change,mRT_M2_Change,
-                        mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change), 
+                        mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change,mChoice_OR_Change,mRT_OR_Change), 
                names_to = "change") %>%
   mutate(month = str_extract(change, "(?<=_)[^_]+(?=_)"),
          beh = ifelse(grepl("mChoice", change), "choice", "rt"),
@@ -350,12 +627,14 @@ ug.mood.change =
     mRT_M3_Change = `mRT_Month 3` - mRT_Baseline,
     mRT_M4_Change = `mRT_Month 4` - mRT_Baseline,
     mRT_M5_Change = `mRT_Month 5` - mRT_Baseline,
-    mRT_M6_Change = `mRT_Month 6` - mRT_Baseline
+    mRT_M6_Change = `mRT_Month 6` - mRT_Baseline,
+    mMood_OR_Change = `mMood_Post-Stim` - `mMood_Pre-Stim`,
+    mRT_OR_Change = `mRT_Post-Stim` - `mRT_Pre-Stim`
   ) %>%
   select(c(idx,mMood_PostStim_Change,mMood_W1_Change,mMood_M1_Change,mMood_M2_Change,
            mMood_M3_Change,mMood_M4_Change,mMood_M5_Change,mMood_M6_Change,
            mRT_PostStim_Change,mRT_W1_Change,mRT_M1_Change,mRT_M2_Change,
-           mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change ))
+           mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change,mMood_OR_Change,mRT_OR_Change ))
 
 ug.mood.nt = merge(ug.mood.change, ug.nt) 
 
@@ -364,7 +643,7 @@ ug.mood.nt.long = ug.mood.nt %>%
   pivot_longer(cols = c(mMood_PostStim_Change,mMood_W1_Change,mMood_M1_Change,mMood_M2_Change,
                         mMood_M3_Change,mMood_M4_Change,mMood_M5_Change,mMood_M6_Change,
                         mRT_PostStim_Change,mRT_W1_Change,mRT_M1_Change,mRT_M2_Change,
-                        mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change), 
+                        mRT_M3_Change,mRT_M4_Change,mRT_M5_Change,mRT_M6_Change,mMood_OR_Change,mRT_OR_Change), 
                names_to = "change") %>%
   mutate(month = str_extract(change, "(?<=_)[^_]+(?=_)"),
          beh = ifelse(grepl("mMood", change), "mood", "rt"),
@@ -373,6 +652,7 @@ ug.mood.nt.long = ug.mood.nt %>%
 
 # Run correlations and tidy the results
 
+# Longitudinal changes
 rl.beh.nt.long %>%
   group_by(NT,beh,month) %>%
   do(tidy(cor.test(.$value, .$ests, method = "spearman"))) %>%
@@ -410,12 +690,12 @@ ug.mood.nt.long %>%
 #################
 
 ug.nt.cl = 
-  ug.EST.Offer %>%
-  pivot_longer(cols = c("Oz","Rz","Pz","Mz","Totz"),
+  ug.EST.Offer %>% 
+  pivot_longer(cols = c("Oz","Rz","Pz","Mz"),
                names_to = "nt_metric", values_to = "nt_val") %>%
   group_by(idx,stim,nt,nt_metric) %>%
   summarise(mTrial = mean(nt_val)) %>%
-  filter(nt_metric == "Totz") %>%
+  filter(nt_metric == "Oz") %>%
   select(idx,stim,nt,mTrial) %>%
   pivot_wider(values_from = mTrial, names_from = c("stim","nt")) %>%
   mutate(DA_Pre_UG = `Pre-Stim_DA`,
@@ -436,11 +716,11 @@ ug.nt.cl =
 
 rl.nt.cl = 
   rl.EST.Reward %>%
-  pivot_longer(cols = c("Oz","Rz","Pz","Mz","Totz"),
+  pivot_longer(cols = c("Oz","Rz","Pz","Mz"),
                names_to = "nt_metric", values_to = "nt_val") %>%
   group_by(idx,stim,nt,nt_metric) %>%
   summarise(mTrial = mean(nt_val)) %>%
-  filter(nt_metric == "Totz") %>%
+  filter(nt_metric == "Oz") %>%
   select(idx,stim,nt,mTrial) %>%
   pivot_wider(values_from = mTrial, names_from = c("stim","nt")) %>%
   mutate(DA_Pre_RL = `Pre-Stim_DA`,
@@ -482,54 +762,88 @@ cl.Oz.lme = cl.Oz %>%
   filter(!session %in% c("pre stim","fmri")) %>%
   ungroup()
 
-data = cl.Oz.lme %>%
+data_m1 = cl.Oz.lme %>%
+  filter(session == "month 1") %>%
+  select(idx,HDRS,baseline_HDRS,deltaPerHDRS,
+         deltaDA_UG,deltaSE_UG,deltaNE_UG,
+         deltaDA_RL,deltaSE_RL,deltaNE_RL) 
+
+data_m3 = cl.Oz.lme %>%
+  filter(session == "month 3") %>%
+  select(idx,HDRS,baseline_HDRS,deltaPerHDRS,
+         deltaDA_UG,deltaSE_UG,deltaNE_UG,
+         deltaDA_RL,deltaSE_RL,deltaNE_RL) 
+
+data_m6 = cl.Oz.lme %>%
   filter(session == "month 6") %>%
   select(idx,HDRS,baseline_HDRS,deltaPerHDRS,
          deltaDA_UG,deltaSE_UG,deltaNE_UG,
          deltaDA_RL,deltaSE_RL,deltaNE_RL) 
 
-# Create synergy score and additional metrics
-data_enhanced <- data %>%
-  mutate(
-    # Synergy when both change in beneficial direction (DA+, SE+)
-    synergy_score = case_when(
-      deltaDA_UG > 0 & deltaSE_UG > 0 ~ deltaDA_UG * deltaSE_UG,
-      deltaDA_UG < 0 & deltaSE_UG < 0 ~ abs(deltaDA_UG * deltaSE_UG),
-      TRUE ~ -abs(deltaDA_UG * deltaSE_UG)  # Opposing changes
-    ),
-    
-    # Alternative synergy: normalized product
-    synergy_normalized = deltaDA_UG * deltaSE_UG,
-    
-    # Change magnitude
-    change_magnitude =  HDRS - baseline_HDRS,
-    #sqrt(deltaDA_UG^2 + deltaSE_UG^2),
-    
-    # Response categories
-    response_category = case_when(
-      HDRS <= 8 ~ "Remission",
-      deltaPerHDRS > 0.5 ~ "Responder", 
-      TRUE ~ "Non-Responder"
-    ),
-    response_category = factor(response_category,
-                               levels = c("Non-Responder",
-                                          "Responder",
-                                          "Remission")),
-    
-    # Change pattern categories
-    change_pattern = case_when(
-      deltaDA_UG > 0 & deltaSE_UG > 0 ~ "Both Increase",
-      deltaDA_UG < 0 & deltaSE_UG < 0 ~ "Both Decrease",
-      deltaDA_UG > 0 & deltaSE_UG < 0 ~ "DA↑/5-HT↓",
-      TRUE ~ "DA↓/5-HT↑"
-    )
-  )
-
-# Calculate effect sizes
-model_full <- lm(HDRS ~ deltaDA_UG * deltaSE_UG, data = data)
-effect_sizes <- eta_squared(model_full, partial = FALSE)
-cohens_f_overall <- cohens_f(model_full)
+# Calculate models
+model_RL_m1 <- lm(HDRS ~ deltaDA_RL * deltaSE_RL, data = data_m1)
+model_RL_m3 <- lm(HDRS ~ deltaDA_RL * deltaSE_RL, data = data_m3)
+model_RL_m6 <- lm(HDRS ~ deltaDA_RL * deltaSE_RL, data = data_m6)
+model_UG_m1 <- lm(HDRS ~ deltaDA_UG * deltaSE_UG, data = data_m1)
+model_UG_m3 <- lm(HDRS ~ deltaDA_UG * deltaSE_UG, data = data_m3)
+model_UG_m6 <- lm(HDRS ~ deltaDA_UG * deltaSE_UG, data = data_m6)
 
 # For reporting
-summary(model_full)
+summary(model_RL_m1)
+summary(model_RL_m3)
+summary(model_RL_m6)
+summary(model_UG_m1)
+summary(model_UG_m3)
+summary(model_UG_m6)
+
+# Compare alternative models
+
+# Single NT models
+model_DA = lm(HDRS ~ deltaDA_UG, data = data_m6)
+model_SE = lm(HDRS ~ deltaSE_UG, data = data_m6)
+model_NE = lm(HDRS ~ deltaNE_UG, data = data_m6)
+
+# Additive models
+model_DASE = lm(HDRS ~ deltaDA_UG + deltaSE_UG, data = data_m6)
+model_DANE = lm(HDRS ~ deltaDA_UG + deltaNE_UG, data = data_m6)
+model_NESE = lm(HDRS ~ deltaNE_UG + deltaSE_UG, data = data_m6)
+model_DASENE = lm(HDRS ~ deltaDA_UG + deltaSE_UG + deltaNE_UG, data = data_m6)
+
+# Interaction models
+model_DAxSE = lm(HDRS ~ deltaDA_UG * deltaSE_UG, data = data_m6)
+model_NExSE = lm(HDRS ~ deltaNE_UG * deltaSE_UG, data = data_m6)
+model_DAxNE = lm(HDRS ~ deltaDA_UG * deltaNE_UG, data = data_m6)
+model_DAxSExNE = lm(HDRS ~ deltaDA_UG * deltaSE_UG * deltaNE_UG, data = data_m6)
+
+models <- list( model_DA, model_SE, model_NE,
+                model_DASE,model_NESE,model_DANE,model_DASENE,
+                model_DAxSE, model_NExSE, model_DAxNE, model_DAxSExNE)
+model_names <- c("DA", "SE", "NE",
+"DA+SE", "NE+SE", "DA+NE", "DA+SE+NE",
+ "DA×SE", "NE×SE", "DA×NE", "DA×SE×NE")
+comparison_table <- data.frame(
+  Model = model_names,
+  AIC = sapply(models, AIC),
+  BIC = sapply(models, BIC),
+  R_squared = sapply(models, function(x) summary(x)$r.squared),
+  Adj_R_squared = sapply(models, function(x) summary(x)$adj.r.squared)
+)
+
+print(comparison_table)
+
+
+# Calculate baseline models
+
+baseline_model_RL <- lm(baseline_HDRS ~ deltaDA_RL * deltaSE_RL, data = data_m1)
+baseline_model_UG <- lm(baseline_HDRS ~ deltaDA_UG * deltaSE_UG, data = data_m1)
+
+# For reporting
+summary(baseline_model_RL)
+summary(baseline_model_UG)
+
+AIC(baseline_model_RL) # 59.32
+AIC(baseline_model_UG) # 57.31
+
+BIC(baseline_model_RL) # 59.72
+BIC(baseline_model_UG) # 58.82
 

@@ -19,6 +19,7 @@
 # ====         ================                       ======================
 # 2025/05/05    Blair Shevlin                           wrote original code
 # 2025/07/24    Blair Shevlin                           updated to use new NT data
+# 2025/10/08    Blair Shevlin                           include updated NT data
 
 rm(list = ls())
 
@@ -44,7 +45,16 @@ beh_dir = dir / "data" / "behavior"
 res_dir = dir / "results" # Updated
 
 # Subject-level NT Data
-load(nt_dir / "UG_RL_NT-Continuous_7-14-25.RData")
+load(nt_dir / "UG_RL_NT-Continuous_9-23-25.RData")
+
+# Extract relevant dataframes
+rl.EST.Reward = rl.EST %>%
+  filter(event == "Reward") %>%
+  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim")))
+
+ug.EST.Offer = ug.EST %>%
+  filter(event == "Offer") %>%
+  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim"))) 
 
 # IDs
 ids_final = unique(ug.EST.Offer$idx)
@@ -164,7 +174,7 @@ calculate_significance <- function(data, value_col, time_col, baseline_level,
   )
   
   # Perform paired t-test
-  t_test <- wilcox.test(merged_data[[paste0(value_col, ".x")]], 
+  t_test <- t.test(merged_data[[paste0(value_col, ".x")]], 
                    merged_data[[paste0(value_col, ".y")]], 
                    paired = paired)
   
@@ -235,7 +245,7 @@ rl.c.sess =
            label = "ON",fontface = "bold",
            color = "white",size = 3.5) + 
   geom_vline(xintercept = "DBS", linewidth = 2) +
-  coord_cartesian(ylim= c(0.425,1) ) +
+  #coord_cartesian(ylim= c(0.425,1) ) +
   geom_boxplot(data = rl.beh.means[rl.beh.means$sess %in% c("Baseline","DBS","Month 1", "Month 3", "Month 6"),],
                linewidth = 1.1,outlier.alpha = 0,
                show.legend = F) +

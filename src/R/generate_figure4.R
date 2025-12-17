@@ -19,6 +19,7 @@
 # ====         ================                       ======================
 # 2025/07/10    Blair Shevlin                           wrote original code
 # 2025/07/14    Blair Shevlin                           updated to use new NT data
+# 2025/09/24    Blair Shevlin                           updated to generate subject-level avgs by task
 
 rm(list = ls())
 
@@ -80,19 +81,28 @@ add_dbs_rows <- function(df) {
 
 
 # Subject-level NT Data
-load(nt_dir / "UG_RL_NT-Continuous_7-14-25.RData")
+load(nt_dir / "UG_RL_NT-Continuous_9-23-25.RData")
+
+rl.EST.Reward = rl.EST %>%
+  filter(event == "Reward") %>%
+  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim"))) %>%
+  select(!c(O,R,P,M,O10,Oz10,R10,Rz10,P10,Pz10,M10,Mz10))
+
+ug.EST.Offer = ug.EST %>%
+  filter(event == "Offer") %>%
+  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim"))) %>%
+  select(!c(O,R,P,M,O10,Oz10,R10,Rz10,P10,Pz10,M10,Mz10))
 
 # Load clinical data
 cl.df = read.csv(clin_dir / "clinical-data_deid_07-10-25.csv" ) 
 
-
 ug.nt.cl = 
   ug.EST.Offer %>%
-  pivot_longer(cols = c("Oz","Rz","Pz","Mz","Totz"),
+  pivot_longer(cols = c("Oz","Rz","Pz","Mz"),
                names_to = "nt_metric", values_to = "nt_val") %>%
   group_by(idx,stim,nt,nt_metric) %>%
   summarise(mTrial = mean(nt_val)) %>%
-  filter(nt_metric == "Totz") %>%
+  filter(nt_metric == "Oz") %>%
   select(idx,stim,nt,mTrial) %>%
   pivot_wider(values_from = mTrial, names_from = c("stim","nt")) %>%
   mutate(DA_Pre_UG = `Pre-Stim_DA`,
@@ -113,11 +123,11 @@ ug.nt.cl =
 
 rl.nt.cl = 
   rl.EST.Reward %>%
-  pivot_longer(cols = c("Oz","Rz","Pz","Mz","Totz"),
+  pivot_longer(cols = c("Oz","Rz","Pz","Mz"),
                names_to = "nt_metric", values_to = "nt_val") %>%
   group_by(idx,stim,nt,nt_metric) %>%
   summarise(mTrial = mean(nt_val)) %>%
-  filter(nt_metric == "Totz") %>%
+  filter(nt_metric == "Oz") %>%
   select(idx,stim,nt,mTrial) %>%
   pivot_wider(values_from = mTrial, names_from = c("stim","nt")) %>%
   mutate(DA_Pre_RL = `Pre-Stim_DA`,
@@ -136,7 +146,7 @@ rl.nt.cl =
          NE_Pre_RL,NE_Post_RL,deltaNE_RL
   ) 
 
-nt.cl = merge(ug.nt.cl,rl.nt.cl,all.x = TRUE)
+nt.cl = merge(rl.nt.cl,ug.nt.cl,all.y = TRUE)
 
 cl.Oz = merge(cl.df,nt.cl)
 
@@ -158,6 +168,13 @@ cl.Oz.lme = cl.Oz %>%
   ) %>%
   filter(!session %in% c("pre stim","fmri")) %>%
   ungroup()
+
+# For Table
+cl.Oz.lme %>% 
+select(idx,deltaDA_RL, deltaSE_RL, deltaNE_RL, deltaDA_UG, deltaSE_UG, deltaNE_UG ) %>% 
+distinct() %>%
+as.data.frame() %>%
+print()
 
 data = cl.Oz.lme %>%
   filter(session == "month 6") %>%
@@ -280,19 +297,6 @@ fig.profiles <-
              shape = 21, color = "black", 
              stroke = 1.5, alpha = 0.8) +
   
-  # Quadrant labels
-  annotate("text", x = 60, y = 50, 
-           label = "Both ↑",
-           size = 4, fontface = "bold") +
-  annotate("text", x = -60, y = -50, label = "Both ↓", 
-           size = 4, fontface = "bold") +
-  annotate("text", x = 60, y = -50, 
-           label = "DA↑/5-HT↓", 
-           size = 4, fontface = "bold") +
-  annotate("text", x = -60, y = 50, 
-           label = "DA↓/5-HT↑",
-           size = 4, fontface = "bold") +
-  
   scale_fill_manual(values = c("Both Increase" = "#2166ac", "Both Decrease" = "#762a83",
                                "DA↑/5-HT↓" = "#d73027", "DA↓/5-HT↑" = "#f4a582"),
                     name = "Change Pattern") +
@@ -307,6 +311,19 @@ fig.profiles <-
     y = "Change in 5-HT (Δ5-HT)", 
     title = "Individual Patient Neurochemical Profiles",
   ) +
+
+    # Quadrant labels
+  annotate("text", x = 6, y = 5, 
+           label = "Both ↑",
+           size = 4, fontface = "bold") +
+  annotate("text", x = -6, y = -5, label = "Both ↓", 
+           size = 4, fontface = "bold") +
+  annotate("text", x = 6, y = -5, 
+           label = "DA↑/5-HT↓", 
+           size = 4, fontface = "bold") +
+  annotate("text", x = -6, y = 5, 
+           label = "DA↓/5-HT↑",
+           size = 4, fontface = "bold") +
   
   theme_pubr(base_size = 14) +
   theme(
@@ -387,7 +404,7 @@ fig.hdrs.change =
     alpha = .35, 
     show.legend = F
   ) +
-  scale_color_manual(values = id_colors$color) +
+  #scale_color_manual(values = id_colors$color) +
   coord_cartesian(ylim=c(0,32))+
   # Custom x-axis labels at the original positions
   scale_x_continuous(
