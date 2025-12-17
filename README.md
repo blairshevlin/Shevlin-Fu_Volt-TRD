@@ -2,7 +2,7 @@
 
 This repository contains data and code supporting:
 
-**Shevlin, Fu et al. (2025)** "Deep brain stimulation to the subcallosal cingulate induces context-dependent changes in dopamine and serotonin in humans with treatment-resistant depression"
+**Shevlin, Fu et al. (2025)** "Dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex"
 
 ## Overview
 
