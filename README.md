@@ -2,7 +2,7 @@
 
 This repository contains data and code supporting:
 
-**Shevlin, Fu et al. (2025)** "Dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex"
+**Shevlin, Fu et al. (2026)** "Dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex"
 
 ## Overview
 
@@ -90,10 +90,10 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 
 ### BibTeX:
 ```bibtex
-@misc{shevlin2025analysis,
+@misc{shevlin2026analysis,
   author = {Shevlin, Blair and Fu, Qi Xiu},
-  title = {Analysis code for deep brain stimulation to the subcallosal cingulate induces context-dependent changes in dopamine and serotonin in humans with treatment-resistant depression},
-  year = {2025},
+  title = {Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex},
+  year = {2026},
   publisher = {GitHub},
   url = {https://github.com/blairshevlin/Shevlin-Fu_Volt-TRD}
 }
@@ -101,7 +101,7 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 
 ### APA:
 ```
-Shevlin, B., & Fu, Q. X. (2025). Analysis code for deep brain stimulation to the subcallosal cingulate induces context-dependent changes in dopamine and serotonin in humans with treatment-resistant depression. GitHub. https://github.com/blairshevlin/Shevlin-Fu_Volt-TRD
+Shevlin, B., & Fu, Q. X. (2026). Analysis code for deep brain stimulation to the subcallosal cingulate induces context-dependent changes in dopamine and serotonin in humans with treatment-resistant depression. GitHub. https://github.com/blairshevlin/Shevlin-Fu_Volt-TRD
 ```
 
 ## License
