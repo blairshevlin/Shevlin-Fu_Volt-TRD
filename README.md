@@ -1,5 +1,7 @@
 # Deep Brain Stimulation and Neurotransmitter Changes in Treatment-Resistant Depression
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19117530.svg)](https://doi.org/10.5281/zenodo.19117530)
+
 This repository contains data and code supporting:
 
 **Shevlin, Fu et al. (2026)** "Dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex"
@@ -90,18 +92,19 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 
 ### BibTeX:
 ```bibtex
-@misc{shevlin2026analysis,
+@software{shevlin2026analysis,
   author = {Shevlin, Blair and Fu, Qi Xiu},
   title = {Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex},
   year = {2026},
-  publisher = {GitHub},
-  url = {https://github.com/blairshevlin/Shevlin-Fu_Volt-TRD}
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.19117530},
+  url = {https://doi.org/10.5281/zenodo.19117530}
 }
 ```
 
 ### APA:
 ```
-Shevlin, B., & Fu, Q. X. (2026). Analysis code for deep brain stimulation to the subcallosal cingulate induces context-dependent changes in dopamine and serotonin in humans with treatment-resistant depression. GitHub. https://github.com/blairshevlin/Shevlin-Fu_Volt-TRD
+Shevlin, B., & Fu, Q. X. (2026). Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex. Zenodo. https://doi.org/10.5281/zenodo.19117530
 ```
 
 ## License
