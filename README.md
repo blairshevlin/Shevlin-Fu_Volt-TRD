@@ -36,9 +36,34 @@ Installation should take less than one minute.
 All data are in the `data/` folder. All data have been deidentified.
 
 - `data/behavior/` - Behavioral data for each task (RL and UG)
-- `data/clinical/` - Clinical assessments for each participant  
+- `data/clinical/` - Clinical assessments for each participant
 - `data/nt/` - Neurotransmitter estimates at 10Hz sampling rate
   - **Note:** Until publication, only processed data (`data/nt/processed/`) will be available
+- `data/figures/` - Figure source data CSVs (one per figure, see below)
+
+## Figure Source Data
+
+Per Nature journal transparency requirements, the data underlying each figure's graphical representations are provided as CSV files in `data/figures/`. These are the files submitted as Source Data with the manuscript. The CSVs are not tracked by git (see `.gitignore`) — run `src/R/export_sourcedata.R` to generate them locally.
+
+Each CSV contains:
+- `panel` — identifies the sub-panel within the figure (e.g., `"A"`, `"B"`, `"RL_choice"`)
+- `level` — `"trial"` (individual trial data) or `"subject"` (per-participant summaries)
+- Additional columns specific to each figure (neurotransmitter estimates, behavioral measures, clinical scores, etc.)
+
+| Figure | Source data file |
+|---|---|
+| Figure 1 Panel C | `data/figures/figure1_panel_source_data.csv` |
+| Figure 2 | `data/figures/figure2_source_data.csv` |
+| Figure 3 | `data/figures/figure3_source_data.csv` |
+| Figure 4 | `data/figures/figure4_source_data.csv` |
+| Extended Data Figure 1 | `data/figures/figureExtended1_source_data.csv` |
+| Extended Data Figure 2 | `data/figures/figureExtended2_source_data.csv` |
+| Supplementary Figure 1 | `data/figures/figureSupplement1_source_data.csv` |
+| Supplementary Figure 2 | `data/figures/figureSupplement2_source_data.csv` |
+| Supplementary Figure 3 | `data/figures/figureSupplement3_source_data.csv` |
+| Supplementary Figure 4 | `data/figures/figureSupplement4_source_data.csv` |
+| Supplementary Figure 5 | `data/figures/figureSupplement5_source_data.csv` |
+| Supplementary Figure 6 | `data/figures/figureSupplement6_source_data.csv` |
 
 ## Scripts
 
@@ -47,15 +72,17 @@ All code for generating figures and conducting statistical analyses are in the `
 - `process_nt.r` - Converts raw estimates into processed data used for all analyses
   - **Note:** Requires access to `data/nt/raw/`. This script will not run until raw data is released upon publication
 - `statistical_tests.R` - Runs all statistical analyses reported in the main text
-- `generate_figureXX.R` - Generates the corresponding figure (XX = figure number from main text).
+- `export_sourcedata.R` - Exports figure source data CSVs to `data/figures/` (run once before generating figures)
+- `generate_figureXX.R` - Generates the corresponding figure from its source data CSV (XX = figure number from main text). Output figures are saved to `results/from_source_data/`.
 
 Run time for each script is less than 5 minutes.
 
 ## Usage
 
 1. Run `source("setup.R")` to install and load required packages
-2. Execute figure generation scripts: `source("generate_figure2.R")`, etc.
-3. Run statistical analyses: `source("statistical_tests.R")`
+2. Export figure source data: `source("src/R/export_sourcedata.R")` — writes all CSVs to `data/figures/`
+3. Execute figure generation scripts: `source("src/R/generate_figure2.R")`, etc. — output saved to `results/from_source_data/`
+4. Run statistical analyses: `source("src/R/statistical_tests.R")`
 
 ## Citation
 

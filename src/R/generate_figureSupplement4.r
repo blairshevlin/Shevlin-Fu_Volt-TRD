@@ -22,6 +22,9 @@
 # 2025/10/08    Blair Shevlin                           include updated NT data, OR session
 # 2025/11/04    Blair Shevlin                           minor edits to finalize
 # 2025/11/14    Blair Shevlin                           split into seperate figures
+# 2026/03/19    Blair Shevlin                           refactored to read from source data CSV
+
+# Reads source data from data/figures/figureSupplement4_source_data.csv
 
 rm(list = ls())
 
@@ -40,170 +43,29 @@ library(ggrepel)
 library(cowplot)
 library(ggpubr)
 
-# Paths
-dir = path(here())
-nt_dir = dir / "data" / "nt" / "processed"
-beh_dir = dir / "data" / "behavior"
-res_dir = dir / "results" # Updated
-clin_dir = dir / "data" / "clinical"
+source_data <- read.csv(here::here("data/figures/figureSupplement4_source_data.csv"), stringsAsFactors = FALSE)
 
-# Load clinical data
-cl.df = read.csv(clin_dir / "clinical-data_deid_07-10-25.csv" ) 
+# Re-apply factor orderings
+source_data$sess <- factor(source_data$sess, levels = c("Month 1", "Month 3", "Month 6"))
+source_data$idx  <- factor(source_data$idx)
 
-# Subject-level NT Data
-load(nt_dir / "UG_RL_NT-Continuous_9-23-25.RData")
+# Split panels
+panel_A <- source_data %>% filter(panel == "A")  # RL choice vs HDRS change
+panel_B <- source_data %>% filter(panel == "B")  # RL RT vs HDRS change
+panel_C <- source_data %>% filter(panel == "C")  # UG mood vs HDRS change
+panel_D <- source_data %>% filter(panel == "D")  # UG choice vs HDRS change
+panel_E <- source_data %>% filter(panel == "E")  # UG RT vs HDRS change
 
-# Extract relevant dataframes
-rl.EST.Reward = rl.EST %>%
-  filter(event == "Reward") %>%
-  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim")))
-
-ug.EST.Offer = ug.EST %>%
-  filter(event == "Offer") %>%
-  mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim"))) 
-
-# IDs
-ids_final = unique(ug.EST.Offer$idx)
-
-# Specify colors
-NT_colors = data.frame(id = c("DA","5-HT"),
-                       color = c("#cb181d","#2171b5"))
-
-# Load behavioral data
-rl.beh = read.csv(file = beh_dir / "rl-data_deid_07-10-25.csv")
-
-ug.beh = read.csv(file = beh_dir / "ug-data_deid_07-10-25.csv")
-
-# Get session-level averages
-ug.beh.means = ug.beh %>% group_by(idx,sess) %>%
-  summarise(mChoice = mean(rej==0),
-            mRT = mean(rt),
-            mLogRT = mean(log(rt))) %>%   
-  mutate(idx = factor(idx),
-         sess = recode(sess,"fMRI" = "Baseline")) %>%
-  as.data.frame()
-
-ug.mood.means = ug.beh %>% group_by(idx,sess) %>%
-  filter(!is.na(rt_mood)) %>%
-  summarise(mMood = mean(mood),
-            mRT = mean(rt_mood ),
-            mLogRT = mean(log(rt))) %>% 
-  mutate(idx = factor(idx),
-         sess = recode(sess,"fMRI" = "Baseline")) %>%
-  as.data.frame()
-
-rl.beh.means = rl.beh %>%
-  group_by(idx,sess) %>%
-  summarise(mChoice = mean(opt),
-            mRT = mean(rt),
-            mLogRT = mean(log(rt))) %>% 
-  mutate(idx = factor(idx),
-         sess = recode(sess,"fMRI" = "Baseline")) %>%
-  as.data.frame()
-
-  
-# HDRS ~ Beh
-
-cl.change = 
-  cl.df %>%
-  filter(!session %in% c("fmri","post stim")) %>%
-  mutate(sess = recode(session, 
-        "pre stim" = "Baseline",
-        "week 1" = "Week 1", 
-        "month 1" = "Month 1",
-        "month 2" = "Month 2",
-        "month 3" = "Month 3",
-        "month 4" = "Month 4",
-        "month 5" = "Month 5",
-        "month 6" = "Month 6")) %>%
-  select(!c(MADRS,PVSS,SHAPS,session)) %>%
-  group_by(idx) %>%
-  mutate(HDRS_d = HDRS - HDRS[sess == "Baseline"])
-
-rl.beh.change = rl.beh %>%
-  filter(rt < 10) %>%
-  group_by(idx,sess) %>%
-  summarise(mChoice = mean(opt),
-            mRT = mean(rt),
-            mLogRT = mean(log(rt))) %>% 
-  mutate(idx = factor(idx),
-         sess = recode(sess,"fMRI" = "Baseline")) 
-
-ug.beh.change = 
-  ug.beh.means = ug.beh %>% 
-  group_by(idx,sess) %>%
-  filter(rt < 10) %>%
-  summarise(mChoice = mean(rej==0),
-            mRT = mean(rt),
-            mLogRT = mean(log(rt)),
-            mMood = mean(mood, na.rm = T)) %>%   
-  mutate(idx = factor(idx),
-         sess = recode(sess,"fMRI" = "Baseline")) %>%
-  as.data.frame()
-
-
-rl.beh.cl = merge(rl.beh.change, cl.change) 
-ug.beh.cl = merge(ug.beh.change, cl.change) 
-
-rl.beh.cl.l = 
-  rl.beh.cl %>% 
-  pivot_longer(cols =c("mChoice","mRT","mLogRT"), names_to = "beh")
-
-ug.beh.cl.l = 
-  ug.beh.cl %>% 
-  pivot_longer(cols =c("mChoice","mRT","mLogRT", "mMood"), names_to = "beh")
-
-# Run correlations and tidy the results
-
-# Change scores
-rl.beh.cl.l %>%
-  filter(!sess == "Baseline") %>%
-  group_by(beh,sess) %>%
-  do(tidy(cor.test(.$value, .$HDRS_d, method = "spearman"))) %>%
-  # Filter for significant results (p < 0.05)
-  filter(p.value < .05)
-
-  rl.beh.cl.l %>%
-  filter(!sess == "Baseline") %>%
-  group_by(beh,sess) %>%
-  do(tidy(cor.test(.$value, .$HDRS_d, method = "spearman"))) 
-
-ug.beh.cl.l %>%
-  filter(!sess == "Baseline") %>%
-  group_by(beh,sess) %>%
-  do(tidy(cor.test(.$value, .$HDRS_d, method = "spearman"))) %>% as.data.frame() %>%
-  # Filter for significant results (p < 0.05)
-  filter(p.value < .05)
-
-# Raw scores
-rl.beh.cl.l %>%
-  filter(!sess == "Baseline") %>%
-  group_by(beh,sess) %>%
-  do(tidy(cor.test(.$value, .$HDRS, method = "spearman"))) %>%
-  # Filter for significant results (p < 0.05)
-  filter(p.value < .05)
-
-ug.beh.cl.l %>%
-  filter(!sess == "Baseline") %>%
-  group_by(beh,sess) %>%
-  do(tidy(cor.test(.$value, .$HDRS, method = "spearman"))) %>%
-  # Filter for significant results (p < 0.05)
-  filter(p.value < .05)
-
-
-# Plot change HDRS with beh
-
-HDRS.rl.choice = 
-  rl.beh.cl.l %>%
-  filter(sess %in% c("Month 1", "Month 3", "Month 6"), beh == "mChoice") %>%
-  ggplot(aes(x = HDRS_d, y = value)) +
+HDRS.rl.choice =
+  panel_A %>%
+  ggplot(aes(x = HDRS_change, y = beh_change)) +
   theme_pubr(base_size = 16) +
   facet_wrap(~sess, nrow = 1) +
-  stat_smooth(method = "lm", 
+  stat_smooth(method = "lm",
               alpha = .25,
               linetype = "solid",
               linewidth = 2.1,
-              color = "purple", 
+              color = "purple",
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "P(optimal) [RL]",
@@ -218,22 +80,21 @@ HDRS.rl.choice =
     panel.grid.minor = element_blank(),
     strip.background = element_blank(),
     panel.border = element_rect(colour = NA, fill = NA)) +
-  stat_cor(method="spearman",aes(label =paste0(cut(..p.., 
+  stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(7,7,7), label.y = 1)  
+  )),label.x = -15, size = c(7,7,7), label.y = 1)
 
-HDRS.rl.rt = 
-  rl.beh.cl.l %>%
-  filter(sess %in% c("Month 1", "Month 3", "Month 6"), beh == "mLogRT") %>%
-  ggplot(aes(x = HDRS_d, y = value)) +
+HDRS.rl.rt =
+  panel_B %>%
+  ggplot(aes(x = HDRS_change, y = beh_change)) +
   theme_pubr(base_size = 16) +
   facet_wrap(~sess, nrow = 1) +
-  stat_smooth(method = "lm", 
+  stat_smooth(method = "lm",
               alpha = .25,
               linetype = "solid",
               linewidth = 2.1,
-              color = "purple", 
+              color = "purple",
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "Response time [RL]",
@@ -248,21 +109,20 @@ HDRS.rl.rt =
     panel.grid.minor = element_blank(),
     strip.background = element_blank(),
     panel.border = element_rect(colour = NA, fill = NA)) +
-  stat_cor(method="spearman",aes(label =paste0(cut(..p.., 
+  stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(7,7,7), label.y = 1)  
+  )),label.x = -15, size = c(7,7,7), label.y = 1)
 
-HDRS.ug.mood = ug.beh.cl.l %>%
-  filter(sess %in% c("Month 1", "Month 3", "Month 6"), beh == "mMood") %>%
-  ggplot(aes(x = HDRS_d, y = value)) +
+HDRS.ug.mood = panel_C %>%
+  ggplot(aes(x = HDRS_change, y = beh_change)) +
   theme_pubr(base_size = 16) +
   facet_wrap(~sess, nrow = 1) +
-  stat_smooth(method = "lm", 
+  stat_smooth(method = "lm",
               alpha = .25,
               linetype = "solid",
               linewidth = 2.1,
-              color = "purple", 
+              color = "purple",
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "Mood [UG]",
@@ -277,22 +137,21 @@ HDRS.ug.mood = ug.beh.cl.l %>%
     panel.grid.minor = element_blank(),
     strip.background = element_blank(),
     panel.border = element_rect(colour = NA, fill = NA)) +
-  stat_cor(method="spearman",aes(label =paste0(cut(..p.., 
+  stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
   )),label.x = -15, size = c(7,12,7), label.y = 85)
 
-HDRS.ug.choice = 
-  ug.beh.cl.l %>%
-  filter(sess %in% c("Month 1", "Month 3", "Month 6"), beh == "mChoice") %>%
-  ggplot(aes(x = HDRS_d, y = value)) +
+HDRS.ug.choice =
+  panel_D %>%
+  ggplot(aes(x = HDRS_change, y = beh_change)) +
   theme_pubr(base_size = 16) +
   facet_wrap(~sess, nrow = 1) +
-  stat_smooth(method = "lm", 
+  stat_smooth(method = "lm",
               alpha = .25,
               linetype = "solid",
               linewidth = 2.1,
-              color = "purple", 
+              color = "purple",
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "P(accept) [UG]",
@@ -307,22 +166,21 @@ HDRS.ug.choice =
     panel.grid.minor = element_blank(),
     strip.background = element_blank(),
     panel.border = element_rect(colour = NA, fill = NA)) +
-  stat_cor(method="spearman",aes(label =paste0(cut(..p.., 
+  stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(12,12,7), label.y = 1.25)  
+  )),label.x = -15, size = c(12,12,7), label.y = 1.25)
 
-HDRS.ug.rt = 
-  ug.beh.cl.l %>%
-  filter(sess %in% c("Month 1", "Month 3", "Month 6"), beh == "mLogRT") %>%
-  ggplot(aes(x = HDRS_d, y = value)) +
+HDRS.ug.rt =
+  panel_E %>%
+  ggplot(aes(x = HDRS_change, y = beh_change)) +
   theme_pubr(base_size = 16) +
   facet_wrap(~sess, nrow = 1) +
-  stat_smooth(method = "lm", 
+  stat_smooth(method = "lm",
               alpha = .25,
               linetype = "solid",
               linewidth = 2.1,
-              color = "purple", 
+              color = "purple",
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "Response time [UG]",
@@ -337,22 +195,21 @@ HDRS.ug.rt =
     panel.grid.minor = element_blank(),
     strip.background = element_blank(),
     panel.border = element_rect(colour = NA, fill = NA)) +
-  stat_cor(method="spearman",aes(label =paste0(cut(..p.., 
+  stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(7,7,7), label.y = 1)    
+  )),label.x = -15, size = c(7,7,7), label.y = 1)
 
 
 figure4 = ( HDRS.rl.rt + HDRS.rl.choice)/(HDRS.ug.rt + HDRS.ug.choice + HDRS.ug.mood) +
   plot_annotation(tag_levels = 'a') +
   plot_layout(guides = "collect",nrow = 2) &
-  theme(legend.position = 'right') 
+  theme(legend.position = 'right')
 
 
-ggsave(res_dir / "figureS4_raw.png", 
+ggsave(here::here("results/from_source_data/figureS4_raw.png"),
        plot = figure4,
        device = "png",
        width = 15,          # Width in inches
-       height = 8,         # Height in inches  
+       height = 8,         # Height in inches
        dpi = 300)           # Resolution (300 DPI for publication quality)
-

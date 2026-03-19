@@ -19,6 +19,9 @@
 # ====         ================                       ======================
 # 2025/05/05    Blair Shevlin                           wrote original code
 # 2025/07/24    Blair Shevlin                           updated to use new NT data
+# 2026/03/19    Blair Shevlin                           refactored to read from source data CSV
+
+# Reads source data from data/figures/figureExtended2_source_data.csv
 
 rm(list = ls())
 
@@ -26,82 +29,65 @@ library(tidyverse)
 library(ggpubr)
 library(here)
 library(fs)
-library(here)
 library(rstatix)
 
-# Paths
-dir = path(here())
-clin_dir = dir / "data" / "clinical" # Updated
-res_dir = dir / "results" # Updated
+# Read source data
+source_data <- read.csv(here::here("data/figures/figureExtended2_source_data.csv"), stringsAsFactors = FALSE)
 
-# Load clinical data
-cl.df = read.csv(clin_dir / "clinical-data_deid_07-10-25.csv" ) 
+# Re-apply factor orderings
+source_data$sess_fig <- factor(
+  source_data$session,
+  levels = c("pre stim", "post stim", "week 1", "month 1", "month 2", "month 3", "month 4", "month 5", "month 6"),
+  labels = c("Baseline", "DBS", "Week 1", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6")
+)
+source_data$cohort    <- source_data$cohort
+source_data$responder <- source_data$responder
 
+# Panel A data
+cl.O.fig <- source_data %>% filter(panel == "A")
 
-cl.O.fig = cl.df %>%
-  filter(!session %in% c('fmri')) %>%
-  mutate(id = factor(idx),
-         sess_fig = factor(session,levels  = c("pre stim", "post stim","week 1", "month 1", "month 2", "month 3", "month 4", "month 5", "month 6"),
-                           labels = c("Baseline","DBS", "Week 1", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6")) ) %>%
-  group_by(id) %>%
-  mutate(
-    HDRS_CP = (HDRS - HDRS[session == "pre stim"] )/HDRS[session == "pre stim"],
-    remission = ifelse(HDRS < 8, 1, 0),
-    responder = factor(ifelse(abs(HDRS_CP) > .5,1,0),
-                       levels = c(1,0),
-                       labels = c("Responder","Nonresponder")),
-    M6_responder = responder[sess_fig == "Month 6"],
-    M6_remission = remission[sess_fig == "Month 6"],
-    cohort = ifelse(id %in% c(1:5),"RC+S","PC")
-  )%>%
-  ungroup() %>% 
-  filter(!sess_fig %in% c("Month 2", "Month 4", "Month 5")) %>%
-  as.data.frame()
-
-test.cohort <-     
+test.cohort <-
   cl.O.fig %>%
-  filter(sess_fig!="DBS")%>%
+  filter(sess_fig != "DBS") %>%
   group_by(sess_fig) %>%
   t_test(HDRS ~ cohort) %>%
-  add_significance("p")  %>%
+  add_significance("p") %>%
   add_xy_position(x = "sess_fig", dodge = 1) %>%
   mutate(y.position = 30,
          xmin = c(0.75, 2.75, 3.75, 4.75, 5.75),
          xmax = c(1.25, 3.25, 4.25, 5.25, 6.25))
 
-fig.hdrs.timeline.cohort =
-cl.O.fig %>%
+fig.hdrs.timeline.cohort <-
+  cl.O.fig %>%
   ggplot(aes(x = sess_fig, y = HDRS)) +
   theme_pubr(base_size = 14) +
   geom_vline(xintercept = "DBS", linewidth = 2) +
   stat_summary(geom = "line",
                aes(color = cohort, group = cohort),
                position = position_dodge2(width = .75),
-               linewidth = 1.5 )+ 
-  stat_summary(aes( shape = cohort, color = cohort),
+               linewidth = 1.5) +
+  stat_summary(aes(shape = cohort, color = cohort),
                position = position_dodge2(width = .75),
-               size = 1.5, linewidth = 1.5 )+  
-  geom_point(data = cl.O.fig[cl.O.fig$sess_fig!="DBS",],
-             size=2, alpha = .5,#color = "purple"
+               size = 1.5, linewidth = 1.5) +
+  geom_point(data = cl.O.fig[cl.O.fig$sess_fig != "DBS", ],
+             size = 2, alpha = .5,
              position = position_dodge2(width = .75),
-             stroke = 1.75,aes( shape = cohort, color = cohort),
+             stroke = 1.75, aes(shape = cohort, color = cohort),
   ) +
   labs(x = element_blank(),
        y = "HDRS-17",
        shape = "Cohort",
        color = "Cohort") +
-  scale_shape_manual(values = c(16,15)) +
-  scale_color_brewer(type = "qual",palette = 2) +
-  theme(axis.text.x = element_text(angle = 20, vjust = 1, hjust=0.75),
-        legend.position = c(0.1, 0.2))+
+  scale_shape_manual(values = c(16, 15)) +
+  scale_color_brewer(type = "qual", palette = 2) +
+  theme(axis.text.x = element_text(angle = 20, vjust = 1, hjust = 0.75),
+        legend.position = c(0.1, 0.2)) +
   stat_pvalue_manual(
-    test.cohort,  tip.length = 0) 
+    test.cohort, tip.length = 0)
 
-
-
-ggsave(res_dir / "Extended-Data_Figure2.png", 
-       plot = fig.hdrs.timeline.cohort,
+ggsave(here::here("results/from_source_data/Extended-Data_Figure2.png"),
+       plot   = fig.hdrs.timeline.cohort,
        device = "png",
-       width = 6.5,          # Width in inches
-       height = 3.5,         # Height in inches  
-       dpi = 300)           # Resolution (300 DPI for publication quality)
+       width  = 6.5,
+       height = 3.5,
+       dpi    = 300)
