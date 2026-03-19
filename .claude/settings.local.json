@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find '/c/Users/blair/OneDrive - The Mount Sinai Hospital/Documents/Research/Sinai-Leap/Shevlin-Fu_Volt-TRD' -type f -name README* -o -name *.md)"
+    ]
+  }
+}

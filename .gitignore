@@ -42,3 +42,6 @@ Thumbs.db
 
 # Raw untiled R files
 /src/R/Untiled-1.r
+
+# Claude Settings
+.claude

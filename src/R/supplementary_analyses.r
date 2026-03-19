@@ -19,6 +19,7 @@
 # ====         ================                       ======================
 # 2025/09/16    Blair Shevlin                          adapted "statistical_tests.R" to use alternative z-scoring
 # 2025/11/14    Blair Shevlin                          revised ANOVA table generation to include all metrics
+# 2026/02/23    Blair Shevlin                          exploring behavioral analyses and clinical correlates of NT change
 
 rm(list = ls())
 
@@ -75,14 +76,12 @@ cl.df = read.csv(clin_dir / "clinical-data_deid_07-10-25.csv" )
 
 
 cl.df.baseline = cl.df %>% filter(session == "pre stim") %>% select(idx,HDRS)
+cl.df.m6 = cl.df %>% filter(session == "month 6") %>% select(idx,HDRS)
 
 # Load behavioral data
 rl.beh = read.csv(file = beh_dir / "rl-data_deid_07-10-25.csv")
 
 ug.beh = read.csv(file = beh_dir / "ug-data_deid_07-10-25.csv")
-
-
-
 
 ############################
 # Alternative NT Analyses #
@@ -184,6 +183,27 @@ task.merge = rbind(rl.premerge,ug.premerge)
 task.merge %>% group_by(idx,stim,task, nt) %>%
   summarise(m = mean(Oz), s = sd(Oz)) %>% as.data.frame()
 
+# Table of Subject-level NT difference values
+task.merge %>%
+  group_by(idx, task, nt) %>%
+  summarise(
+    diff    = mean(Oz[stim == "Post-Stim"], na.rm = TRUE) - mean(Oz[stim == "Pre-Stim"], na.rm = TRUE),
+    sd_post = sd(Oz[stim == "Post-Stim"], na.rm = TRUE),
+    sd_pre  = sd(Oz[stim == "Pre-Stim"],  na.rm = TRUE),
+    n_post  = sum(!is.na(Oz[stim == "Post-Stim"])),
+    n_pre   = sum(!is.na(Oz[stim == "Pre-Stim"])),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    sd_pooled = sqrt(((n_post - 1) * sd_post^2 + (n_pre - 1) * sd_pre^2) / (n_post + n_pre - 2)),
+    se_diff   = round( sd_pooled / sqrt(n_post + n_pre), 2),
+    diff = round(diff,2),
+    task = factor(task, levels = c("RL", "UG")),
+    nt   = factor(nt,   levels = c("DA", "SE", "NE"))
+  ) %>%
+  select(idx, task, nt, diff, se_diff) %>%
+  arrange(task, nt) %>%
+  as.data.frame()
 
 # Us
 DA.lm = lmer(   data = task.merge[task.merge$nt == "DA",],
@@ -1412,9 +1432,9 @@ ggsave(res_dir / "neurotransmitter_legend.png",
        width = 4,          # Width in inches
        height = 4,         # Height in inches  
        dpi = 300)    
-
+############################################################
 # Does Baseline HDRS predict context-specific changes in NT?
-
+############################################################
 # Prepare data
 rl.EST.Reward = rl.EST %>%
   filter(event == "Reward") %>%
@@ -1435,7 +1455,7 @@ ug.EST.pr = ug.EST.Offer %>%
          trial_z = scale(trial)[,1]
   )
 
-  rl.EST.pr = rl.EST.Reward %>%
+rl.EST.pr = rl.EST.Reward %>%
     mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim")),
          block_type = factor(cond, levels = c("Mixed","Negative","Positive")),
          prev_rew_raw_f = factor(prev_rew_raw, levels = c(0,1)),
@@ -1453,10 +1473,10 @@ ug.EST.pr = ug.EST.Offer %>%
   ) 
 
 rl.premerge = rl.EST.pr %>%
-  select(idx,stim,nt,Oz,trial_z) %>%
+  select(idx,stim,nt,Oz,O,trial_z) %>%
   mutate(task = "RL")
 ug.premerge = ug.EST.pr %>%
-  select(idx,stim,nt,Oz,trial_z) %>%
+  select(idx,stim,nt,Oz,O,trial_z) %>%
   mutate(task = "UG")
 
 task.merge = rbind(rl.premerge,ug.premerge) %>% 
@@ -1490,3 +1510,708 @@ hdrs.model.NE = lm(HDRS ~ task_diff * stim,
 summary(hdrs.model.DA)
 summary(hdrs.model.SE)
 summary(hdrs.model.NE)
+
+# What differentiates participants who show the expected pattern vs. those who do not?
+task.means = task.merge.baseline %>%
+  group_by(idx, task, nt, stim, HDRS_z, HDRS) %>%
+  summarize(Oz_mean = mean(Oz, na.rm = TRUE), O_mean = mean(O, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(HDRS_M6 = cl.df.m6$HDRS[match(idx, cl.df.m6$idx)],
+         HDRS_M6_z = scale(HDRS_M6)[,1])
+
+
+# Pull out the post-stim Oz_mean for each subject
+post_stim_vals <- task.means %>%
+  filter(stim == "Post-Stim") %>%
+  select(idx, task, nt, Oz_mean) %>%
+  mutate(change_pattern = ifelse(Oz_mean > 0, "Increased", "Decreased")) %>%
+  group_by(idx, task) %>%
+  mutate(expected_pattern = ifelse(
+    any(nt == "DA" & change_pattern == "Increased") &
+    any(nt == "SE" & change_pattern == "Increased"),
+    "Expected", "Unexpected"
+  ),
+  DA_change = change_pattern[nt == "DA"],
+  SE_change = change_pattern[nt == "SE"]
+  ) %>%
+  ungroup() %>% select(!Oz_mean)
+
+
+# Join and apply logic
+task.means <- task.means %>%
+  left_join(post_stim_vals, by = c("idx", "task", "nt")) 
+  
+task.means %>%
+  group_by(task,nt,stim,expected_pattern) %>%
+  summarise(mean_HDRS = mean(HDRS, na.rm = TRUE),
+            mean_Oz = mean(Oz_mean, na.rm = TRUE),
+            count = n())
+
+# Visualize HDRS by expected pattern
+task.means %>% select(idx, task, nt, HDRS, expected_pattern) %>%
+   distinct() %>%
+  ggplot(aes(x = expected_pattern, y = HDRS, color = expected_pattern)) +
+  geom_point(size = 1.5, position = position_dodge2(width = 0.2)) +
+  stat_summary(size = 1, linewidth = 1) +
+  facet_grid(task ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif") +
+  labs(y = "Baseline HDRS", x = "Pattern of Change")
+# Higher baseline, but Nothing significant!
+
+task.means %>% select(idx, task, nt, HDRS_M6, expected_pattern) %>%
+   distinct() %>%
+  ggplot(aes(x = expected_pattern, y = HDRS_M6, color = expected_pattern)) +
+  geom_point(size = 1.5, position = position_dodge2(width = 0.2)) +
+  stat_summary(size = 1, linewidth = 1) +
+  facet_grid(task ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif") +
+  labs(y = "Month 6 HDRS", x = "Pattern of Change")
+
+# Visualize O_mean by expected pattern (pre-stim only)
+task.means %>% 
+  filter(stim == "Pre-Stim") %>%
+  select(idx, task, nt, O_mean, expected_pattern) %>%
+  distinct() %>%
+  ggplot(
+  aes(x = expected_pattern, y = O_mean, color = expected_pattern)) +
+  stat_summary() +
+  facet_grid(task ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif")
+
+task.means %>% 
+  filter(stim == "Post-Stim") %>%
+  select(idx, task, nt, O_mean, expected_pattern) %>%
+  distinct() %>%
+  ggplot(
+  aes(x = expected_pattern, y = O_mean, color = expected_pattern)) +
+  stat_summary() +
+  facet_grid(task ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif")
+
+task.means %>%
+  select(idx, task, expected_pattern, HDRS_M6) %>%
+  mutate(expected_pattern = factor(expected_pattern, levels = c("Unexpected", "Expected"))) %>%
+  distinct() %>%
+  filter(task == "UG") %>%
+  glm(HDRS_M6 ~ expected_pattern, data = ., family = gaussian) %>%
+  summary()
+# No effect - but marginally lower HDRS at 6 months in those with expected pattern (increased DA and SE)
+
+task.means %>%
+  select(idx, task, expected_pattern, HDRS) %>%
+  mutate(expected_pattern = factor(expected_pattern, levels = c("Unexpected", "Expected"))) %>%
+  distinct() %>%
+  filter(task == "UG") %>%
+  glm(HDRS ~ expected_pattern, data = ., family = gaussian) %>%
+  summary()
+# No difference in baseline HDRS between those with vs. without the expected pattern
+
+task.means %>%
+  select(idx, task, expected_pattern, HDRS, HDRS_M6) %>%
+  distinct() %>%
+  mutate(HDRS_change = HDRS_M6 - HDRS) %>%
+  ggplot(aes(x = expected_pattern, y = HDRS_change, color = expected_pattern)) +
+  stat_summary(size = 1, linewidth = 1) +
+  geom_point(position = position_dodge2(width = 0.2)) +
+  stat_compare_means(method = "t.test", label = "p.signif") +
+  facet_wrap(~ task) +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme_pubr()
+
+task.means %>%
+  select(idx, task, expected_pattern, HDRS, HDRS_M6) %>%
+  distinct() %>%
+  mutate(HDRS_change = HDRS_M6 - HDRS) %>%
+  filter(task == "UG") %>%
+  glm(HDRS_change ~ expected_pattern, data = ., family = gaussian) %>%
+  summary()
+# But this is significant! 
+# Those with the expected pattern (increased DA and SE) show greater reductions in HDRS over 6 months, compared to those without the expected pattern.
+
+
+# Look at behavior
+
+ug.EST.pr = merge(ug.EST.pr, post_stim_vals[post_stim_vals$task == "UG",], by = c("idx", "nt"))
+rl.EST.pr = merge(rl.EST.pr, post_stim_vals[post_stim_vals$task == "RL",], by = c("idx", "nt"))
+
+ug.beh = ug.EST.pr %>% 
+  filter(nt == "DA") %>%
+  group_by(idx,expected_pattern,nt,stim) %>%
+  summarise(mAccept = mean(rej==0), mRT = mean(log(rt)))
+
+rl.beh = rl.EST.pr %>% 
+  filter(nt == "DA") %>%
+  group_by(idx,expected_pattern,nt,stim) %>%
+  summarise(mOpt = mean(opt==0), mRT = mean(log(rt)))
+
+ug.choice.aov = aov(mAccept ~ expected_pattern * stim, data = ug.beh)
+ug.rt.aov = aov(mRT ~ expected_pattern * stim, data = ug.beh)
+
+summary(ug.choice.aov)
+summary(ug.rt.aov)
+
+rl.choice.aov = aov(mOpt ~ expected_pattern * stim, data = rl.beh)
+rl.rt.aov = aov(mRT ~ expected_pattern * stim, data = rl.beh)
+
+summary(rl.choice.aov)
+summary(rl.rt.aov)
+
+
+ug.EST.pr %>% 
+  group_by(expected_pattern,nt,stim) %>%
+  summarise(mAccept = mean(rej==0)) %>%
+  ggplot(aes(x = expected_pattern, y = mAccept, color = expected_pattern)) +
+  stat_summary() +
+  facet_grid( ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif")
+  # Those who increased in 5-HT tended to accept more offers
+
+ 
+
+ug.EST.pr %>% 
+  group_by(expected_pattern,nt,stim) %>%
+  summarise(mRT = mean(log(rt))) %>%
+  ggplot(aes(x = expected_pattern, y = mRT, color = expected_pattern)) +
+  stat_summary() +
+  facet_grid( ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif")
+# No significant differences in RT
+
+summary(lmer(log(rt) ~ expected_pattern * stim + offer_z + (1+offer_z|idx), data = ug.EST.pr, family = binomial))  
+
+
+rl.EST.pr %>% 
+  group_by(expected_pattern,nt,stim) %>%
+  summarise(mOpt= mean(opt==0)) %>%
+  ggplot(aes(x = expected_pattern, y = mOpt, color = expected_pattern)) +
+  stat_summary() +
+  facet_grid( ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif")
+  # Those who increased in DA tended to choose more optimally
+
+rl.EST.pr %>% 
+  group_by(expected_pattern,nt,stim) %>%
+  summarise(mRT = mean(log(rt))) %>%
+  ggplot(aes(x = expected_pattern, y = mRT, color = expected_pattern)) +
+  stat_summary() +
+  facet_grid( ~ nt) +
+  theme_pubr() +
+  labs(color = "Pattern") +
+  scale_color_manual(values = c("Expected" = "#2ca25f", "Unexpected" = "#de2d26")) +
+  theme(legend.position = "bottom") +
+  stat_compare_means(method = "t.test", label = "p.signif")
+# No significant differences in RT
+
+## 
+## Other clinical varianbles
+
+# junel fe = norethindrone acetate/ethinyl estradiol/ferrous fumarate -> birth control
+# Levothyroxine = thyroid hormone replacement
+# Lisinopril-hydrochlorothiazide = high blood pressure
+# venlafaxine = SNRI
+# lisdexamfetamine = stimulant for ADHD
+# busprione = for anxiety
+cl.alt = data.frame(idx = c(1:10),
+  meds = c(NA,
+          paste0("quetiapine,", "propranolol,", "losartan,", "amlodipine,", "hydrochlorothiazide,","gabapentin,"),
+          paste0("fetzima,","lamotrigine,","allopurinol,","lisinopril"),
+          paste0("desvenlafaxine,","dextroamphetamine,","buprenorphine,","lamotrigine,","mirtazapine,","diazepam,","levothyroxine,","semaglutide,","testosterone,"),
+          paste0("wellbutrin,","junel fe,","levothyroxine,","mirtazapine,","lithium,","timolol,","aripiprazole,"),
+          paste0("wellbutrin,","desvenlafaxine,","NAC powder,","methylphenidate,","diazepam,","hydroxyzine,","levothyroxine,","liothyronine,"),
+          paste0("venlafaxine,","modafinil,","clonazepam,","lisinopril-hydrochlorothiazide,"),
+          paste0("venlafaxine,","lisdexamfetamine,"),
+          paste0("nortriptyline,","lamotrigine,","lithium carbonate,","doxepin,", "busprione,", "hydroxyzine,", "nadolol,"),
+          paste0("mirtazapine,","clonazepam,","quetiapine,","crestor,","metoprolol,")
+          )
+)
+
+
+# Get all unique drugs
+all_drugs <- cl.alt %>%
+  filter(!is.na(meds)) %>%
+  separate_rows(meds, sep = ",") %>%
+  mutate(meds = trimws(meds)) %>%
+  filter(meds != "") %>%
+  pull(meds) %>%
+  unique()
+
+# Create binary columns for each drug
+cl.alt.binary <- cl.alt %>%
+  separate_rows(meds, sep = ",") %>%
+  mutate(meds = trimws(meds)) %>%
+  filter(meds != "" & !is.na(meds)) %>%
+  mutate(value = 1) %>%
+  pivot_wider(names_from = meds, values_from = value, values_fill = 0) %>%
+  right_join(cl.alt %>% select(idx), by = "idx") %>%
+  mutate(across(-idx, ~replace_na(., 0))) %>%
+  arrange(idx)
+
+# Drugs where multiple participants are taking them
+multi_drugs = cl.alt.binary %>%
+  select(-idx) %>%
+  summarise(across(everything(), sum)) %>%
+  pivot_longer(everything(), names_to = "drug", values_to = "n_participants") %>%
+  filter(n_participants > 1) %>%
+  arrange(desc(n_participants))
+
+cl.alt.stim = post_stim_vals %>%
+  select(idx,task,expected_pattern) %>%
+  left_join(cl.alt.binary, by = "idx") %>%
+  mutate(expected_pattern_binary = ifelse(expected_pattern == "Expected", 1, 0))
+
+  
+
+# See if any medications are associated with expected vs. unexpected pattern of change
+med_models = list()
+for (task in c("UG","RL") ) {
+  for (drug in multi_drugs$drug) {
+    model <- glm(expected_pattern_binary ~ get(drug), data = cl.alt.stim[cl.alt.stim$task == task,], 
+    family = binomial)
+    med_models[[paste0(task, "_", drug)]] <- summary(model)
+  } 
+}
+
+# $UG_levothyroxine, $UG_lamotrigine (almost significant)
+
+# Look at actual values
+post_stim_oz <- task.means %>%
+  select(idx, task, nt, stim, Oz_mean) %>%
+  group_by(idx,task,nt) %>%
+  summarise(Oz_change = Oz_mean[stim == "Post-Stim"] - Oz_mean[stim == "Pre-Stim"],
+            Oz_pre = Oz_mean[stim == "Pre-Stim"]) %>%
+  ungroup()
+
+cl.alt.stim_oz = post_stim_oz %>%
+  left_join(cl.alt.binary, by = "idx") %>%
+  pivot_wider(names_from = nt, values_from = Oz_change, names_prefix = "Oz_")
+
+cl.alt.stim_oz %>%
+ select(idx,task,Oz_DA,Oz_SE,Oz_NE)
+
+med_models_oz = list()
+for (task in c("UG","RL") ) {
+  for (drug in multi_drugs$drug) {
+    model <- glm(get(drug) ~ Oz_SE * Oz_DA, data = cl.alt.stim_oz[cl.alt.stim_oz$task == task,], 
+    family = binomial)
+    med_models_oz[[paste0(task, "_", drug)]] <- summary(model)
+  } 
+}
+# No pattern of DA/SE increase associated with any medications
+
+# Look at individual NTs
+med_models_SE = list()
+for (task in c("UG","RL") ) {
+  for (drug in multi_drugs$drug) {
+    model <- glm(get(drug) ~ Oz_SE, data = cl.alt.stim_oz[cl.alt.stim_oz$task == task,], 
+    family = binomial)
+    med_models_SE[[paste0(task, "_", drug)]] <- summary(model)
+  } 
+}
+# Nothing significant
+
+med_models_DA = list()
+for (task in c("UG","RL") ) {
+  for (drug in multi_drugs$drug) {
+    model <- glm(get(drug) ~ Oz_DA, data = cl.alt.stim_oz[cl.alt.stim_oz$task == task,], 
+    family = binomial)
+    med_models_DA[[paste0(task, "_", drug)]] <- summary(model)
+  } 
+}
+
+med_models_NE = list()
+for (task in c("UG","RL") ) {
+  for (drug in multi_drugs$drug) {
+    model <- glm(get(drug) ~ Oz_NE, data = cl.alt.stim_oz[cl.alt.stim_oz$task == task,], 
+    family = binomial)
+    med_models_NE[[paste0(task, "_", drug)]] <- summary(model)
+  } 
+}
+
+# Let's categorize medications by class and see if any classes are associated with patterns of change
+drug_classes <- list(
+  SNRI            = c("venlafaxine", "desvenlafaxine", "fetzima"),
+  NDRI            = c("wellbutrin"),
+  NaSSA           = c("mirtazapine"),
+  TCA             = c("nortriptyline", "doxepin"),
+  Antipsychotic   = c("quetiapine", "aripiprazole"),
+  Mood_Stabilizer = c("lamotrigine", "lithium", "lithium carbonate"),
+  Benzo           = c("diazepam", "clonazepam"),
+  Stimulant       = c("methylphenidate", "dextroamphetamine", "lisdexamfetamine", "modafinil"),
+  Anticonvulsant  = c("gabapentin"),
+  Thyroid         = c("levothyroxine", "liothyronine"),
+  Anxiolytic      = c("hydroxyzine", "busprione"),
+  Beta_Blocker    = c("propranolol", "metoprolol", "nadolol", "timolol"),
+  ACE_ARB         = c("lisinopril", "losartan", "lisinopril-hydrochlorothiazide"),
+  Opioid_Adj      = c("buprenorphine"),
+  Other_Psych     = c("NAC powder"),
+  Hormonal        = c("testosterone", "junel fe"),
+  Statin          = c("crestor"),
+  Diuretic        = c("hydrochlorothiazide"),
+  CCB             = c("amlodipine"),
+  GLP1            = c("semaglutide"),
+  Xanthine_Ox_Inh = c("allopurinol")
+)
+
+# Build a class-level binary dataframe
+cl.alt.class <- cl.alt.binary %>%
+  mutate(
+    SNRI            = as.integer(rowSums(across(any_of(drug_classes$SNRI))) > 0),
+    NDRI            = as.integer(rowSums(across(any_of(drug_classes$NDRI))) > 0),
+    NaSSA           = as.integer(rowSums(across(any_of(drug_classes$NaSSA))) > 0),
+    TCA             = as.integer(rowSums(across(any_of(drug_classes$TCA))) > 0),
+    Antipsychotic   = as.integer(rowSums(across(any_of(drug_classes$Antipsychotic))) > 0),
+    Mood_Stabilizer = as.integer(rowSums(across(any_of(drug_classes$Mood_Stabilizer))) > 0),
+    Benzo           = as.integer(rowSums(across(any_of(drug_classes$Benzo))) > 0),
+    Stimulant       = as.integer(rowSums(across(any_of(drug_classes$Stimulant))) > 0),
+    Anticonvulsant  = as.integer(rowSums(across(any_of(drug_classes$Anticonvulsant))) > 0),
+    Thyroid         = as.integer(rowSums(across(any_of(drug_classes$Thyroid))) > 0),
+    Anxiolytic      = as.integer(rowSums(across(any_of(drug_classes$Anxiolytic))) > 0),
+    Beta_Blocker    = as.integer(rowSums(across(any_of(drug_classes$Beta_Blocker))) > 0),
+    ACE_ARB         = as.integer(rowSums(across(any_of(drug_classes$ACE_ARB))) > 0)
+  )
+
+# Check class counts
+class_counts <- cl.alt.class %>%
+  select(SNRI:ACE_ARB) %>%
+  summarise(across(everything(), sum)) %>%
+  pivot_longer(everything(), names_to = "class", values_to = "n_participants") %>%
+  arrange(desc(n_participants))
+
+print(class_counts)
+
+
+# Define classes with enough participants (n > 1, ideally > 2)
+multi_classes <- class_counts %>%
+  filter(n_participants > 1) %>%
+  pull(class)
+
+# Join with stim data
+cl.alt.stim_class <- post_stim_vals %>%
+  select(idx, task, expected_pattern) %>%
+  left_join(cl.alt.class, by = "idx") %>%
+  mutate(expected_pattern_binary = ifelse(expected_pattern == "Expected", 1, 0))
+
+# Join with Oz change data
+cl.alt.stim_oz_class <- post_stim_oz %>%
+  left_join(cl.alt.class, by = "idx") %>%
+  pivot_wider(names_from = nt, values_from = c(Oz_change, Oz_pre), names_prefix = "Oz_")
+
+colnames(cl.alt.stim_oz_class)
+
+# Look at outliers
+cl.alt.stim_oz_class %>%
+  filter(idx %in% c(4,7)) %>%
+  as.data.frame()
+
+#
+cl.alt.stim_oz_class %>%
+  filter(SNRI == 1, Benzo == 1, Stimulant == 1) %>% as.data.frame()
+
+# --- Expected pattern ~ drug class ---
+class_models_pattern <- list()
+for (task in c("UG", "RL")) {
+  for (drug_class in multi_classes) {
+    model <- glm(expected_pattern_binary ~ get(drug_class),
+                 data = cl.alt.stim_class[cl.alt.stim_class$task == task, ],
+                 family = binomial)
+    class_models_pattern[[paste0(task, "_", drug_class)]] <- summary(model)
+  }
+}
+
+# --- Drug class ~ Oz_SE + Oz_DA (interaction) ---
+class_models_oz <- list()
+for (task in c("UG", "RL")) {
+  for (drug_class in multi_classes) {
+    model <- glm(get(drug_class) ~ Oz_change_Oz_SE * Oz_change_Oz_DA,
+                 data = cl.alt.stim_oz_class[cl.alt.stim_oz_class$task == task, ],
+                 family = binomial)
+    class_models_oz[[paste0(task, "_", drug_class)]] <- summary(model)
+  }
+}
+
+# --- Individual NTs ---
+for (nt in c("Oz_change_Oz_DA", "Oz_change_Oz_SE", "Oz_change_Oz_NE","Oz_pre_Oz_SE","Oz_pre_Oz_DA","Oz_pre_Oz_NE")) {
+  assign(paste0("class_models_", nt), {
+    models <- list()
+    for (task in c("UG", "RL")) {
+      for (drug_class in multi_classes) {
+        model <- glm(get(drug_class) ~ get(nt),
+                     data = cl.alt.stim_oz_class[cl.alt.stim_oz_class$task == task, ],
+                     family = binomial)
+        models[[paste0(task, "_", drug_class)]] <- summary(model)
+      }
+    }
+    models
+  })
+}
+
+extract_glm_results <- function(model_list, nt_var = NULL) {
+  map_dfr(names(model_list), function(name) {
+    coefs <- model_list[[name]]$coefficients
+    
+    # Handle models where predictor may have failed (e.g., perfect separation)
+    if (nrow(coefs) < 2) {
+      return(tibble(
+        model     = name,
+        task      = str_split(name, "_")[[1]][1],
+        predictor = str_split(name, "_", n = 2)[[1]][2],
+        nt        = if (!is.null(nt_var)) nt_var else NA_character_,
+        estimate  = NA_real_, se = NA_real_, z = NA_real_,
+        p_value   = NA_real_
+      ))
+    }
+    
+    pred_row <- coefs[2, , drop = FALSE]
+    tibble(
+      model     = name,
+      task      = str_split(name, "_")[[1]][1],
+      predictor = str_split(name, "_", n = 2)[[1]][2],
+      nt        = if (!is.null(nt_var)) nt_var else NA_character_,
+      estimate  = pred_row[, "Estimate"],
+      se        = pred_row[, "Std. Error"],
+      z         = pred_row[, "z value"],
+      p_value   = pred_row[, "Pr(>|z|)"]
+    )
+  }) %>%
+  mutate(p_holm = p.adjust(p_value, method = "holm")) %>%
+  arrange(p_value)
+}
+
+# Apply to each model list
+results_pattern <- extract_glm_results(class_models_pattern)
+results_oz      <- extract_glm_results(class_models_oz)
+results_SE      <- extract_glm_results(class_models_Oz_SE)
+results_DA      <- extract_glm_results(class_models_Oz_DA)
+results_NE      <- extract_glm_results(class_models_Oz_NE)
+
+# View top hits
+results_pattern %>% filter(p_value < 0.1)
+results_oz %>% filter(p_value < 0.1) # NS
+
+# Collect all results into one tidy table
+nt_vars <- c("Oz_change_Oz_DA", "Oz_change_Oz_SE", "Oz_change_Oz_NE",
+             "Oz_pre_Oz_SE",    "Oz_pre_Oz_DA",    "Oz_pre_Oz_NE")
+
+all_class_results <- map_dfr(nt_vars, function(nt) {
+  model_list <- get(paste0("class_models_", nt))
+  extract_glm_results(model_list, nt_var = nt)
+}) %>%
+  # Parse nt_var into type (change vs pre) and neurotransmitter
+  mutate(
+    stim_period = case_when(
+      str_detect(nt, "Oz_change") ~ "change",
+      str_detect(nt, "Oz_pre")   ~ "pre",
+      TRUE ~ NA_character_
+    ),
+    neurotransmitter = str_extract(nt, "(DA|SE|NE)$")
+  ) %>%
+  select(model, task, predictor, stim_period, neurotransmitter, estimate, se, z, p_value)
+
+# Quick views
+all_class_results %>% filter(p_value < 0.1)
+
+# Split by stim period
+all_class_results %>%
+  select(!model) %>%
+  filter(stim_period == "pre") %>%
+  arrange(p_value)
+
+all_class_results %>%
+  select(!model) %>%
+  filter(stim_period == "change") %>%
+  arrange(p_value)
+
+# Explore what's driving the change in Expected/Unexpected pattern - is it the absolute change in DA/SE, the pre-stim levels, or some combination?
+cl.alt.stim_oz_class <- cl.alt.stim_oz_class %>%
+  mutate(
+    DA_SE_product = Oz_change_Oz_DA * Oz_change_Oz_SE,
+    DA_SE_min     = pmin(Oz_change_Oz_DA, Oz_change_Oz_SE),  # the "weakest link" - how much did BOTH increase
+    DA_SE_diff    = Oz_change_Oz_DA - Oz_change_Oz_SE        # relative dominance
+  )
+
+new_vars <- c("DA_SE_product", "DA_SE_min", "DA_SE_diff")
+
+new_models <- map_dfr(new_vars, function(var) {
+  models <- list()
+  for (task in c("UG", "RL")) {
+    for (drug_class in multi_classes) {
+      model <- glm(get(drug_class) ~ get(var),
+                   data = cl.alt.stim_oz_class[cl.alt.stim_oz_class$task == task, ],
+                   family = binomial)
+      models[[paste0(task, "_", drug_class)]] <- summary(model)
+    }
+  }
+  extract_glm_results(models, nt_var = var)
+}) %>%
+  arrange(p_value)
+
+new_models %>%
+  arrange(p_value)
+
+post_stim_vals %>%
+  filter(task == "UG", nt == "DA") %>%
+  dplyr::select(idx, task, expected_pattern) %>%
+  left_join(cl.alt.class %>% dplyr::select(idx, Stimulant, SNRI, Thyroid), 
+            by = "idx") %>% 
+  dplyr::summarise(
+    expected             = sum(expected_pattern == "Expected"),
+    expected_SNRI        = sum(expected_pattern == "Expected" & SNRI == 1),
+    expected_Stimulant   = sum(expected_pattern == "Expected" & Stimulant == 1),
+    expected_thyroid     = sum(expected_pattern == "Expected" & Thyroid == 1),
+    unexpected_SNRI      = sum(expected_pattern == "Unexpected" & SNRI == 1),
+    unexpected_Stimulant = sum(expected_pattern == "Unexpected" & Stimulant == 1),
+    unexpected_thyroid   = sum(expected_pattern == "Unexpected" & Thyroid == 1),
+    unexpected_any = sum(expected_pattern == "Unexpected" & (SNRI == 1 | Stimulant == 1 | Thyroid == 1))
+  ) %>% as.data.frame()
+
+
+post_stim_vals %>%
+  filter(task == "UG", nt == "DA") %>%
+  dplyr::select(idx, task, expected_pattern,DA_change,SE_change) %>%
+  left_join(cl.alt.class %>% dplyr::select(idx, Stimulant, SNRI, Thyroid), 
+            by = "idx") %>% 
+  dplyr::summarise(
+    DA_Decr_SNRI        = sum(DA_change == "Decreased" & SNRI == 1),
+    SE_Decr_SNRI       = sum(SE_change == "Decreased" & SNRI == 1),
+    DA_Decr_Stimulant   = sum(DA_change == "Decreased" & Stimulant == 1),
+    SE_Decr_Stimulant   = sum(SE_change == "Decreased" & Stimulant == 1),
+    DA_Decr_thyroid     = sum(DA_change == "Decreased" & Thyroid == 1),
+    SE_Decr_thyroid     = sum(SE_change == "Decreased" & Thyroid == 1),
+    DA_Decr_any = sum(DA_change == "Decreased" & (SNRI == 1 | Stimulant == 1 | Thyroid == 1)),
+    SE_Decr_any = sum(SE_change == "Decreased" & (SNRI == 1 | Stimulant == 1 | Thyroid == 1))
+  ) %>% as.data.frame()
+# Not seemingly particular to one NT
+
+
+# Summary: chronic monoamine-elevating medications may disrupt the coordinated DA+SE response 
+# to subthreshold stimulation without reducing the overall magnitude of NT change
+
+# Assess Medication class × expected pattern × outcome
+
+# Requires one row per participant per task
+med_df <- task.means %>%
+  filter(task == "UG") %>%  
+  mutate(expected_pattern = factor(expected_pattern, levels = c("Unexpected", "Expected"))) %>%
+  dplyr::select(idx, expected_pattern, HDRS, HDRS_M6) %>%
+  distinct() %>%
+  mutate(HDRS_change = HDRS_M6 - HDRS) %>%
+  left_join(cl.alt.class %>% dplyr::select(idx, Stimulant, SNRI, Thyroid), by = "idx")
+
+lm(HDRS_change ~ expected_pattern * Stimulant, data = med_df) %>% summary() # NS
+lm(HDRS_change ~ expected_pattern * SNRI, data = med_df) %>% summary() #NS 
+lm(HDRS_change ~ expected_pattern * Thyroid, data = med_df) %>% summary() 
+# Significant interaction - those on thyroid meds show less improvement if they have the expected pattern (increased DA and SE) 
+#- but small n (n=3 on thyroid meds)
+
+lm(HDRS_M6 ~ expected_pattern * Stimulant, data = med_df) %>% summary() # NS
+lm(HDRS_M6 ~ expected_pattern * SNRI, data = med_df) %>% summary() #NS 
+lm(HDRS_M6 ~ expected_pattern * Thyroid, data = med_df) %>% summary() # Very significant
+
+model <- lm(HDRS_M6 ~ expected_pattern * Thyroid, data = med_df)
+ggpredict(model, terms = c("expected_pattern", "Thyroid [0,1]")) %>%
+  plot() +
+  scale_color_manual(
+    values = c("0" = "#2ca25f", "1" = "#de2d26"),
+    labels = c("0" = "No Thyroid Medication", "1" = "Thyroid Medication")
+  ) +
+  labs(
+    x = "NT Response Pattern",
+    y = "Month 6 HDRS",
+    color = "Thyroid Medication",
+    title = "Thyroid Medication × NT Pattern Interaction on M6 Depression Severity"
+  ) +
+  theme_pubr()
+
+# Combined medication burden score
+med_df <- med_df %>%
+  mutate(med_burden = Stimulant + SNRI + Thyroid)  # 0, 1, 2, or 3
+
+# Interaction models
+lm(HDRS_change ~ expected_pattern * med_burden, data = med_df) %>% summary()
+# NS
+
+# Look at other therepeutic experiences
+cl.alt.therapies = data.frame(
+  idx = c(1:10),
+  ECT = c(1, 1, 1, 1, 1, 1, 0, 1, 1, 1),
+  therapy = c(0,1,1,1,1,1,1,1,1,1),
+  TMS = c(1,0,1,0,1,1,1,1,0,1),
+  ketamine = c(1,1,1,1,1,1,1,0,1,1)
+)
+
+cl.alt.stim_therapies <- post_stim_vals %>%
+  dplyr::select(idx, task, expected_pattern) %>% distinct() %>%
+  left_join(cl.alt.therapies, by = "idx") %>%
+  mutate(expected_pattern_binary = ifelse(expected_pattern == "Expected", 1, 0))
+
+cl.alt.oz_therapies <- post_stim_oz %>%
+  left_join(cl.alt.therapies, by = "idx") %>%
+  pivot_wider(names_from = nt, values_from = c(Oz_change, Oz_pre), names_prefix = "Oz_")
+
+glm(ECT ~ expected_pattern_binary, data = cl.alt.stim_therapies[cl.alt.stim_therapies$task == "UG",], family = binomial) %>% summary()
+glm(therapy ~ expected_pattern_binary, data = cl.alt.stim_therapies[cl.alt.stim_therapies$task == "UG",], family = binomial) %>% summary()
+glm(TMS ~ expected_pattern_binary, data = cl.alt.stim_therapies[cl.alt.stim_therapies$task == "UG",], family = binomial) %>% summary()
+glm(ketamine ~ expected_pattern_binary, data = cl.alt.stim_therapies[cl.alt.stim_therapies$task == "UG",], family = binomial) %>% summary()
+# Nothing related to therapy
+
+lm(ECT ~ Oz_change_Oz_SE * Oz_change_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+lm(therapy ~ Oz_change_Oz_SE * Oz_change_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+lm(TMS ~ Oz_change_Oz_SE * Oz_change_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+
+# signicant effect of ketamine
+lm(ketamine ~ Oz_change_Oz_SE * Oz_change_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+
+lm(ECT ~ Oz_pre_Oz_SE * Oz_pre_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+lm(therapy ~ Oz_pre_Oz_SE * Oz_pre_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+lm(TMS ~ Oz_pre_Oz_SE * Oz_pre_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+lm(ketamine ~ Oz_pre_Oz_SE * Oz_pre_Oz_DA, data = cl.alt.oz_therapies[cl.alt.oz_therapies$task == "UG",]) %>% summary()
+# Slightly related to baseline
+
+# BUT CANOT INTERPRET BECAUSE ONLY ONE PARTICIPANT WITHOUT PRIOR KETAMINE
+
+# Check overlap between ketamine and the three drug classes
+cl.alt.therapies %>%
+  left_join(cl.alt.class %>% dplyr::select(idx, Stimulant, SNRI, Thyroid), by = "idx") %>%
+  dplyr::select(idx, ketamine, Stimulant, SNRI, Thyroid)
+
+# How many patients are on ketamine AND each drug class?
+cl.alt.therapies %>%
+  left_join(cl.alt.class %>% dplyr::select(idx, Stimulant, SNRI, Thyroid), by = "idx") %>%
+  dplyr::summarise(
+    n_ketamine         = sum(ketamine),
+    ket_and_stimulant  = sum(ketamine == 1 & Stimulant == 1),
+    ket_and_SNRI       = sum(ketamine == 1 & SNRI == 1),
+    ket_and_thyroid    = sum(ketamine == 1 & Thyroid == 1),
+    no_ket_stimulant   = sum(ketamine == 0 & Stimulant == 1),
+    no_ket_SNRI        = sum(ketamine == 0 & SNRI == 1),
+    no_ket_thyroid     = sum(ketamine == 0 & Thyroid == 1),
+    thyroid = sum(Thyroid == 1),
+  )

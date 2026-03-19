@@ -112,7 +112,7 @@ ug.nt.cl =
          SE_Post_UG = `Post-Stim_SE`,
          deltaSE_UG = SE_Post_UG - SE_Pre_UG,
          NE_Pre_UG = `Pre-Stim_NE`,
-         NE_Post_UG = `Post-Stim_DA`,
+         NE_Post_UG = `Post-Stim_NE`,
          deltaNE_UG = NE_Post_UG - NE_Pre_UG,
   ) %>%
   select(idx,
@@ -137,7 +137,7 @@ rl.nt.cl =
          SE_Post_RL = `Post-Stim_SE`,
          deltaSE_RL = SE_Post_RL - SE_Pre_RL,
          NE_Pre_RL = `Pre-Stim_NE`,
-         NE_Post_RL = `Post-Stim_DA`,
+         NE_Post_RL = `Post-Stim_NE`,
          deltaNE_RL = NE_Post_RL - NE_Pre_RL,
   ) %>%
   select(idx,
