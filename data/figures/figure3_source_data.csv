@@ -1,0 +1,578 @@
+"panel","level","task","idx","sess","measure","value","se","n","nt_change","beh_change","month"
+"RL_choice","subject","RL","1","Baseline","mChoice",0.666666666666667,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Pre-Stim","mChoice",0.80952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Post-Stim","mChoice",0.676190476190476,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Week 1","mChoice",0.714285714285714,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Month 1","mChoice",0.723809523809524,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Month 3","mChoice",0.752380952380952,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Month 4","mChoice",0.742857142857143,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Month 5","mChoice",0.695238095238095,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","1","Month 6","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Baseline","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Pre-Stim","mChoice",0.752380952380952,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Post-Stim","mChoice",0.723809523809524,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Week 1","mChoice",0.742857142857143,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Month 1","mChoice",0.676190476190476,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Month 2","mChoice",0.742857142857143,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Month 3","mChoice",0.723809523809524,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Month 5","mChoice",0.580952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","2","Month 6","mChoice",0.676190476190476,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Baseline","mChoice",0.742857142857143,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Pre-Stim","mChoice",0.704761904761905,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Post-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Month 1","mChoice",0.60952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Month 2","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Month 3","mChoice",0.638095238095238,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Month 4","mChoice",0.8,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Month 5","mChoice",0.647619047619048,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","3","Month 6","mChoice",0.657142857142857,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Baseline","mChoice",0.704761904761905,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Pre-Stim","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Post-Stim","mChoice",0.838095238095238,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Week 1","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Month 1","mChoice",0.742857142857143,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Month 2","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Month 3","mChoice",0.847619047619048,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Month 4","mChoice",0.752380952380952,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Month 5","mChoice",0.80952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","4","Month 6","mChoice",0.838095238095238,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Baseline","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Pre-Stim","mChoice",0.828571428571429,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Post-Stim","mChoice",0.742857142857143,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Week 1","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Month 1","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Month 2","mChoice",0.752380952380952,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Month 3","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Month 4","mChoice",0.80952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Month 5","mChoice",0.571428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","5","Month 6","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Baseline","mChoice",0.523809523809524,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Pre-Stim","mChoice",0.676190476190476,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Post-Stim","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Week 1","mChoice",0.828571428571429,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Month 1","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Month 2","mChoice",0.742857142857143,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Month 3","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Month 4","mChoice",0.714285714285714,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","6","Month 6","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Baseline","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Pre-Stim","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Post-Stim","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Week 1","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Month 1","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Month 2","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Month 3","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","7","Month 6","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Baseline","mChoice",0.704761904761905,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Pre-Stim","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Post-Stim","mChoice",0.80952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Week 1","mChoice",0.80952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Month 1","mChoice",0.8,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Month 2","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Month 3","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Month 4","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Month 5","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","8","Month 6","mChoice",0.80952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Baseline","mChoice",0.695238095238095,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Pre-Stim","mChoice",0.552380952380952,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Post-Stim","mChoice",0.628571428571429,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Week 1","mChoice",0.714285714285714,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Month 1","mChoice",0.780952380952381,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Month 2","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Month 3","mChoice",0.695238095238095,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Month 4","mChoice",0.714285714285714,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Month 5","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","9","Month 6","mChoice",0.761904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Baseline","mChoice",0.752380952380952,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Pre-Stim","mChoice",0.619047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Post-Stim","mChoice",0.647619047619048,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Week 1","mChoice",0.714285714285714,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Month 1","mChoice",0.628571428571429,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Month 2","mChoice",0.79047619047619,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Month 3","mChoice",0.561904761904762,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Month 4","mChoice",0.666666666666667,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Month 5","mChoice",0.704761904761905,NA,NA,NA,NA,NA
+"RL_choice","subject","RL","10","Month 6","mChoice",0.771428571428571,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Baseline","mLogRT",0.611151769171411,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Pre-Stim","mLogRT",0.443705595093695,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Post-Stim","mLogRT",-0.333325951189606,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Week 1","mLogRT",-0.545358936493169,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Month 1","mLogRT",-0.694040124049785,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Month 3","mLogRT",-0.59218177932381,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Month 4","mLogRT",-0.770258802798301,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Month 5","mLogRT",-1.19629061725283,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","1","Month 6","mLogRT",-0.78232812596003,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Baseline","mLogRT",-0.481749359229694,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Pre-Stim","mLogRT",-0.790107399985319,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Post-Stim","mLogRT",-0.83780590369695,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Week 1","mLogRT",-2.28298303127023,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Month 1","mLogRT",-2.96309545856477,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Month 2","mLogRT",-3.07872314248386,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Month 3","mLogRT",-3.46627174591037,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Month 5","mLogRT",-3.48234568644235,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","2","Month 6","mLogRT",-3.53026649385048,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Baseline","mLogRT",-0.990792371609132,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Pre-Stim","mLogRT",-1.54420399938253,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Post-Stim","mLogRT",-1.48552839753706,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Month 1","mLogRT",-1.63820177700838,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Month 2","mLogRT",-1.86304374549073,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Month 3","mLogRT",-1.34200233993773,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Month 4","mLogRT",-1.38897791623892,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Month 5","mLogRT",-1.53292047779811,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","3","Month 6","mLogRT",-1.27288882229464,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Baseline","mLogRT",-0.600130077528236,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Pre-Stim","mLogRT",-0.702200663698028,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Post-Stim","mLogRT",-1.59019815581072,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Week 1","mLogRT",-1.91077730380015,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Month 1","mLogRT",-2.27402911149708,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Month 2","mLogRT",-1.63865568274756,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Month 3","mLogRT",-2.41590458450101,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Month 4","mLogRT",-2.48823375388635,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Month 5","mLogRT",-2.46879419779433,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","4","Month 6","mLogRT",-1.95978712038833,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Baseline","mLogRT",-0.072230662456319,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Pre-Stim","mLogRT",-0.721775532320873,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Post-Stim","mLogRT",-0.977458761816841,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Week 1","mLogRT",-1.10484173043101,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Month 1","mLogRT",-1.08988997531757,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Month 2","mLogRT",-1.23345440256781,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Month 3","mLogRT",-1.26125572558288,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Month 4","mLogRT",-1.37956583439756,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Month 5","mLogRT",-1.42966400783607,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","5","Month 6","mLogRT",-1.41137690162244,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Baseline","mLogRT",-0.295056960355903,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Pre-Stim","mLogRT",-0.294225100747422,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Post-Stim","mLogRT",-0.110049685171349,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Week 1","mLogRT",-1.12100776120639,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Month 1","mLogRT",-1.37270804262903,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Month 2","mLogRT",-1.06885631201244,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Month 3","mLogRT",-0.57779564210914,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Month 4","mLogRT",0.269900757742763,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","6","Month 6","mLogRT",-0.559618705198636,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Baseline","mLogRT",-0.7161324224988,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Pre-Stim","mLogRT",-0.861373432634474,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Post-Stim","mLogRT",-0.781060322976233,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Week 1","mLogRT",-1.13211240421668,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Month 1","mLogRT",-0.965154629843281,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Month 2","mLogRT",-1.17150487132886,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Month 3","mLogRT",-1.48601538861353,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","7","Month 6","mLogRT",-1.13640870023376,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Baseline","mLogRT",-1.20360187954722,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Pre-Stim","mLogRT",-0.75722618315482,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Post-Stim","mLogRT",-1.04227044044651,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Week 1","mLogRT",-1.46521126451135,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Month 1","mLogRT",-1.32414932538297,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Month 2","mLogRT",-1.24410997314497,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Month 3","mLogRT",-0.188068163994044,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Month 4","mLogRT",-1.48748811252335,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Month 5","mLogRT",-1.42665923655495,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","8","Month 6","mLogRT",-1.88185485497152,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Baseline","mLogRT",1.30895443570771,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Pre-Stim","mLogRT",-0.683009087206249,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Post-Stim","mLogRT",0.477250814628218,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Week 1","mLogRT",0.00268195180850507,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Month 1","mLogRT",-0.679599198431599,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Month 2","mLogRT",-1.19058141225588,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Month 3","mLogRT",-0.407716699110626,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Month 4","mLogRT",-0.856811980863514,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Month 5","mLogRT",-1.27715212073278,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","9","Month 6","mLogRT",-1.40660383222291,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Baseline","mLogRT",-0.173526835544209,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Pre-Stim","mLogRT",0.423141072390584,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Post-Stim","mLogRT",-0.163696315221014,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Week 1","mLogRT",-0.598642045392924,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Month 1","mLogRT",-0.361594234263514,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Month 2","mLogRT",-0.274046806557517,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Month 3","mLogRT",-0.445690616914172,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Month 4","mLogRT",-0.346301847169815,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Month 5","mLogRT",-0.481360669356462,NA,NA,NA,NA,NA
+"RL_RT","subject","RL","10","Month 6","mLogRT",-0.404381382863278,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Baseline","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Pre-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Post-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Week 1","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Month 1","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Month 3","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Month 4","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Month 5","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","1","Month 6","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Baseline","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Pre-Stim","mChoice",0.866666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Post-Stim","mChoice",0.933333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Week 1","mChoice",0.766666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Month 1","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Month 2","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Month 3","mChoice",0.833333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Month 5","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","2","Month 6","mChoice",0.833333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Baseline","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Pre-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Post-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Month 1","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Month 2","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Month 3","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Month 4","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Month 5","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","3","Month 6","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Baseline","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Pre-Stim","mChoice",0.833333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Post-Stim","mChoice",0.833333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Week 1","mChoice",0.766666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Month 1","mChoice",0.8,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Month 2","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Month 3","mChoice",0.666666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Month 4","mChoice",0.7,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Month 5","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","4","Month 6","mChoice",0.666666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Baseline","mChoice",0.366666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Pre-Stim","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Post-Stim","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Week 1","mChoice",0.5,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Month 1","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Month 2","mChoice",0.5,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Month 3","mChoice",0.333333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Month 4","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Month 5","mChoice",0.266666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","5","Month 6","mChoice",0.166666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Baseline","mChoice",0.666666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Pre-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Post-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Week 1","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Month 1","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Month 2","mChoice",0.3,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Month 3","mChoice",0.366666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Month 4","mChoice",0.433333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","6","Month 6","mChoice",0.433333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Baseline","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Pre-Stim","mChoice",0.433333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Post-Stim","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Week 1","mChoice",0.8,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Month 1","mChoice",0.666666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Month 2","mChoice",0.966666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Month 3","mChoice",0.566666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Month 4","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","7","Month 6","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Baseline","mChoice",0.166666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Pre-Stim","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Post-Stim","mChoice",0.4,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Week 1","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Month 1","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Month 2","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Month 3","mChoice",0.866666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Month 4","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Month 5","mChoice",0.733333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","8","Month 6","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Baseline","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Pre-Stim","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Post-Stim","mChoice",0.266666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Week 1","mChoice",0.533333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Month 1","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Month 2","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Month 3","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Month 4","mChoice",0.633333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Month 5","mChoice",0.6,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","9","Month 6","mChoice",0.7,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Baseline","mChoice",0.9,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Pre-Stim","mChoice",0.833333333333333,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","DBS","mChoice",NA,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Post-Stim","mChoice",0.9,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Week 1","mChoice",0.966666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Month 1","mChoice",0.9,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Month 2","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Month 3","mChoice",0.966666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Month 4","mChoice",1,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Month 5","mChoice",0.266666666666667,NA,NA,NA,NA,NA
+"UG_choice","subject","UG","10","Month 6","mChoice",0.5,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Baseline","mLogRT",0.485036900173327,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Pre-Stim","mLogRT",0.810159525073636,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Post-Stim","mLogRT",0.341199137939149,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Week 1","mLogRT",0.404864148446248,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Month 1","mLogRT",0.0875396010952875,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Month 3","mLogRT",0.18322534545273,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Month 4","mLogRT",0.0990113040162989,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Month 5","mLogRT",-0.0297161396965461,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","1","Month 6","mLogRT",0.215285527953014,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Baseline","mLogRT",0.940230821435085,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Pre-Stim","mLogRT",0.639232135269365,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Post-Stim","mLogRT",0.361938430863442,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Week 1","mLogRT",0.131407317838107,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Month 1","mLogRT",-0.0127101731128264,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Month 2","mLogRT",0.124146943325393,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Month 3","mLogRT",0.0204376599787576,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Month 5","mLogRT",0.161383330007522,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","2","Month 6","mLogRT",-0.0948852595820503,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Baseline","mLogRT",0.296457323573059,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Pre-Stim","mLogRT",0.0328065140708503,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Post-Stim","mLogRT",0.294416247568009,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Month 1","mLogRT",-0.305614919446335,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Month 2","mLogRT",-0.103346874810871,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Month 3","mLogRT",0.356833656681969,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Month 4","mLogRT",-0.0405574088815576,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Month 5","mLogRT",0.103291169054711,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","3","Month 6","mLogRT",-0.0535599972675464,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Baseline","mLogRT",0.372861639883412,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Pre-Stim","mLogRT",0.26052279298752,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Post-Stim","mLogRT",0.113631368802618,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Week 1","mLogRT",0.29777329539162,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Month 1","mLogRT",-0.190781397517177,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Month 2","mLogRT",0.00164987738633767,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Month 3","mLogRT",0.22961446285306,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Month 4","mLogRT",0.303262976014736,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Month 5","mLogRT",-0.0435198453611257,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","4","Month 6","mLogRT",0.153251404645826,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Baseline","mLogRT",0.683277544378991,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Pre-Stim","mLogRT",0.988171362587907,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Post-Stim","mLogRT",0.871234132776165,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Week 1","mLogRT",0.262699082284118,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Month 1","mLogRT",0.291343987260833,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Month 2","mLogRT",0.207889647770672,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Month 3","mLogRT",0.209699572377185,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Month 4","mLogRT",0.422465131065374,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Month 5","mLogRT",0.29471083367415,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","5","Month 6","mLogRT",0.245893353935171,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Baseline","mLogRT",0.525334420765049,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Pre-Stim","mLogRT",0.445163615515204,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Post-Stim","mLogRT",0.17183096297462,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Week 1","mLogRT",0.117953177320861,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Month 1","mLogRT",0.269508398038331,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Month 2","mLogRT",0.317692343118908,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Month 3","mLogRT",0.249334247792615,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Month 4","mLogRT",0.648023684852634,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","6","Month 6","mLogRT",0.420784273718722,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Baseline","mLogRT",0.637578999321692,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Pre-Stim","mLogRT",0.523439990844201,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Post-Stim","mLogRT",0.416834007518418,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Week 1","mLogRT",0.139767270147332,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Month 1","mLogRT",0.184766834116927,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Month 2","mLogRT",-0.0728151746120875,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Month 3","mLogRT",-0.0497625057214911,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Month 4","mLogRT",-0.0730284330198254,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","7","Month 6","mLogRT",-0.162221051352953,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Baseline","mLogRT",0.330757715867841,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Pre-Stim","mLogRT",0.329910188349407,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Post-Stim","mLogRT",0.278610633805094,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Week 1","mLogRT",0.205516900169561,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Month 1","mLogRT",0.325409528779057,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Month 2","mLogRT",0.0866482105361809,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Month 3","mLogRT",-0.0115660115726444,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Month 4","mLogRT",0.106499801237483,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Month 5","mLogRT",0.0225125604006564,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","8","Month 6","mLogRT",0.149875083008056,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Baseline","mLogRT",1.56847066105438,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Pre-Stim","mLogRT",0.844482216952695,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Post-Stim","mLogRT",1.57483667526677,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Week 1","mLogRT",0.598530241945657,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Month 1","mLogRT",0.480955575227207,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Month 2","mLogRT",0.61000422873238,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Month 3","mLogRT",0.378446344513214,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Month 4","mLogRT",0.495014812200464,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Month 5","mLogRT",0.33336538772505,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","9","Month 6","mLogRT",0.381447877407183,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Baseline","mLogRT",0.332768156834445,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Pre-Stim","mLogRT",0.699523411696416,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","DBS","mLogRT",NA,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Post-Stim","mLogRT",0.525059888469958,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Week 1","mLogRT",-0.16774540660972,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Month 1","mLogRT",0.655034943539579,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Month 2","mLogRT",-0.120056822342516,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Month 3","mLogRT",-0.0259615210662093,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Month 4","mLogRT",-0.112319230728345,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Month 5","mLogRT",0.438133106269474,NA,NA,NA,NA,NA
+"UG_RT","subject","UG","10","Month 6","mLogRT",0.529500292358565,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Baseline","mMood",50.25,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Pre-Stim","mMood",18,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Post-Stim","mMood",10,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Week 1","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Month 1","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Month 3","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Month 4","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Month 5","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","1","Month 6","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Baseline","mMood",47,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Pre-Stim","mMood",51,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Post-Stim","mMood",46,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Week 1","mMood",48.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Month 1","mMood",53,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Month 2","mMood",50.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Month 3","mMood",51,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Month 5","mMood",50.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","2","Month 6","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Baseline","mMood",57,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Pre-Stim","mMood",54,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Post-Stim","mMood",56.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Month 1","mMood",53,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Month 2","mMood",48,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Month 3","mMood",55,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Month 4","mMood",52,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Month 5","mMood",48,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","3","Month 6","mMood",54,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Baseline","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Pre-Stim","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Post-Stim","mMood",46.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Week 1","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Month 1","mMood",0,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Month 2","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Month 3","mMood",26.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Month 4","mMood",20,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Month 5","mMood",30.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","4","Month 6","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Baseline","mMood",20.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Pre-Stim","mMood",22.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Post-Stim","mMood",24.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Week 1","mMood",60,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Month 1","mMood",49.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Month 2","mMood",60,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Month 3","mMood",58.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Month 4","mMood",65,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Month 5","mMood",62.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","5","Month 6","mMood",74.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Baseline","mMood",0,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Pre-Stim","mMood",6.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Post-Stim","mMood",13,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Week 1","mMood",28.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Month 1","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Month 2","mMood",50.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Month 3","mMood",52.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Month 4","mMood",54,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","6","Month 6","mMood",56.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Baseline","mMood",36,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Pre-Stim","mMood",33,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Post-Stim","mMood",45.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Week 1","mMood",55,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Month 1","mMood",59,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Month 2","mMood",49,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Month 3","mMood",51.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Month 4","mMood",48,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","7","Month 6","mMood",55.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Baseline","mMood",27,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Pre-Stim","mMood",39.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Post-Stim","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Week 1","mMood",49,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Month 1","mMood",54,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Month 2","mMood",48.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Month 3","mMood",50.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Month 4","mMood",45,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Month 5","mMood",53.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","8","Month 6","mMood",50.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Baseline","mMood",46,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Pre-Stim","mMood",46.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Post-Stim","mMood",55,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Week 1","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Month 1","mMood",51,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Month 2","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Month 3","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Month 4","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Month 5","mMood",51,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","9","Month 6","mMood",52.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Baseline","mMood",0,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Pre-Stim","mMood",12,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","DBS","mMood",NA,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Post-Stim","mMood",37,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Week 1","mMood",5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Month 1","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Month 2","mMood",0,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Month 3","mMood",44.5,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Month 4","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Month 5","mMood",50,NA,NA,NA,NA,NA
+"UG_mood","subject","UG","10","Month 6","mMood",50,NA,NA,NA,NA,NA
+"corr_5HT_RL","subject","RL","10",NA,"rt",NA,NA,NA,-10.4164270600903,-0.188067398719305,"M1"
+"corr_5HT_RL","subject","RL","10",NA,"rt",NA,NA,NA,-10.4164270600903,-0.272163781369963,"M3"
+"corr_5HT_RL","subject","RL","10",NA,"rt",NA,NA,NA,-10.4164270600903,-0.230854547319069,"M6"
+"corr_5HT_RL","subject","RL","3",NA,"rt",NA,NA,NA,-1.11589573981619,-0.647409405399252,"M1"
+"corr_5HT_RL","subject","RL","3",NA,"rt",NA,NA,NA,-1.11589573981619,-0.351209968328594,"M3"
+"corr_5HT_RL","subject","RL","3",NA,"rt",NA,NA,NA,-1.11589573981619,-0.282096450685503,"M6"
+"corr_5HT_RL","subject","RL","4",NA,"rt",NA,NA,NA,11.1494385908408,-1.67389903396885,"M1"
+"corr_5HT_RL","subject","RL","4",NA,"rt",NA,NA,NA,11.1494385908408,-1.81577450697278,"M3"
+"corr_5HT_RL","subject","RL","4",NA,"rt",NA,NA,NA,11.1494385908408,-1.35965704286009,"M6"
+"corr_5HT_RL","subject","RL","5",NA,"rt",NA,NA,NA,10.0349023999363,-1.01765931286125,"M1"
+"corr_5HT_RL","subject","RL","5",NA,"rt",NA,NA,NA,10.0349023999363,-1.18902506312656,"M3"
+"corr_5HT_RL","subject","RL","5",NA,"rt",NA,NA,NA,10.0349023999363,-1.33914623916613,"M6"
+"corr_5HT_RL","subject","RL","6",NA,"rt",NA,NA,NA,-11.0093001556598,-1.07765108227312,"M1"
+"corr_5HT_RL","subject","RL","6",NA,"rt",NA,NA,NA,-11.0093001556598,-0.282738681753236,"M3"
+"corr_5HT_RL","subject","RL","6",NA,"rt",NA,NA,NA,-11.0093001556598,-0.264561744842732,"M6"
+"corr_5HT_RL","subject","RL","7",NA,"rt",NA,NA,NA,10.7678738982573,-0.249022207344481,"M1"
+"corr_5HT_RL","subject","RL","7",NA,"rt",NA,NA,NA,10.7678738982573,-0.769882966114734,"M3"
+"corr_5HT_RL","subject","RL","7",NA,"rt",NA,NA,NA,10.7678738982573,-0.420276277734956,"M6"
+"corr_5HT_RL","subject","RL","8",NA,"rt",NA,NA,NA,-10.6435400273744,-0.120547445835751,"M1"
+"corr_5HT_RL","subject","RL","8",NA,"rt",NA,NA,NA,-10.6435400273744,1.01553371555318,"M3"
+"corr_5HT_RL","subject","RL","8",NA,"rt",NA,NA,NA,-10.6435400273744,-0.678252975424302,"M6"
+"corr_5HT_RL","subject","RL","9",NA,"rt",NA,NA,NA,11.6629369763733,-1.98855363413931,"M1"
+"corr_5HT_RL","subject","RL","9",NA,"rt",NA,NA,NA,11.6629369763733,-1.71667113481833,"M3"
+"corr_5HT_RL","subject","RL","9",NA,"rt",NA,NA,NA,11.6629369763733,-2.71555826793062,"M6"
+"corr_DA_UG","subject","UG","1",NA,"mood",NA,NA,NA,1.33546909638461,-0.25,"M1"
+"corr_DA_UG","subject","UG","1",NA,"mood",NA,NA,NA,1.33546909638461,-0.25,"M3"
+"corr_DA_UG","subject","UG","1",NA,"mood",NA,NA,NA,1.33546909638461,-0.25,"M6"
+"corr_DA_UG","subject","UG","10",NA,"mood",NA,NA,NA,10.7852070937209,50,"M1"
+"corr_DA_UG","subject","UG","10",NA,"mood",NA,NA,NA,10.7852070937209,44.5,"M3"
+"corr_DA_UG","subject","UG","10",NA,"mood",NA,NA,NA,10.7852070937209,50,"M6"
+"corr_DA_UG","subject","UG","2",NA,"mood",NA,NA,NA,1.34045846284331,6,"M1"
+"corr_DA_UG","subject","UG","2",NA,"mood",NA,NA,NA,1.34045846284331,4,"M3"
+"corr_DA_UG","subject","UG","2",NA,"mood",NA,NA,NA,1.34045846284331,3,"M6"
+"corr_DA_UG","subject","UG","3",NA,"mood",NA,NA,NA,6.27220306790775,-4,"M1"
+"corr_DA_UG","subject","UG","3",NA,"mood",NA,NA,NA,6.27220306790775,-2,"M3"
+"corr_DA_UG","subject","UG","3",NA,"mood",NA,NA,NA,6.27220306790775,-3,"M6"
+"corr_DA_UG","subject","UG","4",NA,"mood",NA,NA,NA,-10.2777564844981,-50,"M1"
+"corr_DA_UG","subject","UG","4",NA,"mood",NA,NA,NA,-10.2777564844981,-23.5,"M3"
+"corr_DA_UG","subject","UG","4",NA,"mood",NA,NA,NA,-10.2777564844981,0,"M6"
+"corr_DA_UG","subject","UG","5",NA,"mood",NA,NA,NA,8.08084098023267,29,"M1"
+"corr_DA_UG","subject","UG","5",NA,"mood",NA,NA,NA,8.08084098023267,38,"M3"
+"corr_DA_UG","subject","UG","5",NA,"mood",NA,NA,NA,8.08084098023267,54,"M6"
+"corr_DA_UG","subject","UG","6",NA,"mood",NA,NA,NA,10.4284708981994,50,"M1"
+"corr_DA_UG","subject","UG","6",NA,"mood",NA,NA,NA,10.4284708981994,52.5,"M3"
+"corr_DA_UG","subject","UG","6",NA,"mood",NA,NA,NA,10.4284708981994,56.5,"M6"
+"corr_DA_UG","subject","UG","7",NA,"mood",NA,NA,NA,2.11972059533521,23,"M1"
+"corr_DA_UG","subject","UG","7",NA,"mood",NA,NA,NA,2.11972059533521,15.5,"M3"
+"corr_DA_UG","subject","UG","7",NA,"mood",NA,NA,NA,2.11972059533521,19.5,"M6"
+"corr_DA_UG","subject","UG","8",NA,"mood",NA,NA,NA,1.57046810092037,27,"M1"
+"corr_DA_UG","subject","UG","8",NA,"mood",NA,NA,NA,1.57046810092037,23.5,"M3"
+"corr_DA_UG","subject","UG","8",NA,"mood",NA,NA,NA,1.57046810092037,23.5,"M6"
+"corr_DA_UG","subject","UG","9",NA,"mood",NA,NA,NA,-0.735174322765612,5,"M1"
+"corr_DA_UG","subject","UG","9",NA,"mood",NA,NA,NA,-0.735174322765612,4,"M3"
+"corr_DA_UG","subject","UG","9",NA,"mood",NA,NA,NA,-0.735174322765612,6.5,"M6"
