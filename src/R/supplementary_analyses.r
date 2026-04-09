@@ -1517,7 +1517,18 @@ task.means = task.merge.baseline %>%
   summarize(Oz_mean = mean(Oz, na.rm = TRUE), O_mean = mean(O, na.rm = TRUE)) %>%
   ungroup() %>%
   mutate(HDRS_M6 = cl.df.m6$HDRS[match(idx, cl.df.m6$idx)],
+         HDRS_M6_Change = HDRS_M6 - HDRS,
          HDRS_M6_z = scale(HDRS_M6)[,1])
+
+# Look at ID and HDRS CHange with OZ change patterns
+task.means %>% select(idx, task, nt, stim, Oz_mean, HDRS_M6_Change) %>% distinct() %>%
+  filter(nt!="NE") %>%
+  group_by(idx, task, nt) %>%
+  mutate(Post_minus_Pre = Oz_mean[stim == "Post-Stim"] - Oz_mean[stim == "Pre-Stim"]) %>%
+  select(!c(Oz_mean,stim)) %>%
+  distinct() %>%
+  pivot_wider(names_from = c(task, nt), values_from = Post_minus_Pre, names_prefix = "Oz_")
+  
 
 
 # Pull out the post-stim Oz_mean for each subject
@@ -1934,6 +1945,9 @@ cl.alt.stim_oz_class %>%
 #
 cl.alt.stim_oz_class %>%
   filter(SNRI == 1, Benzo == 1, Stimulant == 1) %>% as.data.frame()
+
+  cl.alt.stim_oz_class %>%
+  filter(Thyroid == 1) %>% as.data.frame()
 
 # --- Expected pattern ~ drug class ---
 class_models_pattern <- list()
