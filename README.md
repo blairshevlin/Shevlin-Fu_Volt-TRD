@@ -1,6 +1,6 @@
 # Deep Brain Stimulation and Neurotransmitter Changes in Treatment-Resistant Depression
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19117824.svg)](https://doi.org/10.5281/zenodo.19117824)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19117824.svg)](https://doi.org/10.5281/zenodo.19555656)
 
 This repository contains data and code supporting:
 
@@ -97,8 +97,8 @@ Individuals may use or adapt the code provided they follow the terms of the lice
   title = {Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex},
   year = {2026},
   publisher = {Zenodo},
-  doi = {10.5281/zenodo.19117824},
-  url = {https://doi.org/10.5281/zenodo.19117824}
+  doi = {10.5281/zenodo.19555656},
+  url = {https://doi.org/10.5281/zenodo.19555656}
 }
 ```
 
