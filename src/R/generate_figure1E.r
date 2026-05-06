@@ -61,7 +61,7 @@ offset_data <- panel_E %>%
 
 fig.hdrs.change <-
   ggplot() +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 16) +
   geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
   annotate("text", x = 0.5, y = 8.5, label = "Clinical Remission", size = 5, hjust = 0) +
   geom_boxplot(data = offset_data,
@@ -83,11 +83,11 @@ fig.1E <- fig.hdrs.change + plot_layout(widths = c(1))
 
 ggsave(file.path(res_dir, "figure1E.png"),
        plot = fig.1E, device = "png",
-       width = 12, height = 8, dpi = 300)
+       width = 10, height = 8, dpi = 300)
 
 ggsave(file.path(res_dir, "figure1E.pdf"),
        plot = fig.1E,
        device = "pdf",
-       width = 12,
+       width = 10,
        height = 8,
        dpi = 300)
