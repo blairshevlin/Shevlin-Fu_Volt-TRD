@@ -17,77 +17,126 @@
 #
 # Date            Programmers                         Descriptions of Change
 # ====         ================                       ======================
-# 2025/05/05    Blair Shevlin                           wrote original code
-# 2025/07/24    Blair Shevlin                           updated to use new NT data
+# 2025/10/08    Blair Shevlin                           wrote original code
 # 2026/03/19    Blair Shevlin                           refactored to read from source data CSV
-
-# Reads source data from data/figures/figureExtended2_source_data.csv
 
 rm(list = ls())
 
 library(tidyverse)
+library(fs)
+library(patchwork)
 library(ggpubr)
 library(here)
-library(fs)
+library(RColorBrewer)
+library(caTools)
+library(cowplot)
 library(rstatix)
+library(scales)
+library(ggrepel)
+library(grid)
+library(gridExtra)
 
-# Read source data
+# Paths
+res_dir = here::here("results/from_source_data")
+
+# Color scheme
+NT_colors = data.frame(id = c("DA","SE"),
+                       color = c("#cb181d","#2171b5"))
+
+# Load source data
 source_data <- read.csv(here::here("data/figures/figureExtended2_source_data.csv"), stringsAsFactors = FALSE)
 
-# Re-apply factor orderings
-source_data$sess_fig <- factor(
-  source_data$session,
-  levels = c("pre stim", "post stim", "week 1", "month 1", "month 2", "month 3", "month 4", "month 5", "month 6"),
-  labels = c("Baseline", "DBS", "Week 1", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6")
-)
-source_data$cohort    <- source_data$cohort
-source_data$responder <- source_data$responder
+fig.data <- source_data %>% filter(panel == "C")
 
-# Panel A data
-cl.O.fig <- source_data %>% filter(panel == "A")
+window_sum <- fig.data %>%
+  filter(in_auc_window == TRUE) %>%
+  pull(z_score) %>%
+  sum()
 
-test.cohort <-
-  cl.O.fig %>%
-  filter(sess_fig != "DBS") %>%
-  group_by(sess_fig) %>%
-  t_test(HDRS ~ cohort) %>%
-  add_significance("p") %>%
-  add_xy_position(x = "sess_fig", dodge = 1) %>%
-  mutate(y.position = 30,
-         xmin = c(0.75, 2.75, 3.75, 4.75, 5.75),
-         xmax = c(1.25, 3.25, 4.25, 5.25, 6.25))
+nM_range <- range(fig.data$nM_smoothed)
+z_range  <- range(fig.data$z_score)
+scale_factor      <- diff(nM_range) / diff(z_range)
+intercept_adjust  <- nM_range[1] - z_range[1] * scale_factor
 
-fig.hdrs.timeline.cohort <-
-  cl.O.fig %>%
-  ggplot(aes(x = sess_fig, y = HDRS)) +
+# Panel 1: Raw nM estimates
+p1 <- ggplot(fig.data, aes(x = time_sample, y = nM_smoothed)) +
   theme_pubr(base_size = 14) +
-  geom_vline(xintercept = "DBS", linewidth = 2) +
-  stat_summary(geom = "line",
-               aes(color = cohort, group = cohort),
-               position = position_dodge2(width = .75),
-               linewidth = 1.5) +
-  stat_summary(aes(shape = cohort, color = cohort),
-               position = position_dodge2(width = .75),
-               size = 1.5, linewidth = 1.5) +
-  geom_point(data = cl.O.fig[cl.O.fig$sess_fig != "DBS", ],
-             size = 2, alpha = .5,
-             position = position_dodge2(width = .75),
-             stroke = 1.75, aes(shape = cohort, color = cohort),
-  ) +
-  labs(x = element_blank(),
-       y = "HDRS-17",
-       shape = "Cohort",
-       color = "Cohort") +
-  scale_shape_manual(values = c(16, 15)) +
-  scale_color_brewer(type = "qual", palette = 2) +
-  theme(axis.text.x = element_text(angle = 20, vjust = 1, hjust = 0.75),
-        legend.position = c(0.1, 0.2)) +
-  stat_pvalue_manual(
-    test.cohort, tip.length = 0)
+  geom_vline(xintercept = 0, linewidth = 1.1, linetype = "dashed", color = "black") +
+  geom_line(linewidth = 1.5, color = NT_colors$color[NT_colors$id == "SE"]) +
+  labs(x = "time relative to outcome reveal [ms]",
+       y = "5-HT [nM]",
+       title = "raw model estimate") +
+  coord_cartesian(xlim = c(-250, 750)) +
+  annotate("text", x = -40, y = max(fig.data$nM_smoothed), label = "Outcome\nReveal",
+           size = 3.5, hjust = 1, vjust = 1.2)
 
-ggsave(here::here("results/from_source_data/Extended-Data_Figure2.png"),
-       plot   = fig.hdrs.timeline.cohort,
+p2 <- ggplot(fig.data, aes(x = time_sample)) +
+  theme_pubr(base_size = 14) +
+  geom_hline(yintercept = 0 * scale_factor + intercept_adjust, linewidth = 1.1, linetype = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 0, linewidth = 1.1, linetype = "dashed", color = "black") +
+  geom_line(aes(y = z_score * scale_factor + intercept_adjust), linewidth = 1.5, color = NT_colors$color[NT_colors$id == "SE"]) +
+  labs(x = "time relative to outcome reveal [ms]",
+       y = "5-HT [nM]",
+       title = "z-scored estimate") +
+  coord_cartesian(xlim = c(-250, 750)) +
+  scale_y_continuous(
+    name = "5-HT [nM]",
+    sec.axis = sec_axis(~ (. - intercept_adjust) / scale_factor, name = "5-HT [z]")
+  ) +
+  theme(axis.title.y.right = element_text(color = NT_colors$color[NT_colors$id == "SE"], angle = 90),
+        axis.text.y.right  = element_text(color = NT_colors$color[NT_colors$id == "SE"]))
+
+p3 <- ggplot(fig.data, aes(x = time_sample)) +
+  theme_pubr(base_size = 14) +
+  geom_hline(yintercept = 0 * scale_factor + intercept_adjust, linewidth = 1.1, linetype = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 0, linewidth = 1.1, linetype = "dashed", color = "black") +
+  geom_line(aes(y = z_score * scale_factor + intercept_adjust), linewidth = 1.5, color = NT_colors$color[NT_colors$id == "SE"]) +
+  geom_ribbon(data = subset(fig.data, in_auc_window == TRUE),
+              aes(ymax = z_score * scale_factor + intercept_adjust,
+                  ymin = 0 * scale_factor + intercept_adjust),
+              fill = NT_colors$color[NT_colors$id == "SE"],
+              alpha = 0.25) +
+  labs(x = "time relative to outcome reveal [ms]",
+       y = "5-HT [nM]",
+       title = "sum over 500 ms window") +
+  coord_cartesian(xlim = c(-250, 750)) +
+  scale_y_continuous(
+    name = "5-HT [nM]",
+    sec.axis = sec_axis(~ (. - intercept_adjust) / scale_factor, name = "5-HT [z]")
+  ) +
+  theme(axis.title.y.right = element_text(color = NT_colors$color[NT_colors$id == "SE"], angle = 90),
+        axis.text.y.right  = element_text(color = NT_colors$color[NT_colors$id == "SE"]))
+
+# Create simple arrow plots
+arrow1 <- ggplot() +
+  theme_void() +
+  annotate("segment", x = 0.2, xend = 0.8, y = 0.5, yend = 0.5,
+           arrow = arrow(length = unit(0.3, "cm"), type = "closed"),
+           size = 1.5) +
+  xlim(0, 1) + ylim(0, 1)
+
+arrow2 <- ggplot() +
+  theme_void() +
+  annotate("segment", x = 0.2, xend = 0.8, y = 0.5, yend = 0.5,
+           arrow = arrow(length = unit(0.3, "cm"), type = "closed"),
+           size = 1.5) +
+  xlim(0, 1) + ylim(0, 1)
+
+# Combine with patchwork
+final_figure <- p1 + arrow1 + p2 + arrow2 + p3 +
+  plot_layout(widths = c(4, 0.5, 4, 0.5, 4), axis_titles = "collect")
+
+# Save the figure
+ggsave(file.path(res_dir, "Extended-Data_Figure2.png"),
+       plot = final_figure,
        device = "png",
-       width  = 6.5,
-       height = 3.5,
-       dpi    = 300)
+       width = 12,
+       height = 4,
+       dpi = 300)
+
+ggsave(file.path(res_dir, "Extended-Data_Figure2.pdf"),
+       plot = final_figure,
+       device = "pdf",
+       width = 12,
+       height = 4,
+       dpi = 300)

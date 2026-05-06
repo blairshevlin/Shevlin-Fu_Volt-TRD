@@ -1,41 +1,21 @@
 "panel","level","idx","session","HDRS","HDRS_change","outcome_category","deltaDA","deltaSE","task","nt_pattern","synergy_score","HDRS_m6","HDRS_change_m6"
-"A","subject","1","Baseline",21.5,0,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","1","Month 6",7,-14.5,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","2","Baseline",23.5,0,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","2","Month 6",10,-13.5,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","3","Baseline",23,0,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","3","Month 6",6,-17,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","4","Baseline",23.5,0,"Nonresponder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","4","Month 6",18,-5.5,"Nonresponder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","5","Baseline",21.5,0,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","5","Month 6",2,-19.5,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","6","Baseline",31.25,0,"Nonresponder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","6","Month 6",23,-8.25,"Nonresponder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","7","Baseline",20,0,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","7","Month 6",4,-16,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","8","Baseline",17.67,0,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","8","Month 6",3,-14.67,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","9","Baseline",20.25,0,"Nonresponder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","9","Month 6",11,-9.25,"Nonresponder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","10","Baseline",20.75,0,"Responder",NA,NA,NA,NA,NA,NA,NA
-"A","subject","10","Month 6",8,-12.75,"Responder",NA,NA,NA,NA,NA,NA,NA
-"B","subject","1",NA,NA,-14.5,"Remission",1.33546909638461,3.38652237658215,"UG","Both Increase",NA,NA,NA
-"B","subject","2",NA,NA,-13.5,"Responder",1.34045846284331,5.82900914029078,"UG","Both Increase",NA,NA,NA
-"B","subject","3",NA,NA,-17,"Remission",6.27220306790775,7.57169246612303,"UG","Both Increase",NA,NA,NA
-"B","subject","4",NA,NA,-5.5,"Non-Responder",-10.2777564844981,11.2428343839977,"UG","DA↓/5-HT↑",NA,NA,NA
-"B","subject","5",NA,NA,-19.5,"Remission",8.08084098023267,10.5694620901566,"UG","Both Increase",NA,NA,NA
-"B","subject","6",NA,NA,-8.25,"Non-Responder",10.4284708981994,-11.2601688083417,"UG","DA↑/5-HT↓",NA,NA,NA
-"B","subject","7",NA,NA,-16,"Remission",2.11972059533521,9.65731885430615,"UG","Both Increase",NA,NA,NA
-"B","subject","8",NA,NA,-14.67,"Remission",1.57046810092037,-2.08812142197411,"UG","DA↑/5-HT↓",NA,NA,NA
-"B","subject","9",NA,NA,-9.25,"Non-Responder",-0.735174322765612,11.0366242636275,"UG","DA↓/5-HT↑",NA,NA,NA
-"B","subject","10",NA,NA,-12.75,"Remission",10.7852070937209,10.2098810683777,"UG","Both Increase",NA,NA,NA
-"C","subject","1",NA,NA,NA,"Remission",NA,NA,NA,"Both Increase",4.52259597814044,NA,-14.5
-"C","subject","2",NA,NA,NA,"Responder",NA,NA,NA,"Both Increase",7.81354463209378,NA,-13.5
-"C","subject","3",NA,NA,NA,"Remission",NA,NA,NA,"Both Increase",47.4911927152709,NA,-17
-"C","subject","4",NA,NA,NA,"Non-Responder",NA,NA,NA,"DA↓/5-HT↑",-115.551113994271,NA,-5.5
-"C","subject","5",NA,NA,NA,"Remission",NA,NA,NA,"Both Increase",85.4101423971532,NA,-19.5
-"C","subject","6",NA,NA,NA,"Non-Responder",NA,NA,NA,"DA↑/5-HT↓",-117.426342726604,NA,-8.25
-"C","subject","7",NA,NA,NA,"Remission",NA,NA,NA,"Both Increase",20.4708176711917,NA,-16
-"C","subject","8",NA,NA,NA,"Remission",NA,NA,NA,"DA↑/5-HT↓",-3.27932808405882,NA,-14.67
-"C","subject","9",NA,NA,NA,"Non-Responder",NA,NA,NA,"DA↓/5-HT↑",-8.11384276863087,NA,-9.25
-"C","subject","10",NA,NA,NA,"Remission",NA,NA,NA,"Both Increase",110.115681724714,NA,-12.75
+"A","subject","1",NA,7,-14.5,"Remission",1.33546909638461,3.38652237658215,"UG","Both Increase",NA,NA,NA
+"A","subject","2",NA,10,-13.5,"Responder",1.34045846284331,5.82900914029078,"UG","Both Increase",NA,NA,NA
+"A","subject","3",NA,6,-17,"Remission",6.27220306790775,7.57169246612303,"UG","Both Increase",NA,NA,NA
+"A","subject","4",NA,18,-5.5,"Non-Responder",-10.2777564844981,11.2428343839977,"UG","DA↓/5-HT↑",NA,NA,NA
+"A","subject","5",NA,2,-19.5,"Remission",8.08084098023267,10.5694620901566,"UG","Both Increase",NA,NA,NA
+"A","subject","6",NA,23,-8.25,"Non-Responder",10.4284708981994,-11.2601688083417,"UG","DA↑/5-HT↓",NA,NA,NA
+"A","subject","7",NA,4,-16,"Remission",2.11972059533521,9.65731885430615,"UG","Both Increase",NA,NA,NA
+"A","subject","8",NA,3,-14.67,"Remission",1.57046810092037,-2.08812142197411,"UG","DA↑/5-HT↓",NA,NA,NA
+"A","subject","9",NA,11,-9.25,"Non-Responder",-0.735174322765612,11.0366242636275,"UG","DA↓/5-HT↑",NA,NA,NA
+"A","subject","10",NA,8,-12.75,"Remission",10.7852070937209,10.2098810683777,"UG","Both Increase",NA,NA,NA
+"B","subject","1",NA,7,-14.5,"Remission",NA,NA,NA,"Both Increase",4.52259597814044,7,-14.5
+"B","subject","2",NA,10,-13.5,"Responder",NA,NA,NA,"Both Increase",7.81354463209378,10,-13.5
+"B","subject","3",NA,6,-17,"Remission",NA,NA,NA,"Both Increase",47.4911927152709,6,-17
+"B","subject","4",NA,18,-5.5,"Non-Responder",NA,NA,NA,"DA↓/5-HT↑",-115.551113994271,18,-5.5
+"B","subject","5",NA,2,-19.5,"Remission",NA,NA,NA,"Both Increase",85.4101423971532,2,-19.5
+"B","subject","6",NA,23,-8.25,"Non-Responder",NA,NA,NA,"DA↑/5-HT↓",-117.426342726604,23,-8.25
+"B","subject","7",NA,4,-16,"Remission",NA,NA,NA,"Both Increase",20.4708176711917,4,-16
+"B","subject","8",NA,3,-14.67,"Remission",NA,NA,NA,"DA↑/5-HT↓",-3.27932808405882,3,-14.67
+"B","subject","9",NA,11,-9.25,"Non-Responder",NA,NA,NA,"DA↓/5-HT↑",-8.11384276863087,11,-9.25
+"B","subject","10",NA,8,-12.75,"Remission",NA,NA,NA,"Both Increase",110.115681724714,8,-12.75

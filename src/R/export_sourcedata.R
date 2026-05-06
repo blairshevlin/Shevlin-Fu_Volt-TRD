@@ -44,56 +44,99 @@ dir.create(here::here("results/from_source_data"), recursive = TRUE, showWarning
 cat("Exporting figure source data...\n")
 
 
-# ===== FIGURE 1 (Panel C) =====
-
-cat("  Figure 1 Panel C...\n")
+# ===== Figure 1 Panel E =====
+cat(" Figure 1 Panel E...\n") 
 {
-  library(caTools)
+    nt_dir   <- here::here("data/nt/processed")
+    clin_dir <- here::here("data/clinical")
 
-  nt_dir <- here::here("data/nt/processed")
+    load(file.path(nt_dir, "UG_RL_NT-Continuous_9-23-25.RData"))
 
-  load(file.path(nt_dir, "UG_RL_NT-Raw_10-08-25.RData"))
+  rl.EST.Reward <- rl.EST %>%
+    filter(event == "Reward") %>%
+    mutate(stim = factor(stim, levels = c("Pre-Stim", "Post-Stim"))) %>%
+    select(!c(O, R, P, M, O10, Oz10, R10, Rz10, P10, Pz10, M10, Mz10))
 
-  rl.EST.Reward <- rl_proc %>%
-    filter(event == "Reward")
+  ug.EST.Offer <- ug.EST %>%
+    filter(event == "Offer") %>%
+    mutate(stim = factor(stim, levels = c("Pre-Stim", "Post-Stim"))) %>%
+    select(!c(O, R, P, M, O10, Oz10, R10, Rz10, P10, Pz10, M10, Mz10))
 
-  sm.rl <- rl.EST.Reward %>%
-    filter(!is.na(nM)) %>%
-    mutate(stim   = factor(stim, levels = c("Pre-Stim", "Post-Stim")),
-           sample = ifelse(sample == 51, 0, (sample - 51) * 100),
-           sm     = runmean(nM, 3, align = "right")) %>%
-    group_by(idx, stim, nt, trial) %>%
-    mutate(szm = runmean(nMz, 3, align = "right")) %>%
-    filter(sample %in% c(-400:800))
+  cl.df <- read.csv(file.path(clin_dir, "clinical-data_deid_07-10-25.csv"))
 
-  fig.data <- sm.rl %>%
-    filter(event        == "Reward",
-           stim         == "Post-Stim",
-           nt           == "SE",
-           trial        == 28,
-           idx          == 5,
-           !is.na(prev_rew))
+  ug.nt.cl <- ug.EST.Offer %>%
+    pivot_longer(cols = c("Oz", "Rz", "Pz", "Mz"), names_to = "nt_metric", values_to = "nt_val") %>%
+    group_by(idx, stim, nt, nt_metric) %>%
+    summarise(mTrial = mean(nt_val)) %>%
+    filter(nt_metric == "Oz") %>%
+    select(idx, stim, nt, mTrial) %>%
+    pivot_wider(values_from = mTrial, names_from = c("stim", "nt")) %>%
+    mutate(deltaDA_UG = `Post-Stim_DA` - `Pre-Stim_DA`,
+           deltaSE_UG = `Post-Stim_SE` - `Pre-Stim_SE`,
+           deltaNE_UG = `Post-Stim_NE` - `Pre-Stim_NE`) %>%
+    select(idx, deltaDA_UG, deltaSE_UG, deltaNE_UG)
 
-  panel_C <- fig.data %>%
-    transmute(
-      panel         = "C",
-      level         = "trial",
-      time_sample   = sample,
-      nM_raw        = nM,
-      nM_smoothed   = sm,
-      z_score       = szm,
-      in_auc_window = (sample >= 0 & sample <= 500)
-    )
+  rl.nt.cl <- rl.EST.Reward %>%
+    pivot_longer(cols = c("Oz", "Rz", "Pz", "Mz"), names_to = "nt_metric", values_to = "nt_val") %>%
+    group_by(idx, stim, nt, nt_metric) %>%
+    summarise(mTrial = mean(nt_val)) %>%
+    filter(nt_metric == "Oz") %>%
+    select(idx, stim, nt, mTrial) %>%
+    pivot_wider(values_from = mTrial, names_from = c("stim", "nt")) %>%
+    mutate(deltaDA_RL = `Post-Stim_DA` - `Pre-Stim_DA`,
+           deltaSE_RL = `Post-Stim_SE` - `Pre-Stim_SE`,
+           deltaNE_RL = `Post-Stim_NE` - `Pre-Stim_NE`) %>%
+    select(idx, deltaDA_RL, deltaSE_RL, deltaNE_RL)
 
-  source_data <- panel_C
+  nt.cl <- merge(rl.nt.cl, ug.nt.cl, all.y = TRUE)
+  cl.Oz <- merge(cl.df, nt.cl)
+
+  # HDRS trajectories data
+  cl.Oz.fig <- cl.Oz %>%
+    filter(!session %in% c("fmri")) %>%
+    mutate(idx     = factor(idx),
+           sess_fig = factor(session,
+                             levels = c("pre stim", "post stim", "week 1", "month 1", "month 2",
+                                        "month 3", "month 4", "month 5", "month 6"),
+                             labels = c("Baseline", "DBS", "Week 1", "Month 1", "Month 2",
+                                        "Month 3", "Month 4", "Month 5", "Month 6"))) %>%
+    group_by(idx) %>%
+    mutate(HDRS_CP      = (HDRS - HDRS[session == "pre stim"]) / HDRS[session == "pre stim"],
+           remission    = ifelse(HDRS < 8, 1, 0),
+           responder    = factor(ifelse(abs(HDRS_CP) > .5, 1, 0), levels = c(1, 0),
+                                 labels = c("Responder", "Nonresponder")),
+           M6_responder = responder[sess_fig == "Month 6"],
+           M6_remission = remission[sess_fig == "Month 6"]) %>%
+    ungroup() %>%
+    as.data.frame()
+
+  hdrs_baseline <- cl.Oz.fig %>%
+    filter(sess_fig == "Baseline") %>%
+    select(idx, HDRS_base = HDRS)
+
+
+  # HDRS trajectories
+  panel_E <- cl.Oz.fig %>%
+    filter(sess_fig %in% c("Baseline", "Month 6")) %>%
+    left_join(hdrs_baseline, by = "idx") %>%
+    transmute(panel            = "E",
+              level            = "subject",
+              idx              = as.character(idx),
+              session          = as.character(sess_fig),
+              HDRS,
+              HDRS_change      = HDRS - HDRS_base,
+              outcome_category = as.character(M6_responder))
+
+  source_data <- panel_E
 
   write.csv(source_data,
-            here::here("data/figures/figure1_panel_source_data.csv"),
+            here::here("data/figures/figure1_panel_E_source_data.csv"),
             row.names = FALSE)
 
-  rm(rl_proc, rl.EST.Reward, sm.rl, fig.data, panel_C, source_data)
+  rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer, cl.df,
+     rl.nt.cl, ug.nt.cl, nt.cl, cl.Oz, cl.Oz.fig, hdrs_baseline,
+     panel_E, source_data)
 }
-
 
 # ===== FIGURE 2 =====
 
@@ -473,7 +516,7 @@ cat("  Figure 4...\n")
     filter(sess_fig == "Baseline") %>%
     select(idx, HDRS_base = HDRS)
 
-  # NT change metrics for panels B/C
+  # NT change metrics
   data_m6 <- cl.Oz %>%
     filter(session == "month 6") %>%
     select(idx, HDRS, deltaDA_UG, deltaSE_UG, deltaDA_RL, deltaSE_RL) %>%
@@ -499,28 +542,13 @@ cat("  Figure 4...\n")
              TRUE                             ~ "DA\u2193/5-HT\u2191"
            ))
 
-  # Panel A: HDRS trajectories
-  panel_A <- cl.Oz.fig %>%
-    filter(sess_fig %in% c("Baseline", "Month 6")) %>%
-    left_join(hdrs_baseline, by = "idx") %>%
+  # Panel A: DA vs 5-HT scatter
+  panel_A <- data_m6 %>%
     transmute(panel            = "A",
               level            = "subject",
               idx              = as.character(idx),
-              session          = as.character(sess_fig),
-              HDRS,
-              HDRS_change      = HDRS - HDRS_base,
-              outcome_category = as.character(M6_responder),
-              deltaDA = NA_real_, deltaSE = NA_real_, task = NA_character_,
-              nt_pattern = NA_character_,
-              synergy_score = NA_real_, HDRS_m6 = NA_real_, HDRS_change_m6 = NA_real_)
-
-  # Panel B: DA vs 5-HT scatter
-  panel_B <- data_m6 %>%
-    transmute(panel            = "B",
-              level            = "subject",
-              idx              = as.character(idx),
               session          = NA_character_,
-              HDRS             = NA_real_,
+              HDRS,
               HDRS_change      = change_magnitude,
               outcome_category = as.character(response_category),
               deltaDA          = deltaDA_UG,
@@ -531,14 +559,14 @@ cat("  Figure 4...\n")
               HDRS_m6          = NA_real_,
               HDRS_change_m6   = NA_real_)
 
-  # Panel C: synergy vs HDRS
-  panel_C <- data_m6 %>%
-    transmute(panel            = "C",
+  # Panel B: synergy vs HDRS
+  panel_B <- data_m6 %>%
+    transmute(panel            = "B",
               level            = "subject",
               idx              = as.character(idx),
               session          = NA_character_,
-              HDRS             = NA_real_,
-              HDRS_change      = NA_real_,
+              HDRS,
+              HDRS_change      = HDRS - HDRS_base,
               outcome_category = as.character(response_category),
               deltaDA          = NA_real_,
               deltaSE          = NA_real_,
@@ -548,7 +576,7 @@ cat("  Figure 4...\n")
               HDRS_m6          = HDRS,
               HDRS_change_m6   = change_magnitude)
 
-  source_data <- bind_rows(panel_A, panel_B, panel_C)
+  source_data <- bind_rows(panel_A, panel_B)
 
   write.csv(source_data,
             here::here("data/figures/figure4_source_data.csv"),
@@ -556,13 +584,110 @@ cat("  Figure 4...\n")
 
   rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer, cl.df,
      rl.nt.cl, ug.nt.cl, nt.cl, cl.Oz, cl.Oz.fig, hdrs_baseline, data_m6,
-     panel_A, panel_B, panel_C, source_data)
+     panel_A, panel_B, source_data)
 }
 
 
 # ===== FIGURE EXTENDED 1 =====
+cat(" Extended Figure 1...\n") 
+{
+  clin_dir <- here::here("data/clinical")
 
-cat("  Figure Extended 1...\n")
+  cl.df <- read.csv(file.path(clin_dir, "clinical-data_deid_07-10-25.csv"))
+
+  # HDRS trajectories data
+  cl.fig <- cl.df %>%
+    filter(!session %in% c("fmri")) %>%
+    mutate(idx     = factor(idx),
+           sess_fig = factor(session,
+                             levels = c("pre stim", "post stim", "week 1", "month 1", "month 2",
+                                        "month 3", "month 4", "month 5", "month 6"),
+                             labels = c("Baseline", "DBS", "Week 1", "Month 1", "Month 2",
+                                        "Month 3", "Month 4", "Month 5", "Month 6"))) %>%
+    group_by(idx) %>%
+    mutate(HDRS_CP      = (HDRS - HDRS[session == "pre stim"]) / HDRS[session == "pre stim"],
+           remission    = ifelse(HDRS < 8, 1, 0),
+           responder    = factor(ifelse(abs(HDRS_CP) > .5, 1, 0), levels = c(1, 0),
+                                 labels = c("Responder", "Nonresponder")),
+           M6_responder = responder[sess_fig == "Month 6"],
+           M6_remission = remission[sess_fig == "Month 6"]) %>%
+    ungroup() %>%
+    as.data.frame()
+
+  hdrs_baseline <- cl.fig %>%
+    filter(sess_fig == "Baseline") %>%
+    select(idx, HDRS_base = HDRS)
+
+  # HDRS trajectories
+  source_data <- cl.fig %>%
+    filter(sess_fig %in% c("Baseline", "Week 1", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6")) %>%
+    left_join(hdrs_baseline, by = "idx") %>%
+    transmute(level            = "subject",
+              idx              = as.character(idx),
+              session          = as.character(sess_fig),
+              HDRS,
+              HDRS_change      = HDRS - HDRS_base,
+              outcome_category = as.character(responder))
+
+  write.csv(source_data,
+            here::here("data/figures/figureExtended1_source_data.csv"),
+            row.names = FALSE)
+
+  rm(cl.df,cl.fig, hdrs_baseline, source_data)
+}
+
+# ===== Extended FIGURE 2 =====
+
+cat(" Extended Figure 2...\n")
+{
+  library(caTools)
+
+  nt_dir <- here::here("data/nt/processed")
+
+  load(file.path(nt_dir, "UG_RL_NT-Raw_10-08-25.RData"))
+
+  rl.EST.Reward <- rl_proc %>%
+    filter(event == "Reward")
+
+  sm.rl <- rl.EST.Reward %>%
+    filter(!is.na(nM)) %>%
+    mutate(stim   = factor(stim, levels = c("Pre-Stim", "Post-Stim")),
+           sample = ifelse(sample == 51, 0, (sample - 51) * 100),
+           sm     = runmean(nM, 3, align = "right")) %>%
+    group_by(idx, stim, nt, trial) %>%
+    mutate(szm = runmean(nMz, 3, align = "right")) %>%
+    filter(sample %in% c(-400:800))
+
+  fig.data <- sm.rl %>%
+    filter(event        == "Reward",
+           stim         == "Post-Stim",
+           nt           == "SE",
+           trial        == 28,
+           idx          == 5,
+           !is.na(prev_rew))
+
+  panel_C <- fig.data %>%
+    transmute(
+      panel         = "C",
+      level         = "trial",
+      time_sample   = sample,
+      nM_raw        = nM,
+      nM_smoothed   = sm,
+      z_score       = szm,
+      in_auc_window = (sample >= 0 & sample <= 500)
+    )
+
+  source_data <- panel_C
+
+  write.csv(source_data,
+            here::here("data/figures/figureExtended2_source_data.csv"),
+            row.names = FALSE)
+
+  rm(rl_proc, rl.EST.Reward, sm.rl, fig.data, panel_C, source_data)
+}
+
+# ===== Extended FIGURE 2 =====
+cat("  Figure Extended 3...\n")
 {
   nt_dir <- here::here("data/nt/processed")
 
@@ -623,7 +748,7 @@ cat("  Figure Extended 1...\n")
     select(panel, level, task, nt, stim, idx, trial, Oz)
 
   write.csv(source_data,
-            here::here("data/figures/figureExtended1_source_data.csv"),
+            here::here("data/figures/figureExtended3_source_data.csv"),
             row.names = FALSE)
 
   rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer,
@@ -631,9 +756,9 @@ cat("  Figure Extended 1...\n")
 }
 
 
-# ===== FIGURE EXTENDED 2 =====
+# ===== FIGURE EXTENDED 4 =====
 
-cat("  Figure Extended 2...\n")
+cat("  Figure Extended 4...\n")
 {
   clin_dir <- here::here("data/clinical")
 
@@ -666,7 +791,7 @@ cat("  Figure Extended 2...\n")
     select(panel, level, idx, session, HDRS, pct_change_HDRS, cohort, responder)
 
   write.csv(source_data,
-            here::here("data/figures/figureExtended2_source_data.csv"),
+            here::here("data/figures/figureExtended4_source_data.csv"),
             row.names = FALSE)
 
   rm(cl.df, cl.O.fig, source_data)
