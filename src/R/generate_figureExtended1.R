@@ -47,30 +47,76 @@ source_data$outcome_category <- factor(source_data$outcome_category,
 
 # ---- HDRS trajectories --------------------------------------------
 trajectory <- source_data %>%
-  mutate(idx      = factor(idx),
-         sess_fig = factor(session,
-                           levels = c("Baseline","Week 1","Month 1","Month 2",
-                                      "Month 3","Month 4","Month 5","Month 6")))
+  filter(panel == "A") %>%
+  arrange(as.numeric(idx)) %>%
+  mutate(
+    idx_lab  = factor(paste0(idx, " (", cohort, ")"),
+                      levels = unique(paste0(idx, " (", cohort, ")"))),
+    sess_fig = factor(session,
+                      levels = c("Baseline", "DBS", "Week 1", "Month 1", "Month 2",
+                                 "Month 3", "Month 4", "Month 5", "Month 6"))
+  )
 
 fig.hdrs.trajectory <-
-  ggplot(trajectory,aes(x = sess_fig, y = HDRS, color = idx, group = idx, shape = idx)) +
+  ggplot(trajectory,aes(x = sess_fig, y = HDRS, color = idx_lab, group = idx_lab, shape = idx_lab)) +
   theme_pubr(base_size = 14) +
+  geom_vline(xintercept = "DBS", linewidth = 2) +
   geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
-  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 5, hjust = 0) +
-  geom_line(linewidth = 1.5, alpha = .5, show.legend = FALSE) +
+  geom_line(data = ~ filter(.x, !is.na(HDRS)), linewidth = 1.5, alpha = .5, show.legend = FALSE) +
   geom_point(size = 3, stroke = 1.5, alpha = .75) +
+  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 4.5, hjust = 0) +
   coord_cartesian(ylim = c(0, 32)) +
-  scale_y_continuous(breaks = seq(0, 30, 5)) +
-  scale_x_discrete() +
+  scale_y_continuous(breaks = seq(0, 30, 10)) +
+  scale_x_discrete(drop = FALSE) +
   scale_shape_manual(values = c(16,17,15,18,8,3,4,1,2,0))+
   scale_color_brewer(type = "qual", palette = 3)+
   scale_fill_brewer(type = "qual", palette = 3)+
   labs(x = element_blank(), y = "HDRS-17",
     shape = NULL, color = NULL, fill = NULL)+
-  theme(legend.position = "right")
+  theme(legend.position = "right")  
+
+# ---- Device differences --------------------------------------------
+
+# Panel B data
+cl.fig <- source_data %>%
+  filter(panel == "B") %>%
+  arrange( as.numeric(idx) ) %>%
+  mutate(idx_lab = factor(
+             paste0(idx, " (", cohort, ")"),
+             levels = unique(paste0(idx, " (", cohort, ")"))),
+             sess_fig = factor(session,
+                           levels = c("Baseline", "DBS","Week 1", "Month 1",
+                                      "Month 2", "Month 3", "Month 4", "Month 5", "Month 6")))
+
+fig.hdrs.timeline.cohort <-
+  cl.fig %>%
+  ggplot(aes(x = sess_fig, y = HDRS)) +
+  theme_pubr(base_size = 14) +
+  geom_vline(xintercept = "DBS", linewidth = 2) +
+  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
+  stat_summary(geom = "line",
+               aes(color = cohort, group = cohort),
+               position = position_dodge2(width = .75),
+               linewidth = 1.5) +
+  stat_summary(aes(shape = cohort, color = cohort),
+               position = position_dodge2(width = .75),
+               size = 1.5, linewidth = 1.5) +
+  geom_point(data = cl.fig,
+             size = 2, alpha = .5,
+             position = position_dodge2(width = .75),
+             stroke = 1.75, aes(shape = cohort, color = cohort)) +
+  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 4.5, hjust = 0) +
+  labs(x     = element_blank(),
+       y     = "HDRS-17",
+       shape = "Cohort",
+       color = "Cohort") +
+  scale_shape_manual(values = c(16, 15)) +
+  scale_color_brewer(type = "qual", palette = 2) +
+  theme(legend.position = c(0.225, 0.85))
 
 # ---- Assemble ---------------------------------------------------------------
-extendedFig1 <- fig.hdrs.trajectory + plot_layout(widths = c(1))
+extendedFig1 <- fig.hdrs.trajectory / fig.hdrs.timeline.cohort + plot_layout(widths = c(1, 1)) +
+    plot_annotation(tag_levels = "a") & theme(plot.tag = element_text(size = 22))
 
 ggsave(file.path(res_dir, "Extended-Data_Figure1.png"),
        plot = extendedFig1, device = "png",

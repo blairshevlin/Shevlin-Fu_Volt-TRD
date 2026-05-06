@@ -589,7 +589,7 @@ cat("  Figure 4...\n")
 
 
 # ===== FIGURE EXTENDED 1 =====
-cat(" Extended Figure 1...\n") 
+cat(" Extended Figure 1...\n")
 {
   clin_dir <- here::here("data/clinical")
 
@@ -598,7 +598,7 @@ cat(" Extended Figure 1...\n")
   # HDRS trajectories data
   cl.fig <- cl.df %>%
     filter(!session %in% c("fmri")) %>%
-    mutate(idx     = factor(idx),
+    mutate(idx      = factor(idx),
            sess_fig = factor(session,
                              levels = c("pre stim", "post stim", "week 1", "month 1", "month 2",
                                         "month 3", "month 4", "month 5", "month 6"),
@@ -610,7 +610,8 @@ cat(" Extended Figure 1...\n")
            responder    = factor(ifelse(abs(HDRS_CP) > .5, 1, 0), levels = c(1, 0),
                                  labels = c("Responder", "Nonresponder")),
            M6_responder = responder[sess_fig == "Month 6"],
-           M6_remission = remission[sess_fig == "Month 6"]) %>%
+           M6_remission = remission[sess_fig == "Month 6"],
+           cohort       = ifelse(idx %in% 1:5, "RC+S", "PC")) %>%
     ungroup() %>%
     as.data.frame()
 
@@ -618,22 +619,39 @@ cat(" Extended Figure 1...\n")
     filter(sess_fig == "Baseline") %>%
     select(idx, HDRS_base = HDRS)
 
-  # HDRS trajectories
-  source_data <- cl.fig %>%
-    filter(sess_fig %in% c("Baseline", "Week 1", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6")) %>%
+  # Panel A: full HDRS trajectories
+  panel_A <- cl.fig %>%
+    filter(sess_fig %in% c("Baseline", "DBS", "Week 1", "Month 1", "Month 2",
+                           "Month 3", "Month 4", "Month 5", "Month 6")) %>%
     left_join(hdrs_baseline, by = "idx") %>%
-    transmute(level            = "subject",
+    transmute(panel            = "A",
+              level            = "subject",
               idx              = as.character(idx),
               session          = as.character(sess_fig),
               HDRS,
               HDRS_change      = HDRS - HDRS_base,
-              outcome_category = as.character(responder))
+              outcome_category = as.character(responder),
+              cohort)
+
+  # Panel B: sparse timepoints with percent change
+  panel_B <- cl.fig %>%
+    transmute(panel            = "B",
+              level            = "subject",
+              idx              = as.character(idx),
+              session          = as.character(sess_fig),
+              HDRS,
+              pct_change_HDRS  = HDRS_CP,
+              outcome_category = as.character(responder),
+              cohort)
+
+  source_data <- bind_rows(panel_A, panel_B) %>%
+    mutate(across(where(is.factor), as.character))
 
   write.csv(source_data,
             here::here("data/figures/figureExtended1_source_data.csv"),
             row.names = FALSE)
 
-  rm(cl.df,cl.fig, hdrs_baseline, source_data)
+  rm(cl.df, cl.fig, hdrs_baseline, panel_A, panel_B, source_data)
 }
 
 # ===== Extended FIGURE 2 =====
@@ -753,48 +771,6 @@ cat("  Figure Extended 3...\n")
 
   rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer,
      rl.trial, ug.trial, panel_A, panel_B, panel_C, panel_D, source_data)
-}
-
-
-# ===== FIGURE EXTENDED 4 =====
-
-cat("  Figure Extended 4...\n")
-{
-  clin_dir <- here::here("data/clinical")
-
-  cl.df <- read.csv(file.path(clin_dir, "clinical-data_deid_07-10-25.csv"))
-
-  cl.O.fig <- cl.df %>%
-    filter(!session %in% c("fmri")) %>%
-    mutate(id       = factor(idx),
-           sess_fig = factor(session,
-                             levels = c("pre stim", "post stim", "week 1", "month 1",
-                                        "month 2", "month 3", "month 4", "month 5", "month 6"),
-                             labels = c("Baseline", "DBS", "Week 1", "Month 1",
-                                        "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"))) %>%
-    group_by(id) %>%
-    mutate(HDRS_CP     = (HDRS - HDRS[session == "pre stim"]) / HDRS[session == "pre stim"],
-           remission   = ifelse(HDRS < 8, 1, 0),
-           responder   = factor(ifelse(abs(HDRS_CP) > .5, 1, 0), levels = c(1, 0),
-                                labels = c("Responder", "Nonresponder")),
-           M6_responder = responder[sess_fig == "Month 6"],
-           M6_remission = remission[sess_fig == "Month 6"],
-           cohort       = ifelse(id %in% c(1:5), "RC+S", "PC")) %>%
-    ungroup() %>%
-    filter(!sess_fig %in% c("Month 2", "Month 4", "Month 5")) %>%
-    as.data.frame()
-
-  source_data <- cl.O.fig %>%
-    mutate(panel           = "A",
-           level           = "subject",
-           pct_change_HDRS = HDRS_CP) %>%
-    select(panel, level, idx, session, HDRS, pct_change_HDRS, cohort, responder)
-
-  write.csv(source_data,
-            here::here("data/figures/figureExtended4_source_data.csv"),
-            row.names = FALSE)
-
-  rm(cl.df, cl.O.fig, source_data)
 }
 
 

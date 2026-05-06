@@ -109,8 +109,8 @@ fig.synergy <-
             label = paste0("Pearson's r = ", round(cor(panel_B$synergy_score, panel_B$HDRS_m6), 3),
                            "\np = ", round(cor.test(panel_B$synergy_score, panel_B$HDRS_m6)$p.value, 3)),
             hjust = 1.1, vjust = 1.1, size = 5, color = "grey40") +
-  geom_hline(yintercept = 6, linetype = "dashed", linewidth = 0.75) +
-  geom_text(x = min(panel_B$synergy_score), y = 7, label = "Clinical Remission", size = 5, hjust = 0) +
+  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
+  geom_text(x = min(panel_B$synergy_score), y = 8, label = "Clinical Remission", size = 5, hjust = 0) +
   scale_fill_manual(values = c("Both Increase" = "#2166ac", "Both Decrease" = "#762a83",
                                "DA\u2191/5-HT\u2193" = "#d73027", "DA\u2193/5-HT\u2191" = "#f4a582"),
                     name = "Change Pattern") +
@@ -129,10 +129,11 @@ fig.synergy <-
 
 # ---- Assemble ---------------------------------------------------------------
 fig.4 <- (fig.profiles + fig.synergy) +
-  plot_annotation(tag_levels = "a",
-                  theme = theme(plot.title    = element_text(size = 16, face = "bold"),
-                                plot.subtitle = element_text(size = 12, color = "grey40"))) +
-  plot_layout(guides = "collect")
+  plot_annotation(tag_levels = "a") +
+  plot_layout(guides = "collect") &
+  theme(plot.tag = element_text(size = 22, face = "bold"),
+        plot.title    = element_text(size = 18, face = "bold"),
+        plot.subtitle = element_text(size = 12, color = "grey40")) 
 
 ggsave(file.path(res_dir, "figure4.png"),
        plot = fig.4, device = "png",
