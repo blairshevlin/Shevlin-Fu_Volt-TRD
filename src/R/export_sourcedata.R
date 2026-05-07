@@ -454,11 +454,6 @@ cat("  Figure 4...\n")
 
   load(file.path(nt_dir, "UG_RL_NT-Continuous_9-23-25.RData"))
 
-  rl.EST.Reward <- rl.EST %>%
-    filter(event == "Reward") %>%
-    mutate(stim = factor(stim, levels = c("Pre-Stim", "Post-Stim"))) %>%
-    select(!c(O, R, P, M, O10, Oz10, R10, Rz10, P10, Pz10, M10, Mz10))
-
   ug.EST.Offer <- ug.EST %>%
     filter(event == "Offer") %>%
     mutate(stim = factor(stim, levels = c("Pre-Stim", "Post-Stim"))) %>%
@@ -478,20 +473,7 @@ cat("  Figure 4...\n")
            deltaNE_UG = `Post-Stim_NE` - `Pre-Stim_NE`) %>%
     select(idx, deltaDA_UG, deltaSE_UG, deltaNE_UG)
 
-  rl.nt.cl <- rl.EST.Reward %>%
-    pivot_longer(cols = c("Oz", "Rz", "Pz", "Mz"), names_to = "nt_metric", values_to = "nt_val") %>%
-    group_by(idx, stim, nt, nt_metric) %>%
-    summarise(mTrial = mean(nt_val)) %>%
-    filter(nt_metric == "Oz") %>%
-    select(idx, stim, nt, mTrial) %>%
-    pivot_wider(values_from = mTrial, names_from = c("stim", "nt")) %>%
-    mutate(deltaDA_RL = `Post-Stim_DA` - `Pre-Stim_DA`,
-           deltaSE_RL = `Post-Stim_SE` - `Pre-Stim_SE`,
-           deltaNE_RL = `Post-Stim_NE` - `Pre-Stim_NE`) %>%
-    select(idx, deltaDA_RL, deltaSE_RL, deltaNE_RL)
-
-  nt.cl <- merge(rl.nt.cl, ug.nt.cl, all.y = TRUE)
-  cl.Oz <- merge(cl.df, nt.cl)
+  cl.Oz <- merge(cl.df, ug.nt.cl)
 
   # HDRS trajectories data
   cl.Oz.fig <- cl.Oz %>%
@@ -542,31 +524,6 @@ cat("  Figure 4...\n")
              TRUE                             ~ "DA\u2193/5-HT\u2191"
            ))
 
-  data_rl_m6 <- cl.Oz %>%
-    filter(session == "month 6") %>%
-    select(idx, HDRS, deltaDA_RL, deltaSE_RL) %>%
-    left_join(cl.Oz %>% filter(session == "pre stim") %>% select(idx, HDRS_base = HDRS), by = "idx") %>%
-    mutate(deltaPerHDRS     = (HDRS_base - HDRS) / HDRS_base,
-           change_magnitude = HDRS - HDRS_base,
-           synergy_score    = case_when(
-             deltaDA_RL > 0 & deltaSE_RL > 0 ~ deltaDA_RL * deltaSE_RL,
-             deltaDA_RL < 0 & deltaSE_RL < 0 ~ abs(deltaDA_RL * deltaSE_RL),
-             TRUE                             ~ -abs(deltaDA_RL * deltaSE_RL)
-           ),
-           response_category = case_when(
-             HDRS <= 8          ~ "Remission",
-             deltaPerHDRS > 0.5 ~ "Responder",
-             TRUE               ~ "Non-Responder"
-           ),
-           response_category = factor(response_category,
-                                      levels = c("Non-Responder", "Responder", "Remission")),
-           change_pattern = case_when(
-             deltaDA_RL > 0 & deltaSE_RL > 0 ~ "Both Increase",
-             deltaDA_RL < 0 & deltaSE_RL < 0 ~ "Both Decrease",
-             deltaDA_RL > 0 & deltaSE_RL < 0 ~ "DA\u2191/5-HT\u2193",
-             TRUE                             ~ "DA\u2193/5-HT\u2191"
-           ))
-
   # Panel A: DA vs 5-HT scatter (UG)
   panel_A <- data_ug_m6 %>%
     transmute(panel            = "A",
@@ -601,49 +558,15 @@ cat("  Figure 4...\n")
               HDRS_m6          = HDRS,
               HDRS_change_m6   = change_magnitude)
 
-  # Panel C: DA vs 5-HT scatter (RL)
-  panel_C <- data_rl_m6 %>%
-    transmute(panel            = "C",
-              level            = "subject",
-              idx              = as.character(idx),
-              session          = NA_character_,
-              HDRS,
-              HDRS_change      = change_magnitude,
-              outcome_category = as.character(response_category),
-              deltaDA          = deltaDA_RL,
-              deltaSE          = deltaSE_RL,
-              task             = "RL",
-              nt_pattern       = change_pattern,
-              synergy_score    = NA_real_,
-              HDRS_m6          = NA_real_,
-              HDRS_change_m6   = NA_real_)
-
-  # Panel D: synergy vs HDRS (RL)
-  panel_D <- data_rl_m6 %>%
-    transmute(panel            = "D",
-              level            = "subject",
-              idx              = as.character(idx),
-              session          = NA_character_,
-              HDRS,
-              HDRS_change      = HDRS - HDRS_base,
-              outcome_category = as.character(response_category),
-              deltaDA          = NA_real_,
-              deltaSE          = NA_real_,
-              task             = "RL",
-              nt_pattern       = change_pattern,
-              synergy_score,
-              HDRS_m6          = HDRS,
-              HDRS_change_m6   = change_magnitude)
-
-  source_data <- bind_rows(panel_A, panel_B, panel_C, panel_D)
+  source_data <- bind_rows(panel_A, panel_B)
 
   write.csv(source_data,
             here::here("data/figures/figure4_source_data.csv"),
             row.names = FALSE)
 
-  rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer, cl.df,
-     rl.nt.cl, ug.nt.cl, nt.cl, cl.Oz, cl.Oz.fig, hdrs_baseline, data_rl_m6, data_ug_m6,
-     panel_A, panel_B, panel_C, panel_D, source_data)
+  rm(rl.EST, ug.EST, ug.EST.Offer, cl.df,
+     ug.nt.cl, cl.Oz, cl.Oz.fig, hdrs_baseline, data_ug_m6,
+     panel_A, panel_B, source_data)
 }
 
 
@@ -1371,6 +1294,131 @@ cat("  Figure Supplement 6...\n")
 
   rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer,
      rl.trial, ug.trial, panel_A, panel_B, source_data)
+}
+
+# ===== FIGURE SUPPLEMENT 7 =====
+
+cat("  Supplementary Figure 7...\n")
+{
+  nt_dir   <- here::here("data/nt/processed")
+  clin_dir <- here::here("data/clinical")
+
+  load(file.path(nt_dir, "UG_RL_NT-Continuous_9-23-25.RData"))
+
+  rl.EST.Reward <- rl.EST %>%
+    filter(event == "Reward") %>%
+    mutate(stim = factor(stim, levels = c("Pre-Stim", "Post-Stim"))) %>%
+    select(!c(O, R, P, M, O10, Oz10, R10, Rz10, P10, Pz10, M10, Mz10))
+
+  cl.df <- read.csv(file.path(clin_dir, "clinical-data_deid_07-10-25.csv"))
+
+
+  rl.nt.cl <- rl.EST.Reward %>%
+    pivot_longer(cols = c("Oz", "Rz", "Pz", "Mz"), names_to = "nt_metric", values_to = "nt_val") %>%
+    group_by(idx, stim, nt, nt_metric) %>%
+    summarise(mTrial = mean(nt_val)) %>%
+    filter(nt_metric == "Oz") %>%
+    select(idx, stim, nt, mTrial) %>%
+    pivot_wider(values_from = mTrial, names_from = c("stim", "nt")) %>%
+    mutate(deltaDA_RL = `Post-Stim_DA` - `Pre-Stim_DA`,
+           deltaSE_RL = `Post-Stim_SE` - `Pre-Stim_SE`,
+           deltaNE_RL = `Post-Stim_NE` - `Pre-Stim_NE`) %>%
+    select(idx, deltaDA_RL, deltaSE_RL, deltaNE_RL)
+
+  cl.Oz <- merge(cl.df, rl.nt.cl)
+
+  # HDRS trajectories data
+  cl.Oz.fig <- cl.Oz %>%
+    filter(!session %in% c("fmri")) %>%
+    mutate(idx     = factor(idx),
+           sess_fig = factor(session,
+                             levels = c("pre stim", "post stim", "week 1", "month 1", "month 2",
+                                        "month 3", "month 4", "month 5", "month 6"),
+                             labels = c("Baseline", "DBS", "Week 1", "Month 1", "Month 2",
+                                        "Month 3", "Month 4", "Month 5", "Month 6"))) %>%
+    group_by(idx) %>%
+    mutate(HDRS_CP      = (HDRS - HDRS[session == "pre stim"]) / HDRS[session == "pre stim"],
+           remission    = ifelse(HDRS < 8, 1, 0),
+           responder    = factor(ifelse(abs(HDRS_CP) > .5, 1, 0), levels = c(1, 0),
+                                 labels = c("Responder", "Nonresponder")),
+           M6_responder = responder[sess_fig == "Month 6"],
+           M6_remission = remission[sess_fig == "Month 6"]) %>%
+    ungroup() %>%
+    as.data.frame()
+
+  hdrs_baseline <- cl.Oz.fig %>%
+    filter(sess_fig == "Baseline") %>%
+    select(idx, HDRS_base = HDRS)
+
+  # NT change metrics
+  data_rl_m6 <- cl.Oz %>%
+    filter(session == "month 6") %>%
+    select(idx, HDRS, deltaDA_RL, deltaSE_RL) %>%
+    left_join(cl.Oz %>% filter(session == "pre stim") %>% select(idx, HDRS_base = HDRS), by = "idx") %>%
+    mutate(deltaPerHDRS     = (HDRS_base - HDRS) / HDRS_base,
+           change_magnitude = HDRS - HDRS_base,
+           synergy_score    = case_when(
+             deltaDA_RL > 0 & deltaSE_RL > 0 ~ deltaDA_RL * deltaSE_RL,
+             deltaDA_RL < 0 & deltaSE_RL < 0 ~ abs(deltaDA_RL * deltaSE_RL),
+             TRUE                             ~ -abs(deltaDA_RL * deltaSE_RL)
+           ),
+           response_category = case_when(
+             HDRS <= 8          ~ "Remission",
+             deltaPerHDRS > 0.5 ~ "Responder",
+             TRUE               ~ "Non-Responder"
+           ),
+           response_category = factor(response_category,
+                                      levels = c("Non-Responder", "Responder", "Remission")),
+           change_pattern = case_when(
+             deltaDA_RL > 0 & deltaSE_RL > 0 ~ "Both Increase",
+             deltaDA_RL < 0 & deltaSE_RL < 0 ~ "Both Decrease",
+             deltaDA_RL > 0 & deltaSE_RL < 0 ~ "DA\u2191/5-HT\u2193",
+             TRUE                             ~ "DA\u2193/5-HT\u2191"
+           ))
+
+  # Panel A: DA vs 5-HT scatter (RL)
+  panel_A <- data_rl_m6 %>%
+    transmute(panel            = "A",
+              level            = "subject",
+              idx              = as.character(idx),
+              session          = NA_character_,
+              HDRS,
+              HDRS_change      = change_magnitude,
+              outcome_category = as.character(response_category),
+              deltaDA          = deltaDA_RL,
+              deltaSE          = deltaSE_RL,
+              task             = "RL",
+              nt_pattern       = change_pattern,
+              synergy_score    = NA_real_,
+              HDRS_m6          = NA_real_,
+              HDRS_change_m6   = NA_real_)
+
+  # Panel B: synergy vs HDRS (RL)
+  panel_B <- data_rl_m6 %>%
+    transmute(panel            = "B",
+              level            = "subject",
+              idx              = as.character(idx),
+              session          = NA_character_,
+              HDRS,
+              HDRS_change      = HDRS - HDRS_base,
+              outcome_category = as.character(response_category),
+              deltaDA          = NA_real_,
+              deltaSE          = NA_real_,
+              task             = "RL",
+              nt_pattern       = change_pattern,
+              synergy_score,
+              HDRS_m6          = HDRS,
+              HDRS_change_m6   = change_magnitude)
+
+  source_data <- bind_rows(panel_A, panel_B)
+
+  write.csv(source_data,
+            here::here("data/figures/figureSupplement7_source_data.csv"),
+            row.names = FALSE)
+
+  rm(rl.EST, ug.EST, rl.EST.Reward, cl.df,
+     rl.nt.cl, cl.Oz, cl.Oz.fig, hdrs_baseline, data_rl_m6,
+     panel_A, panel_B, source_data)
 }
 
 
