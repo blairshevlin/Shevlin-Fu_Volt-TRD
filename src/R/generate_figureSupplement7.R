@@ -56,6 +56,11 @@ source_data <- read.csv(here::here("data/figures/figureSupplement7_source_data.c
 source_data$outcome_category <- factor(source_data$outcome_category,
                                        levels = c("Non-Responder","Responder","Remission"))
 
+# Custom rounding function
+midround <- function(x, base = 1) {
+  return(base * round(x / base))
+}
+
 # ---- Panel A: RL DA vs 5-HT scatter -------------------------------------------
 panel_A <- source_data %>%
   filter(panel == "A") %>%
@@ -64,7 +69,7 @@ panel_A <- source_data %>%
 
 # Recompute change_magnitude for size aesthetic (HDRS_change stored in source data)
 panel_A <- panel_A %>%
-  mutate(change_magnitude = HDRS_change)
+  mutate(change_magnitude = midround(HDRS_change, base = 5))
 
 fig.profiles.rl <-
   ggplot(panel_A, aes(x = deltaDA, y = deltaSE)) +
@@ -80,7 +85,7 @@ fig.profiles.rl <-
                                "DA\u2191/5-HT\u2193" = "#d73027", "DA\u2193/5-HT\u2191" = "#f4a582"),
                     name = "Change Pattern") +
   scale_size_continuous(range = c(12, 3), name = "\u0394 HDRS-17",
-                        breaks = c(-10, -15, -20),
+                        breaks = c(-5, -10, -15),
                         guide = guide_legend(title.position = "top", title.hjust = 0.5,
                                              override.aes = list(fill = "black", alpha = 0.5))) +
   labs(x = "Change in DA (\u0394DA)", y = "Change in 5-HT (\u03945-HT)") +
@@ -97,7 +102,7 @@ fig.profiles.rl <-
 # ---- Panel B: RL synergy vs HDRS ----------------------------------------------
 panel_B <- source_data %>%
   filter(panel == "B", !is.na(synergy_score)) %>%
-  mutate(change_magnitude = HDRS_change_m6)
+  mutate(change_magnitude = midround(HDRS_change_m6, base = 5))
 
 fig.synergy.rl <-
   ggplot(panel_B, aes(x = synergy_score, y = HDRS_m6)) +
@@ -109,12 +114,12 @@ fig.synergy.rl <-
                            "\np = ", round(cor.test(panel_B$synergy_score, panel_B$HDRS_m6)$p.value, 3)),
             hjust = 1.1, vjust = 1.1, size = 5, color = "grey40") +
   geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
-  geom_text(x = min(panel_B$synergy_score), y = 8, label = "Clinical Remission", size = 5, hjust = 0) +
+  geom_text(x = min(panel_B$synergy_score), y = 6, label = "Clinical Remission", size = 5, hjust = 0) +
   scale_fill_manual(values = c("Both Increase" = "#2166ac", "Both Decrease" = "#762a83",
                                "DA\u2191/5-HT\u2193" = "#d73027", "DA\u2193/5-HT\u2191" = "#f4a582"),
                     name = "Change Pattern") +
   scale_size_continuous(range = c(12, 3), name = "\u0394 HDRS-17",
-                        breaks = c(-10, -15, -20),
+                        breaks = c(-5, -10, -15),
                         guide = guide_legend(title.position = "top", title.hjust = 0.5,
                                              override.aes = list(fill = "black", alpha = 0.5))) +
   labs(x = "\u0394DA \u00d7 \u0394SE",
