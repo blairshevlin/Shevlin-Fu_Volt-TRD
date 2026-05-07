@@ -24,7 +24,7 @@
 # 2025/10/1     Blair Shevlin                           statistical tests comparing post-stim OR to baseline
 # 2025/11/14    Blair Shevlin                           adding effect sizes
 # 2025/11/18    Blair Shevlin                           added task x sess analysis
-
+# 2026/05/05    Blair Shevlin                           added HDRS change analysis
 
 rm(list = ls())
 
@@ -778,7 +778,14 @@ data_m6 = cl.Oz.lme %>%
   filter(session == "month 6") %>%
   select(idx,HDRS,baseline_HDRS,deltaPerHDRS,
          deltaDA_UG,deltaSE_UG,deltaNE_UG,
-         deltaDA_RL,deltaSE_RL,deltaNE_RL) 
+         deltaDA_RL,deltaSE_RL,deltaNE_RL)
+
+# Did HDRS change from baseline to month 6?
+t.test(data_m6$HDRS, data_m6$baseline_HDRS, paired = TRUE)
+# Effect size of difference
+data_m6_wide = data_m6 %>%
+  pivot_longer(cols = c(HDRS, baseline_HDRS), names_to = "time", values_to = "score")
+cohens_d(score ~ time, data = data_m6_wide)
 
 # Calculate models
 model_RL_m1 <- lm(HDRS ~ deltaDA_RL * deltaSE_RL, data = data_m1)

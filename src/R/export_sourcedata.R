@@ -517,9 +517,9 @@ cat("  Figure 4...\n")
     select(idx, HDRS_base = HDRS)
 
   # NT change metrics
-  data_m6 <- cl.Oz %>%
+  data_ug_m6 <- cl.Oz %>%
     filter(session == "month 6") %>%
-    select(idx, HDRS, deltaDA_UG, deltaSE_UG, deltaDA_RL, deltaSE_RL) %>%
+    select(idx, HDRS, deltaDA_UG, deltaSE_UG) %>%
     left_join(cl.Oz %>% filter(session == "pre stim") %>% select(idx, HDRS_base = HDRS), by = "idx") %>%
     mutate(deltaPerHDRS     = (HDRS_base - HDRS) / HDRS_base,
            change_magnitude = HDRS - HDRS_base,
@@ -542,8 +542,33 @@ cat("  Figure 4...\n")
              TRUE                             ~ "DA\u2193/5-HT\u2191"
            ))
 
-  # Panel A: DA vs 5-HT scatter
-  panel_A <- data_m6 %>%
+  data_rl_m6 <- cl.Oz %>%
+    filter(session == "month 6") %>%
+    select(idx, HDRS, deltaDA_RL, deltaSE_RL) %>%
+    left_join(cl.Oz %>% filter(session == "pre stim") %>% select(idx, HDRS_base = HDRS), by = "idx") %>%
+    mutate(deltaPerHDRS     = (HDRS_base - HDRS) / HDRS_base,
+           change_magnitude = HDRS - HDRS_base,
+           synergy_score    = case_when(
+             deltaDA_RL > 0 & deltaSE_RL > 0 ~ deltaDA_RL * deltaSE_RL,
+             deltaDA_RL < 0 & deltaSE_RL < 0 ~ abs(deltaDA_RL * deltaSE_RL),
+             TRUE                             ~ -abs(deltaDA_RL * deltaSE_RL)
+           ),
+           response_category = case_when(
+             HDRS <= 8          ~ "Remission",
+             deltaPerHDRS > 0.5 ~ "Responder",
+             TRUE               ~ "Non-Responder"
+           ),
+           response_category = factor(response_category,
+                                      levels = c("Non-Responder", "Responder", "Remission")),
+           change_pattern = case_when(
+             deltaDA_RL > 0 & deltaSE_RL > 0 ~ "Both Increase",
+             deltaDA_RL < 0 & deltaSE_RL < 0 ~ "Both Decrease",
+             deltaDA_RL > 0 & deltaSE_RL < 0 ~ "DA\u2191/5-HT\u2193",
+             TRUE                             ~ "DA\u2193/5-HT\u2191"
+           ))
+
+  # Panel A: DA vs 5-HT scatter (UG)
+  panel_A <- data_ug_m6 %>%
     transmute(panel            = "A",
               level            = "subject",
               idx              = as.character(idx),
@@ -559,8 +584,8 @@ cat("  Figure 4...\n")
               HDRS_m6          = NA_real_,
               HDRS_change_m6   = NA_real_)
 
-  # Panel B: synergy vs HDRS
-  panel_B <- data_m6 %>%
+  # Panel B: synergy vs HDRS (UG)
+  panel_B <- data_ug_m6 %>%
     transmute(panel            = "B",
               level            = "subject",
               idx              = as.character(idx),
@@ -570,21 +595,55 @@ cat("  Figure 4...\n")
               outcome_category = as.character(response_category),
               deltaDA          = NA_real_,
               deltaSE          = NA_real_,
-              task             = NA_character_,
+              task             = "UG",
               nt_pattern       = change_pattern,
               synergy_score,
               HDRS_m6          = HDRS,
               HDRS_change_m6   = change_magnitude)
 
-  source_data <- bind_rows(panel_A, panel_B)
+  # Panel C: DA vs 5-HT scatter (RL)
+  panel_C <- data_rl_m6 %>%
+    transmute(panel            = "C",
+              level            = "subject",
+              idx              = as.character(idx),
+              session          = NA_character_,
+              HDRS,
+              HDRS_change      = change_magnitude,
+              outcome_category = as.character(response_category),
+              deltaDA          = deltaDA_RL,
+              deltaSE          = deltaSE_RL,
+              task             = "RL",
+              nt_pattern       = change_pattern,
+              synergy_score    = NA_real_,
+              HDRS_m6          = NA_real_,
+              HDRS_change_m6   = NA_real_)
+
+  # Panel D: synergy vs HDRS (RL)
+  panel_D <- data_rl_m6 %>%
+    transmute(panel            = "D",
+              level            = "subject",
+              idx              = as.character(idx),
+              session          = NA_character_,
+              HDRS,
+              HDRS_change      = HDRS - HDRS_base,
+              outcome_category = as.character(response_category),
+              deltaDA          = NA_real_,
+              deltaSE          = NA_real_,
+              task             = "RL",
+              nt_pattern       = change_pattern,
+              synergy_score,
+              HDRS_m6          = HDRS,
+              HDRS_change_m6   = change_magnitude)
+
+  source_data <- bind_rows(panel_A, panel_B, panel_C, panel_D)
 
   write.csv(source_data,
             here::here("data/figures/figure4_source_data.csv"),
             row.names = FALSE)
 
   rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer, cl.df,
-     rl.nt.cl, ug.nt.cl, nt.cl, cl.Oz, cl.Oz.fig, hdrs_baseline, data_m6,
-     panel_A, panel_B, source_data)
+     rl.nt.cl, ug.nt.cl, nt.cl, cl.Oz, cl.Oz.fig, hdrs_baseline, data_rl_m6, data_ug_m6,
+     panel_A, panel_B, panel_C, panel_D, source_data)
 }
 
 

@@ -9,13 +9,33 @@
 "A","subject","8",NA,3,-14.67,"Remission",1.57046810092037,-2.08812142197411,"UG","DA↑/5-HT↓",NA,NA,NA
 "A","subject","9",NA,11,-9.25,"Non-Responder",-0.735174322765612,11.0366242636275,"UG","DA↓/5-HT↑",NA,NA,NA
 "A","subject","10",NA,8,-12.75,"Remission",10.7852070937209,10.2098810683777,"UG","Both Increase",NA,NA,NA
-"B","subject","1",NA,7,-14.5,"Remission",NA,NA,NA,"Both Increase",4.52259597814044,7,-14.5
-"B","subject","2",NA,10,-13.5,"Responder",NA,NA,NA,"Both Increase",7.81354463209378,10,-13.5
-"B","subject","3",NA,6,-17,"Remission",NA,NA,NA,"Both Increase",47.4911927152709,6,-17
-"B","subject","4",NA,18,-5.5,"Non-Responder",NA,NA,NA,"DA↓/5-HT↑",-115.551113994271,18,-5.5
-"B","subject","5",NA,2,-19.5,"Remission",NA,NA,NA,"Both Increase",85.4101423971532,2,-19.5
-"B","subject","6",NA,23,-8.25,"Non-Responder",NA,NA,NA,"DA↑/5-HT↓",-117.426342726604,23,-8.25
-"B","subject","7",NA,4,-16,"Remission",NA,NA,NA,"Both Increase",20.4708176711917,4,-16
-"B","subject","8",NA,3,-14.67,"Remission",NA,NA,NA,"DA↑/5-HT↓",-3.27932808405882,3,-14.67
-"B","subject","9",NA,11,-9.25,"Non-Responder",NA,NA,NA,"DA↓/5-HT↑",-8.11384276863087,11,-9.25
-"B","subject","10",NA,8,-12.75,"Remission",NA,NA,NA,"Both Increase",110.115681724714,8,-12.75
+"B","subject","1",NA,7,-14.5,"Remission",NA,NA,"UG","Both Increase",4.52259597814044,7,-14.5
+"B","subject","2",NA,10,-13.5,"Responder",NA,NA,"UG","Both Increase",7.81354463209378,10,-13.5
+"B","subject","3",NA,6,-17,"Remission",NA,NA,"UG","Both Increase",47.4911927152709,6,-17
+"B","subject","4",NA,18,-5.5,"Non-Responder",NA,NA,"UG","DA↓/5-HT↑",-115.551113994271,18,-5.5
+"B","subject","5",NA,2,-19.5,"Remission",NA,NA,"UG","Both Increase",85.4101423971532,2,-19.5
+"B","subject","6",NA,23,-8.25,"Non-Responder",NA,NA,"UG","DA↑/5-HT↓",-117.426342726604,23,-8.25
+"B","subject","7",NA,4,-16,"Remission",NA,NA,"UG","Both Increase",20.4708176711917,4,-16
+"B","subject","8",NA,3,-14.67,"Remission",NA,NA,"UG","DA↑/5-HT↓",-3.27932808405882,3,-14.67
+"B","subject","9",NA,11,-9.25,"Non-Responder",NA,NA,"UG","DA↓/5-HT↑",-8.11384276863087,11,-9.25
+"B","subject","10",NA,8,-12.75,"Remission",NA,NA,"UG","Both Increase",110.115681724714,8,-12.75
+"C","subject","1",NA,7,-14.5,"Remission",NA,NA,"RL","DA↓/5-HT↑",NA,NA,NA
+"C","subject","2",NA,10,-13.5,"Responder",NA,NA,"RL","DA↓/5-HT↑",NA,NA,NA
+"C","subject","3",NA,6,-17,"Remission",10.4375236712663,-1.11589573981619,"RL","DA↑/5-HT↓",NA,NA,NA
+"C","subject","4",NA,18,-5.5,"Non-Responder",-11.3136675109299,11.1494385908408,"RL","DA↓/5-HT↑",NA,NA,NA
+"C","subject","5",NA,2,-19.5,"Remission",11.0615607166087,10.0349023999363,"RL","Both Increase",NA,NA,NA
+"C","subject","6",NA,23,-8.25,"Non-Responder",11.1305446575453,-11.0093001556598,"RL","DA↑/5-HT↓",NA,NA,NA
+"C","subject","7",NA,4,-16,"Remission",-0.470871127961122,10.7678738982573,"RL","DA↓/5-HT↑",NA,NA,NA
+"C","subject","8",NA,3,-14.67,"Remission",10.8974934045686,-10.6435400273744,"RL","DA↑/5-HT↓",NA,NA,NA
+"C","subject","9",NA,11,-9.25,"Non-Responder",8.24700670705627,11.6629369763733,"RL","Both Increase",NA,NA,NA
+"C","subject","10",NA,8,-12.75,"Remission",11.3538554267879,-10.4164270600903,"RL","DA↑/5-HT↓",NA,NA,NA
+"D","subject","1",NA,7,-14.5,"Remission",NA,NA,"RL","DA↓/5-HT↑",NA,7,-14.5
+"D","subject","2",NA,10,-13.5,"Responder",NA,NA,"RL","DA↓/5-HT↑",NA,10,-13.5
+"D","subject","3",NA,6,-17,"Remission",NA,NA,"RL","DA↑/5-HT↓",-11.6471881989968,6,-17
+"D","subject","4",NA,18,-5.5,"Non-Responder",NA,NA,"RL","DA↓/5-HT↑",-126.141041150303,18,-5.5
+"D","subject","5",NA,2,-19.5,"Remission",NA,NA,"RL","Both Increase",111.001682182138,2,-19.5
+"D","subject","6",NA,23,-8.25,"Non-Responder",NA,NA,"RL","DA↑/5-HT↓",-122.539507030891,23,-8.25
+"D","subject","7",NA,4,-16,"Remission",NA,NA,"RL","DA↓/5-HT↑",-5.07028092821555,4,-16
+"D","subject","8",NA,3,-14.67,"Remission",NA,NA,"RL","DA↑/5-HT↓",-115.987907249574,3,-14.67
+"D","subject","9",NA,11,-9.25,"Non-Responder",NA,NA,"RL","Both Increase",96.1843194681255,11,-9.25
+"D","subject","10",NA,8,-12.75,"Remission",NA,NA,"RL","DA↑/5-HT↓",-118.266606903946,8,-12.75

@@ -61,18 +61,18 @@ offset_data <- panel_E %>%
 
 fig.hdrs.change <-
   ggplot() +
-  theme_pubr(base_size = 16) +
-  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
-  annotate("text", x = 0.5, y = 8.5, label = "Clinical Remission", size = 5, hjust = 0) +
+  theme_pubr(base_size = 24) +
+  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 1) +
+  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 5.5, hjust = 0) +
   geom_boxplot(data = offset_data,
                aes(x = box_x_pos, y = HDRS, group = sess_fig),
-               linewidth = 1.1, outlier.alpha = 0, width = 0.15, show.legend = FALSE) +
+               linewidth = 1.25, outlier.alpha = 0, width = 0.25, show.legend = FALSE) +
   geom_line(data = offset_data,
             aes(x = point_x_pos, y = HDRS, group = idx),
-            linewidth = 1.5, alpha = .25, color = "black") +
+            linewidth = 1.75, alpha = .25, color = "black") +
   geom_point(data = offset_data,
              aes(x = point_x_pos, y = HDRS, group = idx),
-             size = 3, stroke = 1.5, alpha = .35, show.legend = FALSE) +
+             size = 3.5, stroke = 1.75, alpha = .35, show.legend = FALSE) +
   coord_cartesian(ylim = c(0, 32)) +
   scale_x_continuous(breaks = c(1, 2), labels = c("Baseline","Month 6"), limits = c(0.5, 2.5)) +
   scale_y_continuous(breaks = seq(0, 30, 5)) +
