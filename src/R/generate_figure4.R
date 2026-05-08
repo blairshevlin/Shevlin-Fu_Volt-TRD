@@ -46,6 +46,11 @@ library(scales)
 library(ggrepel)
 library(effectsize)
 
+# Custom rounding function
+midround <- function(x, base = 1) {
+  return(base * round(x / base))
+}
+
 # Paths
 res_dir = here::here("results/from_source_data")
 
@@ -64,7 +69,7 @@ panel_A <- source_data %>%
 
 # Recompute change_magnitude for size aesthetic (HDRS_change stored in source data)
 panel_A <- panel_A %>%
-  mutate(change_magnitude = HDRS_change)
+  mutate(change_magnitude = midround(HDRS_change, base = 5))
 
 fig.profiles <-
   ggplot(panel_A, aes(x = deltaDA, y = deltaSE)) +
@@ -85,11 +90,11 @@ fig.profiles <-
                                              override.aes = list(fill = "black", alpha = 0.5))) +
   labs(x = "Change in DA (\u0394DA)", y = "Change in 5-HT (\u03945-HT)",
        title = "Individual Patient Neurochemical Profiles") +
-  annotate("text", x =  6, y =  5, label = "Both \u2191",       size = 4, fontface = "bold") +
-  annotate("text", x = -6, y = -5, label = "Both \u2193",       size = 4, fontface = "bold") +
-  annotate("text", x =  6, y = -5, label = "DA\u2191/5-HT\u2193", size = 4, fontface = "bold") +
-  annotate("text", x = -6, y =  5, label = "DA\u2193/5-HT\u2191", size = 4, fontface = "bold") +
-  theme_pubr(base_size = 14) +
+  annotate("text", x =  6, y =  5.5, label = "Both \u2191",       size = 6, fontface = "bold") +
+  annotate("text", x = -6, y = -5.5, label = "Both \u2193",       size = 6, fontface = "bold") +
+  annotate("text", x =  6, y = -5.5, label = "DA\u2191/5-HT\u2193", size = 6, fontface = "bold") +
+  annotate("text", x = -6, y =  5.5, label = "DA\u2193/5-HT\u2191", size = 6, fontface = "bold") +
+  theme_pubr(base_size = 16) +
   theme(panel.grid.minor = element_blank(),
         plot.title = element_text(size = 14, face = "bold"),
         plot.subtitle = element_text(size = 11, color = "grey40"),
@@ -98,7 +103,7 @@ fig.profiles <-
 # ---- Panel B: synergy vs HDRS ----------------------------------------------
 panel_B <- source_data %>%
   filter(panel == "B") %>%
-  mutate(change_magnitude = HDRS_change_m6)
+  mutate(change_magnitude = midround(HDRS_change_m6, base = 5))
 
 fig.synergy <-
   ggplot(panel_B, aes(x = synergy_score, y = HDRS_m6)) +
@@ -108,7 +113,7 @@ fig.synergy <-
   geom_text(x = max(panel_B$synergy_score), y = max(panel_B$HDRS_m6),
             label = paste0("Pearson's r = ", round(cor(panel_B$synergy_score, panel_B$HDRS_m6), 3),
                            "\np = ", round(cor.test(panel_B$synergy_score, panel_B$HDRS_m6)$p.value, 3)),
-            hjust = 1.1, vjust = 1.1, size = 5, color = "grey40") +
+            hjust = 1.1, vjust = 1.1, size = 6, color = "grey40") +
   geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
   geom_text(x = min(panel_B$synergy_score), y = 8, label = "Clinical Remission", size = 5, hjust = 0) +
   scale_fill_manual(values = c("Both Increase" = "#2166ac", "Both Decrease" = "#762a83",
@@ -121,7 +126,7 @@ fig.synergy <-
   labs(x = "\u0394DA \u00d7 \u0394SE",
        y = "Month 6 HDRS-17",
        title = "Neurochemical Profiles Predict Treatment Response") +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 16) +
   theme(panel.grid.minor = element_blank(),
         plot.title = element_text(size = 14, face = "bold"),
         plot.subtitle = element_text(size = 11, color = "grey40"),
@@ -131,7 +136,7 @@ fig.synergy <-
 fig.4 <- (fig.profiles + fig.synergy) +
   plot_annotation(tag_levels = "a") +
   plot_layout(guides = "collect") &
-  theme(plot.tag = element_text(size = 22, face = "bold"),
+  theme(plot.tag = element_text(size = 22),
         plot.title    = element_text(size = 18, face = "bold"),
         plot.subtitle = element_text(size = 12, color = "grey40")) 
 

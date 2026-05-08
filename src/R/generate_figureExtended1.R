@@ -45,13 +45,22 @@ source_data <- read.csv(here::here("data/figures/figureExtended1_source_data.csv
 source_data$outcome_category <- factor(source_data$outcome_category,
                                        levels = c("Non-Responder","Responder","Remission"))
 
+# Set colors
+paired_cols <- RColorBrewer::brewer.pal(10, "Paired")                                       
+reordered_cols <- c(paired_cols[9:10], paired_cols[1:8])
+
 # ---- HDRS trajectories --------------------------------------------
 trajectory <- source_data %>%
   filter(panel == "A") %>%
   arrange(as.numeric(idx)) %>%
   mutate(
-    idx_lab  = factor(paste0(idx, " (", cohort, ")"),
-                      levels = unique(paste0(idx, " (", cohort, ")"))),
+    idx_lab = factor(
+        ifelse(cohort == "RC+S",
+              paste0("RC+S-", sprintf("%02d", as.numeric(idx))),
+              paste0("PC-",   sprintf("%02d", as.numeric(idx)))),
+        levels = c("RC+S-01","RC+S-02","RC+S-03","RC+S-04","RC+S-05",
+                  "PC-06","PC-07","PC-08","PC-09","PC-10")
+      ),
     sess_fig = factor(session,
                       levels = c("Baseline", "DBS", "Week 1", "Month 1", "Month 2",
                                  "Month 3", "Month 4", "Month 5", "Month 6"))
@@ -69,8 +78,12 @@ fig.hdrs.trajectory <-
   scale_y_continuous(breaks = seq(0, 30, 10)) +
   scale_x_discrete(drop = FALSE) +
   scale_shape_manual(values = c(16,17,15,18,8,3,4,1,2,0))+
-  scale_color_brewer(type = "qual", palette = 3)+
-  scale_fill_brewer(type = "qual", palette = 3)+
+  scale_color_manual(values = setNames(reordered_cols,
+  c("RC+S-01","RC+S-02","RC+S-03","RC+S-04","RC+S-05",
+    "PC-06","PC-07","PC-08","PC-09","PC-10"))) +
+  scale_fill_manual(values = setNames(reordered_cols,
+  c("RC+S-01","RC+S-02","RC+S-03","RC+S-04","RC+S-05",
+    "PC-06","PC-07","PC-08","PC-09","PC-10"))) +
   labs(x = element_blank(), y = "HDRS-17",
     shape = NULL, color = NULL, fill = NULL)+
   theme(legend.position = "right")  
@@ -106,13 +119,15 @@ fig.hdrs.timeline.cohort <-
              position = position_dodge2(width = .75),
              stroke = 1.75, aes(shape = cohort, color = cohort)) +
   annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 4.5, hjust = 0) +
-  labs(x     = element_blank(),
-       y     = "HDRS-17",
-       shape = "Cohort",
-       color = "Cohort") +
+  labs(x = element_blank(), y = "HDRS-17",
+     shape = "Device (mean \u00b1 SEM)",
+     color = "Device (mean \u00b1 SEM)") +
   scale_shape_manual(values = c(16, 15)) +
-  scale_color_brewer(type = "qual", palette = 2) +
-  theme(legend.position = c(0.225, 0.85))
+  scale_color_manual(values = c(
+  "RC+S" = paired_cols[10],  # dark purple  #6A3D9A
+  "PC"   = paired_cols[6]    # dark red     #E31A1C
+  )) +
+  theme(legend.position = c(0.3, 0.85))
 
 # ---- Assemble ---------------------------------------------------------------
 extendedFig1 <- fig.hdrs.trajectory / fig.hdrs.timeline.cohort + plot_layout(widths = c(1, 1)) +

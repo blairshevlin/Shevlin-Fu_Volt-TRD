@@ -459,8 +459,8 @@ calculate_t(ug.mood.means,value_col = "mMood", time_col = "sess",
             baseline_level = "Baseline",
             comparison_level = "Post-Stim")
 calculate_t(ug.mood.means,value_col = "mMood", time_col = "sess",
-            baseline_level = "Month 6",
-            comparison_level = "Baseline")
+            baseline_level = "Baseline",
+            comparison_level = "Month 6")
 
 round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Baseline"]),2)
 round(sd(ug.mood.means$mMood[ug.mood.means$sess == "Pre-Stim"]),2)
