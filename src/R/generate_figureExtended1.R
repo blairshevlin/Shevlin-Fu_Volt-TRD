@@ -88,50 +88,7 @@ fig.hdrs.trajectory <-
     shape = NULL, color = NULL, fill = NULL)+
   theme(legend.position = "right")  
 
-# ---- Device differences --------------------------------------------
-
-# Panel B data
-cl.fig <- source_data %>%
-  filter(panel == "B") %>%
-  arrange( as.numeric(idx) ) %>%
-  mutate(idx_lab = factor(
-             paste0(idx, " (", cohort, ")"),
-             levels = unique(paste0(idx, " (", cohort, ")"))),
-             sess_fig = factor(session,
-                           levels = c("Baseline", "DBS","Week 1", "Month 1",
-                                      "Month 2", "Month 3", "Month 4", "Month 5", "Month 6")))
-
-fig.hdrs.timeline.cohort <-
-  cl.fig %>%
-  ggplot(aes(x = sess_fig, y = HDRS)) +
-  theme_pubr(base_size = 14) +
-  geom_vline(xintercept = "DBS", linewidth = 2) +
-  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
-  stat_summary(geom = "line",
-               aes(color = cohort, group = cohort),
-               position = position_dodge2(width = .75),
-               linewidth = 1.5) +
-  stat_summary(aes(shape = cohort, color = cohort),
-               position = position_dodge2(width = .75),
-               size = 1.5, linewidth = 1.5) +
-  geom_point(data = cl.fig,
-             size = 2, alpha = .5,
-             position = position_dodge2(width = .75),
-             stroke = 1.75, aes(shape = cohort, color = cohort)) +
-  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 4.5, hjust = 0) +
-  labs(x = element_blank(), y = "HDRS-17",
-     shape = "Device (mean \u00b1 SEM)",
-     color = "Device (mean \u00b1 SEM)") +
-  scale_shape_manual(values = c(16, 15)) +
-  scale_color_manual(values = c(
-  "RC+S" = paired_cols[10],  # dark purple  #6A3D9A
-  "PC"   = paired_cols[6]    # dark red     #E31A1C
-  )) +
-  theme(legend.position = c(0.3, 0.85))
-
-# ---- Assemble ---------------------------------------------------------------
-extendedFig1 <- fig.hdrs.trajectory / fig.hdrs.timeline.cohort + plot_layout(widths = c(1, 1)) +
-    plot_annotation(tag_levels = "a") & theme(plot.tag = element_text(size = 22))
+extendedFig1 <- fig.hdrs.trajectory & theme(plot.tag = element_text(size = 22))
 
 ggsave(file.path(res_dir, "Extended-Data_Figure1.png"),
        plot = extendedFig1, device = "png",
