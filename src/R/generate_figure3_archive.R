@@ -68,6 +68,10 @@ rl.c.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 14) +
+  geom_rect(xmin = "DBS",     xmax = "Month 1", color = "gray",  ymin = -Inf, ymax = 0.45, fill = "gray",  alpha = 0.15) +
+  geom_rect(xmin = "Month 1", xmax = "Month 6", color = "black", ymin = -Inf, ymax = 0.45, fill = "black", alpha = 0.15) +
+  annotate("text", x = 2.5, y = 0.425, label = "OFF", fontface = "bold", color = "white", size = 3.5) +
+  annotate("text", x = "Month 3", y = 0.425, label = "ON", fontface = "bold", color = "white", size = 3.5) +
   geom_vline(xintercept = "DBS", linewidth = 2) +
   geom_boxplot(data = rl.beh.means[rl.beh.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 1.1, outlier.alpha = 0, show.legend = FALSE) +
@@ -94,6 +98,10 @@ rl.logrt.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 14) +
+  geom_rect(xmin = "DBS",     xmax = "Month 1", color = "gray",  ymin = -Inf, ymax = -3.75, fill = "gray",  alpha = 0.15) +
+  geom_rect(xmin = "Month 1", xmax = "Month 6", color = "black", ymin = -Inf, ymax = -3.75, fill = "black", alpha = 0.15) +
+  annotate("text", x = 2.5, y = -4, label = "OFF", fontface = "bold", color = "white", size = 3.5) +
+  annotate("text", x = "Month 3", y = -4, label = "ON", fontface = "bold", color = "white", size = 3.5) +
   geom_vline(xintercept = "DBS", linewidth = 2) +
   geom_boxplot(data = rl.rt.means[rl.rt.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 1.1, outlier.alpha = 0, show.legend = FALSE) +
@@ -120,6 +128,10 @@ ug.c.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 14) +
+  geom_rect(xmin = "DBS",     xmax = "Month 1", color = "gray",  ymin = -Inf, ymax = 0.05, fill = "gray",  alpha = 0.15) +
+  geom_rect(xmin = "Month 1", xmax = "Month 6", color = "black", ymin = -Inf, ymax = 0.05, fill = "black", alpha = 0.15) +
+  annotate("text", x = 2.5, y = 0.005, label = "OFF", fontface = "bold", color = "white", size = 3.5) +
+  annotate("text", x = "Month 3", y = 0.005, label = "ON", fontface = "bold", color = "white", size = 3.5) +
   geom_vline(xintercept = "DBS", linewidth = 2) +
   geom_boxplot(data = ug.beh.means[ug.beh.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 1.1, outlier.alpha = 0, show.legend = FALSE) +
@@ -146,6 +158,10 @@ ug.logrt.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 14) +
+  geom_rect(xmin = "DBS",     xmax = "Month 1", color = "gray",  ymin = -Inf, ymax = -0.4, fill = "gray",  alpha = 0.15) +
+  geom_rect(xmin = "Month 1", xmax = "Month 6", color = "black", ymin = -Inf, ymax = -0.4, fill = "black", alpha = 0.15) +
+  annotate("text", x = 2.5, y = -0.5, label = "OFF", fontface = "bold", color = "white", size = 3.5) +
+  annotate("text", x = "Month 3", y = -0.5, label = "ON", fontface = "bold", color = "white", size = 3.5) +
   geom_vline(xintercept = "DBS", linewidth = 2) +
   geom_boxplot(data = ug.rt.means[ug.rt.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 1.1, outlier.alpha = 0, show.legend = FALSE) +
@@ -172,6 +188,10 @@ ug.mood.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 14) +
+  geom_rect(xmin = "DBS",     xmax = "Month 1", color = "gray",  ymin = -Inf, ymax = -1, fill = "gray",  alpha = 0.15) +
+  geom_rect(xmin = "Month 1", xmax = "Month 6", color = "black", ymin = -Inf, ymax = -1, fill = "black", alpha = 0.15) +
+  annotate("text", x = 2.5, y = -5, label = "OFF", fontface = "bold", color = "white", size = 3.5) +
+  annotate("text", x = "Month 3", y = -5, label = "ON", fontface = "bold", color = "white", size = 3.5) +
   geom_vline(xintercept = "DBS", linewidth = 2) +
   geom_boxplot(data = ug.mood.means[ug.mood.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 1.1, outlier.alpha = 0, show.legend = FALSE) +
