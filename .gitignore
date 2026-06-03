@@ -53,4 +53,4 @@ Thumbs.db
 .claude/
 
 # Archived files
-/src/generate_figure3_archive.R
+/src/R/generate_figure3_archive.R
