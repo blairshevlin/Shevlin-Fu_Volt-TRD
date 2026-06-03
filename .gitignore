@@ -44,7 +44,7 @@ Thumbs.db
 /results/from_source_data/
 
 # Raw untiled R files
-/src/R/Untiled-1.r
+/src/R/Untitled-1.r
 
 # Exploratory files
 /src/R/generate_figure4_withRL.R
