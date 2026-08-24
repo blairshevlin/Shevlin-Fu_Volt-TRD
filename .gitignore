@@ -60,4 +60,5 @@ Thumbs.db
 # Archived files
 /src/R/generate_figure3_archive.R
 .Rproj.user
-.Rproj
+*.Rproj
+.Rhistory
