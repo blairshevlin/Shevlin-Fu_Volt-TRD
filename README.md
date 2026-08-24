@@ -74,6 +74,8 @@ All code for generating figures and conducting statistical analyses are in the `
 - `process_nt.r` - Converts raw estimates into processed data used for all analyses
   - **Note:** Requires access to `data/nt/raw/`. This script will not run until raw data is released upon publication
 - `statistical_tests.R` - Runs all statistical analyses reported in the main text
+- `sensitivity_and_robustness_tests.R` - Runs additional analyses verifying robustness and reliability of analyses reported in the main text
+- `power_mde_analysis.R` - Runs Minimum Effect Size (MDE) analysis
 - `export_sourcedata.R` - Exports figure source data CSVs to `data/figures/` (run once before generating figures)
 - `generate_figureXX.R` - Generates the corresponding figure from its source data CSV (XX = figure number from main text). Output figures are saved to `results/from_source_data/`.
 
@@ -93,18 +95,18 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 ### BibTeX:
 ```bibtex
 @software{shevlin2026analysis,
-  author = {Shevlin, Blair and Fu, Qi Xiu},
+  author = {Shevlin, Blair},
   title = {Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex},
   year = {2026},
   publisher = {Zenodo},
-  doi = {10.5281/zenodo.20090427},
-  url = {https://doi.org/10.5281/zenodo.20090427}
+  doi = {10.5281/zenodo.22084826},
+  url = {https://doi.org/10.5281/zenodo.22084826}
 }
 ```
 
 ### APA:
 ```
-Shevlin, B., & Fu, Q. X. (2026). Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex. Zenodo. https://doi.org/10.5281/zenodo.20090427
+Shevlin, B., & Fu, Q. X. (2026). Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex. Zenodo. https://doi.org/10.5281/zenodo.22084826
 ```
 
 ## License
