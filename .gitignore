@@ -48,9 +48,16 @@ Thumbs.db
 
 # Exploratory files
 /src/R/generate_figure4_withRL.R
+/src/R/statistical_tests_robust.R
+/src/R/generate_figureSupplement_DAxSE_RawVsOz.R
+/src/R/generate_figure3_archive.R
+/src/R/analysis_responder_concordance.R
+/src/R/generate_power_mde_report.R
 
 # Claude Settings
 .claude/
 
 # Archived files
 /src/R/generate_figure3_archive.R
+.Rproj.user
+.Rproj

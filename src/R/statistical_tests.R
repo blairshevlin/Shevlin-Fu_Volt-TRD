@@ -25,6 +25,7 @@
 # 2025/11/14    Blair Shevlin                           adding effect sizes
 # 2025/11/18    Blair Shevlin                           added task x sess analysis
 # 2026/05/05    Blair Shevlin                           added HDRS change analysis
+# 2026/08/18    Blair Shevlin                           added sensitivity analyses and robustness tests
 
 rm(list = ls())
 
@@ -40,12 +41,14 @@ library(ggeffects)
 library(readxl)
 library(purrr)
 library(broom)
+library(broom.mixed)
 library(caTools)
 library("ggnewscale")
 library(rstatix)
 library(scales)
 library(ggrepel)
 library(effectsize)
+library(emmeans)
 
 # Paths
 dir = path(here())
