@@ -61,18 +61,18 @@ offset_data <- panel_E %>%
 
 fig.hdrs.change <-
   ggplot() +
-  theme_pubr(base_size = 24) +
-  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 1) +
-  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 5.5, hjust = 0) +
+  theme_pubr(base_size = 7) +
+  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.3) +
+  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 2.2, hjust = 0) +
   geom_boxplot(data = offset_data,
                aes(x = box_x_pos, y = HDRS, group = sess_fig),
-               linewidth = 1.25, outlier.alpha = 0, width = 0.25, show.legend = FALSE) +
+               linewidth = 0.35, outlier.alpha = 0, width = 0.25, show.legend = FALSE) +
   geom_line(data = offset_data,
             aes(x = point_x_pos, y = HDRS, group = idx),
-            linewidth = 1.75, alpha = .25, color = "black") +
+            linewidth = 0.4, alpha = .25, color = "black") +
   geom_point(data = offset_data,
              aes(x = point_x_pos, y = HDRS, group = idx),
-             size = 3.5, stroke = 1.75, alpha = .35, show.legend = FALSE) +
+             size = 1, stroke = 0.4, alpha = .35, show.legend = FALSE) +
   coord_cartesian(ylim = c(0, 32)) +
   scale_x_continuous(breaks = c(1, 2), labels = c("Baseline","Month 6"), limits = c(0.5, 2.5)) +
   scale_y_continuous(breaks = seq(0, 30, 5)) +
@@ -81,13 +81,8 @@ fig.hdrs.change <-
 # ---- Assemble ---------------------------------------------------------------
 fig.1E <- fig.hdrs.change + plot_layout(widths = c(1))
 
-ggsave(file.path(res_dir, "figure1E.png"),
-       plot = fig.1E, device = "png",
-       width = 10, height = 8, dpi = 300)
-
-ggsave(file.path(res_dir, "figure1E.pdf"),
-       plot = fig.1E,
-       device = "pdf",
-       width = 10,
-       height = 8,
-       dpi = 300)
+# Printed size of panel e inside Fig. 1; confirm against the Fig. 1 layout
+ggsave(file.path(res_dir, "figure1E.pdf"), plot = fig.1E, device = cairo_pdf,
+       width = 60, height = 60, units = "mm")
+ggsave(file.path(res_dir, "figure1E.png"), plot = fig.1E,
+       width = 60, height = 60, units = "mm", dpi = 300)

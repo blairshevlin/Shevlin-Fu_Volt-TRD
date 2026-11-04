@@ -41,24 +41,6 @@ source_data <- read.csv(here::here("data/figures/figureSupplement2_source_data.c
 source_data$stim <- factor(source_data$stim, levels = c("Pre-Stim", "Post-Stim"))
 source_data$nt   <- factor(source_data$nt,   levels = c("DA", "5-HT", "NE"))
 
-# Panel A: temporal slope estimates (group-level, model-derived)
-slope_data <- source_data %>%
-  filter(panel == "A") %>%
-  mutate(
-    color = ifelse(stim == "Pre-Stim",
-                   case_when(
-                     nt == "5-HT" ~ "#9ecae1",
-                     nt == "DA"   ~ "#fcbba1",
-                     nt == "NE"   ~ "#c7e9c0"
-                   ),
-                   case_when(
-                     nt == "5-HT" ~ "#08519c",
-                     nt == "DA"   ~ "#a50f15",
-                     nt == "NE"   ~ "#006d2c"
-                   )),
-    stim = factor(stim, levels = c("Pre-Stim", "Post-Stim"))
-  )
-
 # Panel B: UG early vs late (subject-level)
 early_late_UG <- source_data %>%
   filter(panel == "B") %>%
@@ -94,26 +76,6 @@ early_late_RL <- source_data %>%
                      nt == "NE"   ~ "#006d2c"
                    ))
   )
-
-# Panel A: Slope Comparison Plot
-panel_a <-
-  slope_data %>%
-  ggplot(aes(x = task, y = slope)) +
-  geom_col(position = position_dodge2(width = .5), aes(group = stim, fill = color)) +
-  geom_errorbar(position = position_dodge2(width = .5),
-                linewidth = 0.75,
-                aes(ymin = slope_lower, ymax = slope_upper)) +
-  facet_wrap(~nt, scales = "free_y") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(y = "Temporal slope \n(\u0394Estimate/trial)", x = "Task",
-       fill = element_blank()) +
-  theme_pubr(base_size = 14) +
-  theme(
-    strip.background = element_blank(),
-    strip.text       = element_text(color = "black", size = 15),
-    panel.spacing    = unit(0.2, "cm")
-  ) +
-  scale_fill_identity()
 
 # Panel B: UG early vs late
 panel_b <-
