@@ -106,7 +106,7 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 
 ### APA:
 ```
-Shevlin, B., & Fu, Q. X. (2026). Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex. Zenodo. https://doi.org/10.5281/zenodo.22084826
+Shevlin, B. R. K. (2026). Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex. Zenodo. https://doi.org/10.5281/zenodo.22084826
 ```
 
 ## License
