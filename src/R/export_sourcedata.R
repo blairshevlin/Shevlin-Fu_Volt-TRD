@@ -255,12 +255,49 @@ cat("  Figure 2...\n")
 }
 
 
+# Per-participant session means for Figure 3 and Supplementary Figure 3.
+# Trial exclusions must match statistical_tests.R, which computes the reported P values.
+behaviour_means <- function() {
+  beh_dir <- here::here("data/behavior")
+  rl.beh  <- read.csv(file.path(beh_dir, "rl-data_deid_07-10-25.csv"))
+  ug.beh  <- read.csv(file.path(beh_dir, "ug-data_deid_07-10-25.csv"))
+
+  # Empty "DBS" rows give the plots a gap at the surgery time point
+  add_dbs_rows <- function(df) {
+    bind_rows(df, data.frame(idx = unique(df$idx), sess = "DBS")) %>%
+      mutate(sess = factor(sess,
+                           levels = c("Baseline", "Pre-Stim", "DBS", "Post-Stim", "Week 1",
+                                      "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"))) %>%
+      arrange(idx, sess)
+  }
+
+  list(
+    ug = ug.beh %>%
+      filter(rt < 10) %>%
+      group_by(idx, sess) %>%
+      summarise(mChoice = mean(rej == 0), mRT = mean(rt), mLogRT = mean(log(rt))) %>%
+      mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
+      as.data.frame() %>% add_dbs_rows(),
+    mood = ug.beh %>%
+      filter(rt_mood < 10, !is.na(rt_mood)) %>%
+      group_by(idx, sess) %>%
+      summarise(mMood = mean(mood), mRT = mean(rt_mood), mLogRT = mean(log(rt))) %>%
+      mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
+      as.data.frame() %>% add_dbs_rows(),
+    rl = rl.beh %>%
+      filter(rt < 10) %>%
+      group_by(idx, sess) %>%
+      summarise(mChoice = mean(opt), mRT = mean(rt), mLogRT = mean(log(rt))) %>%
+      mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
+      as.data.frame() %>% add_dbs_rows()
+  )
+}
+
 # ===== FIGURE 3 =====
 
 cat("  Figure 3...\n")
 {
   nt_dir  <- here::here("data/nt/processed")
-  beh_dir <- here::here("data/behavior")
 
   load(file.path(nt_dir, "UG_RL_NT-Continuous_9-23-25.RData"))
 
@@ -272,42 +309,10 @@ cat("  Figure 3...\n")
     filter(event == "Offer") %>%
     mutate(stim = factor(stim, levels = c("Pre-Stim", "Post-Stim")))
 
-  rl.beh <- read.csv(file.path(beh_dir, "rl-data_deid_07-10-25.csv"))
-  ug.beh <- read.csv(file.path(beh_dir, "ug-data_deid_07-10-25.csv"))
-
-  ug.beh.means <- ug.beh %>%
-    group_by(idx, sess) %>%
-    summarise(mChoice = mean(rej == 0), mRT = mean(rt), mLogRT = mean(log(rt))) %>%
-    mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
-    as.data.frame()
-
-  ug.mood.means <- ug.beh %>%
-    group_by(idx, sess) %>%
-    filter(!is.na(rt_mood)) %>%
-    summarise(mMood = mean(mood), mRT = mean(rt_mood), mLogRT = mean(log(rt))) %>%
-    mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
-    as.data.frame()
-
-  rl.beh.means <- rl.beh %>%
-    group_by(idx, sess) %>%
-    summarise(mChoice = mean(opt), mRT = mean(rt), mLogRT = mean(log(rt))) %>%
-    mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
-    as.data.frame()
-
-  add_dbs_rows <- function(df, value_cols) {
-    unique_ids <- unique(df$idx)
-    dbs_rows   <- data.frame(idx = unique_ids, sess = "DBS")
-    for (col in value_cols) dbs_rows[[col]] <- NA
-    bind_rows(df, dbs_rows) %>%
-      mutate(sess = factor(sess,
-                           levels = c("Baseline", "Pre-Stim", "DBS", "Post-Stim", "Week 1",
-                                      "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"))) %>%
-      arrange(idx, sess)
-  }
-
-  rl.beh.means  <- add_dbs_rows(rl.beh.means,  c("mChoice", "mRT", "mLogRT"))
-  ug.beh.means  <- add_dbs_rows(ug.beh.means,  c("mChoice", "mRT", "mLogRT"))
-  ug.mood.means <- add_dbs_rows(ug.mood.means, c("mMood", "mRT", "mLogRT"))
+  beh_means     <- behaviour_means()
+  rl.beh.means  <- beh_means$rl
+  ug.beh.means  <- beh_means$ug
+  ug.mood.means <- beh_means$mood
 
   # Build top panel rows (behavioral timelines)
   panel_RL_choice <- rl.beh.means %>%
@@ -437,7 +442,7 @@ cat("  Figure 3...\n")
             row.names = FALSE)
 
   rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer,
-     rl.beh, ug.beh, rl.beh.means, ug.beh.means, ug.mood.means,
+     beh_means, rl.beh.means, ug.beh.means, ug.mood.means,
      rl.nt, ug.nt, rl.beh.change, rl.beh.nt, rl.beh.nt.long,
      ug.mood.change, ug.mood.nt, ug.mood.nt.long,
      panel_RL_choice, panel_RL_RT, panel_UG_choice, panel_UG_RT, panel_UG_mood,
@@ -868,25 +873,18 @@ cat("  Figure Supplement 2...\n")
                      REML    = FALSE,
                      control = lmerControl(optimizer = "nmkbw"))
 
-  da_slopes_df <- emtrends(sess.lm.DA, ~ stim * task, var = "trial_z") %>% as.data.frame()
-  se_slopes_df <- emtrends(sess.lm.SE, ~ stim * task, var = "trial_z") %>% as.data.frame()
-  ne_slopes_df <- emtrends(sess.lm.NE, ~ stim * task, var = "trial_z") %>% as.data.frame()
+  # Exact statistics for the legend: within-session slope of each NT, tested against zero
+  slope_tests <- bind_rows(
+    DA     = as.data.frame(test(emtrends(sess.lm.DA, ~ stim * task, var = "trial_z"))),
+    `5-HT` = as.data.frame(test(emtrends(sess.lm.SE, ~ stim * task, var = "trial_z"))),
+    NE     = as.data.frame(test(emtrends(sess.lm.NE, ~ stim * task, var = "trial_z"))),
+    .id = "nt") %>%
+    transmute(nt, task, stim, test = "LMM slope vs 0 (two-sided)",
+              estimate = trial_z.trend, SE, df, t = t.ratio, P = p.value)
 
-  build_slope_rows <- function(df, nt_label) {
-    df %>%
-      transmute(nt          = nt_label,
-                task        = as.character(task),
-                stim        = as.character(stim),
-                slope       = trial_z.trend,
-                slope_lower = lower.CL,
-                slope_upper = upper.CL)
-  }
-
-  slope_data <- bind_rows(
-    build_slope_rows(da_slopes_df, "DA"),
-    build_slope_rows(se_slopes_df, "5-HT"),
-    build_slope_rows(ne_slopes_df, "NE")
-  )
+  write.csv(slope_tests,
+            here::here("data/figures/figureSupplement2_statistics.csv"),
+            row.names = FALSE)
 
   trial_q <- as.numeric(quantile(task.merge$trial_z, probs = c(.25, .75)))
 
@@ -900,35 +898,17 @@ cat("  Figure Supplement 2...\n")
     mutate(nt = recode(nt, "SE" = "5-HT"),
            nt = factor(nt, levels = c("DA", "5-HT", "NE")))
 
-  panel_A <- slope_data %>%
-    mutate(panel        = "A",
-           level        = "group",
-           idx          = NA_character_,
-           trial_period = NA_character_,
-           Oz           = NA_real_) %>%
-    select(panel, level, task, nt, stim, idx, trial_period, Oz, slope, slope_lower, slope_upper)
-
   panel_B <- early_late_data %>%
     filter(task == "UG") %>%
-    mutate(panel        = "B",
-           level        = "subject",
-           trial_period = period,
-           slope        = NA_real_,
-           slope_lower  = NA_real_,
-           slope_upper  = NA_real_) %>%
-    select(panel, level, task, nt, stim, idx, trial_period, Oz, slope, slope_lower, slope_upper)
+    mutate(panel = "B", level = "subject", trial_period = period) %>%
+    select(panel, level, task, nt, stim, idx, trial_period, Oz)
 
   panel_C <- early_late_data %>%
     filter(task == "RL") %>%
-    mutate(panel        = "C",
-           level        = "subject",
-           trial_period = period,
-           slope        = NA_real_,
-           slope_lower  = NA_real_,
-           slope_upper  = NA_real_) %>%
-    select(panel, level, task, nt, stim, idx, trial_period, Oz, slope, slope_lower, slope_upper)
+    mutate(panel = "C", level = "subject", trial_period = period) %>%
+    select(panel, level, task, nt, stim, idx, trial_period, Oz)
 
-  source_data <- bind_rows(panel_A, panel_B, panel_C)
+  source_data <- bind_rows(panel_B, panel_C)
 
   write.csv(source_data,
             here::here("data/figures/figureSupplement2_source_data.csv"),
@@ -937,8 +917,8 @@ cat("  Figure Supplement 2...\n")
   rm(rl.EST, ug.EST, rl.EST.Reward, ug.EST.Offer,
      rl.premerge, ug.premerge, task.merge,
      sess.lm.DA, sess.lm.SE, sess.lm.NE,
-     da_slopes_df, se_slopes_df, ne_slopes_df, slope_data,
-     early_late_data, panel_A, panel_B, panel_C, source_data)
+     slope_tests,
+     early_late_data, panel_B, panel_C, source_data)
 }
 
 
@@ -946,46 +926,12 @@ cat("  Figure Supplement 2...\n")
 
 cat("  Figure Supplement 3...\n")
 {
-  beh_dir <- here::here("data/behavior")
-
-  rl.beh <- read.csv(file.path(beh_dir, "rl-data_deid_07-10-25.csv"))
-  ug.beh <- read.csv(file.path(beh_dir, "ug-data_deid_07-10-25.csv"))
-
   sessions <- c("Baseline", "Pre-Stim", "Post-Stim", "DBS", "Month 1", "Month 3", "Month 6")
 
-  add_dbs_rows <- function(df, value_cols) {
-    unique_ids <- unique(df$idx)
-    dbs_rows   <- data.frame(idx = unique_ids, sess = "DBS")
-    for (col in value_cols) dbs_rows[[col]] <- NA
-    bind_rows(df, dbs_rows) %>%
-      mutate(sess = factor(sess,
-                           levels = c("Baseline", "Pre-Stim", "DBS", "Post-Stim", "Week 1",
-                                      "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"))) %>%
-      arrange(idx, sess)
-  }
-
-  ug.beh.means <- ug.beh %>%
-    group_by(idx, sess) %>%
-    summarise(mChoice = mean(rej == 0), mRT = mean(rt), mLogRT = mean(log(rt))) %>%
-    mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
-    as.data.frame()
-
-  ug.mood.means <- ug.beh %>%
-    group_by(idx, sess) %>%
-    filter(!is.na(rt_mood)) %>%
-    summarise(mMood = mean(mood), mRT = mean(rt_mood), mLogRT = mean(log(rt))) %>%
-    mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
-    as.data.frame()
-
-  rl.beh.means <- rl.beh %>%
-    group_by(idx, sess) %>%
-    summarise(mChoice = mean(opt), mRT = mean(rt), mLogRT = mean(log(rt))) %>%
-    mutate(idx = factor(idx), sess = recode(sess, "fMRI" = "Baseline")) %>%
-    as.data.frame()
-
-  rl.beh.means  <- add_dbs_rows(rl.beh.means,  c("mChoice", "mRT", "mLogRT"))
-  ug.beh.means  <- add_dbs_rows(ug.beh.means,  c("mChoice", "mRT", "mLogRT"))
-  ug.mood.means <- add_dbs_rows(ug.mood.means, c("mMood", "mRT", "mLogRT"))
+  beh_means     <- behaviour_means()
+  rl.beh.means  <- beh_means$rl
+  ug.beh.means  <- beh_means$ug
+  ug.mood.means <- beh_means$mood
 
   rl.beh.means.plot  <- rl.beh.means  %>% filter(sess %in% sessions) %>% mutate(sess = factor(sess, levels = sessions))
   ug.beh.means.plot  <- ug.beh.means  %>% filter(sess %in% sessions) %>% mutate(sess = factor(sess, levels = sessions))
@@ -1018,7 +964,7 @@ cat("  Figure Supplement 3...\n")
             here::here("data/figures/figureSupplement3_source_data.csv"),
             row.names = FALSE)
 
-  rm(rl.beh, ug.beh, rl.beh.means, ug.beh.means, ug.mood.means,
+  rm(beh_means, rl.beh.means, ug.beh.means, ug.mood.means,
      rl.beh.means.plot, ug.beh.means.plot, ug.mood.means.plot,
      panel_RL_choice, panel_RL_RT, panel_UG_choice, panel_UG_RT, panel_UG_mood, source_data)
 }

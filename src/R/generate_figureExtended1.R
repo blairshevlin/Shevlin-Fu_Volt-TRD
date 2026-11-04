@@ -68,12 +68,12 @@ trajectory <- source_data %>%
 
 fig.hdrs.trajectory <-
   ggplot(trajectory,aes(x = sess_fig, y = HDRS, color = idx_lab, group = idx_lab, shape = idx_lab)) +
-  theme_pubr(base_size = 14) +
-  geom_vline(xintercept = "DBS", linewidth = 2) +
-  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.75) +
-  geom_line(data = ~ filter(.x, !is.na(HDRS)), linewidth = 1.5, alpha = .5, show.legend = FALSE) +
-  geom_point(size = 3, stroke = 1.5, alpha = .75) +
-  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 4.5, hjust = 0) +
+  theme_pubr(base_size = 7) +
+  geom_vline(xintercept = "DBS", linewidth = 0.8) +
+  geom_hline(yintercept = 7, linetype = "dashed", linewidth = 0.3) +
+  geom_line(data = ~ filter(.x, !is.na(HDRS)), linewidth = 0.5, alpha = .5, show.legend = FALSE) +
+  geom_point(size = 1.2, stroke = 0.5, alpha = .75) +
+  annotate("text", x = 0.5, y = 8, label = "Clinical Remission", size = 2.2, hjust = 0) +
   coord_cartesian(ylim = c(0, 32)) +
   scale_y_continuous(breaks = seq(0, 30, 10)) +
   scale_x_discrete(drop = FALSE) +
@@ -88,9 +88,11 @@ fig.hdrs.trajectory <-
     shape = NULL, color = NULL, fill = NULL)+
   theme(legend.position = "right")  
 
-extendedFig1 <- fig.hdrs.trajectory & theme(plot.tag = element_text(size = 22))
+extendedFig1 <- fig.hdrs.trajectory
 
-ggsave(file.path(res_dir, "Extended-Data_Figure1.png"),
-       plot = extendedFig1, device = "png",
-       width = 12, height = 8, dpi = 300)
+# Nature double column: 183 mm wide, 5-7 pt text
+ggsave(file.path(res_dir, "Extended-Data_Figure1.pdf"), plot = extendedFig1, device = cairo_pdf,
+       width = 183, height = 110, units = "mm")
+ggsave(file.path(res_dir, "Extended-Data_Figure1.png"), plot = extendedFig1,
+       width = 183, height = 110, units = "mm", dpi = 300)
 

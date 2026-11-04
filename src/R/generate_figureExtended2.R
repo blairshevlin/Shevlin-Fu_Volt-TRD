@@ -60,21 +60,21 @@ intercept_adjust  <- nM_range[1] - z_range[1] * scale_factor
 
 # Panel 1: Raw nM estimates
 p1 <- ggplot(fig.data, aes(x = time_sample, y = nM_smoothed)) +
-  theme_pubr(base_size = 14) +
-  geom_vline(xintercept = 0, linewidth = 1.1, linetype = "dashed", color = "black") +
-  geom_line(linewidth = 1.5, color = NT_colors$color[NT_colors$id == "SE"]) +
+  theme_pubr(base_size = 7) +
+  geom_vline(xintercept = 0, linewidth = 0.4, linetype = "dashed", color = "black") +
+  geom_line(linewidth = 0.6, color = NT_colors$color[NT_colors$id == "SE"]) +
   labs(x = "time relative to outcome reveal [ms]",
        y = "5-HT [nM]",
        title = "raw model estimate") +
   coord_cartesian(xlim = c(-250, 750)) +
   annotate("text", x = -40, y = max(fig.data$nM_smoothed), label = "Outcome\nReveal",
-           size = 3.5, hjust = 1, vjust = 1.2)
+           size = 2, hjust = 1, vjust = 1.2)
 
 p2 <- ggplot(fig.data, aes(x = time_sample)) +
-  theme_pubr(base_size = 14) +
-  geom_hline(yintercept = 0 * scale_factor + intercept_adjust, linewidth = 1.1, linetype = "dashed", alpha = 0.5) +
-  geom_vline(xintercept = 0, linewidth = 1.1, linetype = "dashed", color = "black") +
-  geom_line(aes(y = z_score * scale_factor + intercept_adjust), linewidth = 1.5, color = NT_colors$color[NT_colors$id == "SE"]) +
+  theme_pubr(base_size = 7) +
+  geom_hline(yintercept = 0 * scale_factor + intercept_adjust, linewidth = 0.4, linetype = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 0, linewidth = 0.4, linetype = "dashed", color = "black") +
+  geom_line(aes(y = z_score * scale_factor + intercept_adjust), linewidth = 0.6, color = NT_colors$color[NT_colors$id == "SE"]) +
   labs(x = "time relative to outcome reveal [ms]",
        y = "5-HT [nM]",
        title = "z-scored estimate") +
@@ -87,10 +87,10 @@ p2 <- ggplot(fig.data, aes(x = time_sample)) +
         axis.text.y.right  = element_text(color = NT_colors$color[NT_colors$id == "SE"]))
 
 p3 <- ggplot(fig.data, aes(x = time_sample)) +
-  theme_pubr(base_size = 14) +
-  geom_hline(yintercept = 0 * scale_factor + intercept_adjust, linewidth = 1.1, linetype = "dashed", alpha = 0.5) +
-  geom_vline(xintercept = 0, linewidth = 1.1, linetype = "dashed", color = "black") +
-  geom_line(aes(y = z_score * scale_factor + intercept_adjust), linewidth = 1.5, color = NT_colors$color[NT_colors$id == "SE"]) +
+  theme_pubr(base_size = 7) +
+  geom_hline(yintercept = 0 * scale_factor + intercept_adjust, linewidth = 0.4, linetype = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 0, linewidth = 0.4, linetype = "dashed", color = "black") +
+  geom_line(aes(y = z_score * scale_factor + intercept_adjust), linewidth = 0.6, color = NT_colors$color[NT_colors$id == "SE"]) +
   geom_ribbon(data = subset(fig.data, in_auc_window == TRUE),
               aes(ymax = z_score * scale_factor + intercept_adjust,
                   ymin = 0 * scale_factor + intercept_adjust),
@@ -111,32 +111,25 @@ p3 <- ggplot(fig.data, aes(x = time_sample)) +
 arrow1 <- ggplot() +
   theme_void() +
   annotate("segment", x = 0.2, xend = 0.8, y = 0.5, yend = 0.5,
-           arrow = arrow(length = unit(0.3, "cm"), type = "closed"),
-           size = 1.5) +
+           arrow = arrow(length = unit(0.15, "cm"), type = "closed"),
+           linewidth = 0.5) +
   xlim(0, 1) + ylim(0, 1)
 
 arrow2 <- ggplot() +
   theme_void() +
   annotate("segment", x = 0.2, xend = 0.8, y = 0.5, yend = 0.5,
-           arrow = arrow(length = unit(0.3, "cm"), type = "closed"),
-           size = 1.5) +
+           arrow = arrow(length = unit(0.15, "cm"), type = "closed"),
+           linewidth = 0.5) +
   xlim(0, 1) + ylim(0, 1)
 
 # Combine with patchwork
 final_figure <- p1 + arrow1 + p2 + arrow2 + p3 +
-  plot_layout(widths = c(4, 0.5, 4, 0.5, 4), axis_titles = "collect")
+  plot_layout(widths = c(4, 0.5, 4, 0.5, 4), axis_titles = "collect") &
+  theme(plot.title = element_text(size = 7))
 
 # Save the figure
-ggsave(file.path(res_dir, "Extended-Data_Figure2.png"),
-       plot = final_figure,
-       device = "png",
-       width = 12,
-       height = 4,
-       dpi = 300)
-
-ggsave(file.path(res_dir, "Extended-Data_Figure2.pdf"),
-       plot = final_figure,
-       device = "pdf",
-       width = 12,
-       height = 4,
-       dpi = 300)
+# Nature double column: 183 mm wide, 5-7 pt text
+ggsave(file.path(res_dir, "Extended-Data_Figure2.pdf"), plot = final_figure, device = cairo_pdf,
+       width = 183, height = 65, units = "mm")
+ggsave(file.path(res_dir, "Extended-Data_Figure2.png"), plot = final_figure,
+       width = 183, height = 65, units = "mm", dpi = 300)

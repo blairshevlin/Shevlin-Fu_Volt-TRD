@@ -68,10 +68,10 @@ fig.rl.trial <-
   panel_A %>%
   filter(task == "RL") %>%
   ggplot(aes(x = trial, y = Oz, fill = color, group = interaction(nt, stim))) +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 7) +
   facet_wrap(~nt) +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
-  stat_summary(aes(color = color), geom = "line", size = 1, linewidth = 1.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
+  stat_summary(aes(color = color), geom = "line", linewidth = 0.6) +
   stat_summary(geom = "ribbon", alpha = 0.35, show.legend = FALSE) +
   scale_color_identity() +
   scale_fill_identity() +
@@ -80,7 +80,7 @@ fig.rl.trial <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm")) +
   coord_cartesian(ylim = c(-7, 7)) +
   guides(color = "none", fill = "none") +
@@ -90,10 +90,10 @@ fig.ug.trial <-
   panel_A %>%
   filter(task == "UG") %>%
   ggplot(aes(x = trial, y = Oz, fill = color, group = interaction(nt, stim))) +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 7) +
   facet_wrap(~nt) +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
-  stat_summary(aes(color = color), geom = "line", size = 1, linewidth = 1.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
+  stat_summary(aes(color = color), geom = "line", linewidth = 0.6) +
   stat_summary(geom = "ribbon", alpha = 0.35, show.legend = FALSE) +
   scale_color_identity() +
   scale_fill_identity() +
@@ -102,7 +102,7 @@ fig.ug.trial <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm")) +
   coord_cartesian(ylim = c(-7, 7)) +
   guides(color = "none", fill = "none") +
@@ -130,15 +130,15 @@ create_prestim_legend <- function() {
   )
   ggplot(legend_data_pre, aes(x = x, y = y, color = nt)) +
     geom_point(size = 0) +
-    geom_line(size = 2) +
+    geom_line(linewidth = 0.8) +
     scale_color_manual(name = "Pre-Stim", values = c("DA" = "#fcbba1","5-HT" = "#9ecae1")) +
     theme_void() +
-    theme(legend.title = element_text(face = "bold", size = 12),
-          legend.text  = element_text(size = 10),
-          legend.key.width  = unit(1, "cm"),
-          legend.key.height = unit(0.5, "cm"),
+    theme(legend.title = element_text(face = "bold", size = 7),
+          legend.text  = element_text(size = 6),
+          legend.key.width  = unit(0.5, "cm"),
+          legend.key.height = unit(0.3, "cm"),
           legend.margin = margin(0, 0, 10, 0)) +
-    guides(color = guide_legend(override.aes = list(size = 2, alpha = 1),
+    guides(color = guide_legend(override.aes = list(linewidth = 0.8, alpha = 1),
                                 title.position = "top", title.hjust = 0.5))
 }
 
@@ -150,15 +150,15 @@ create_poststim_legend <- function() {
   )
   ggplot(legend_data_post, aes(x = x, y = y, color = nt)) +
     geom_point(size = 0) +
-    geom_line(size = 2) +
+    geom_line(linewidth = 0.8) +
     scale_color_manual(name = "Post-Stim", values = c("DA" = "#a50f15","5-HT" = "#08519c")) +
     theme_void() +
-    theme(legend.title = element_text(face = "bold", size = 12),
-          legend.text  = element_text(size = 10),
-          legend.key.width  = unit(1, "cm"),
-          legend.key.height = unit(0.5, "cm"),
+    theme(legend.title = element_text(face = "bold", size = 7),
+          legend.text  = element_text(size = 6),
+          legend.key.width  = unit(0.5, "cm"),
+          legend.key.height = unit(0.3, "cm"),
           legend.margin = margin(10, 0, 0, 0)) +
-    guides(color = guide_legend(override.aes = list(size = 2, alpha = 1),
+    guides(color = guide_legend(override.aes = list(linewidth = 0.8, alpha = 1),
                                 title.position = "top", title.hjust = 0.5))
 }
 
@@ -168,49 +168,49 @@ stacked_legends <- plot_grid(prestim_legend, poststim_legend, ncol = 1, align = 
 
 fig.rl.avg <-
   ggplot() +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
   geom_line(data = offset_data_RL,
             aes(x = point_x_pos, y = Oz, group = idx),
-            position = position_dodge2(width = .2), size = 1.5, alpha = .15) +
+            position = position_dodge2(width = .2), linewidth = 0.5, alpha = .15) +
   geom_point(data = offset_data_RL,
              aes(x = point_x_pos, y = Oz, group = idx, color = color),
-             position = position_dodge2(width = .2), shape = 1, stroke = 2, alpha = 0.5, size = 3) +
+             position = position_dodge2(width = .2), shape = 1, stroke = 0.6, alpha = 0.5, size = 1.2) +
   stat_summary(geom = "line", data = offset_data_RL,
-               aes(x = box_x_pos, y = Oz, group = nt), linewidth = 1.1) +
+               aes(x = box_x_pos, y = Oz, group = nt), linewidth = 0.5) +
   stat_summary(data = offset_data_RL,
                aes(x = box_x_pos, y = Oz, group = stim, color = color),
-               size = 1.1, linewidth = 1.1) +
+               size = 0.3, linewidth = 0.5) +
   facet_wrap(~ nt) +
   scale_color_identity() +
   labs(y = "Estimate [z]", x = element_blank(), title = "Reversal learning") +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 7) +
   scale_x_continuous(breaks = c(1, 2), labels = c("Pre-Stim","Post-Stim"), limits = c(0.5, 2.5)) +
   theme(strip.background = element_blank(),
-        strip.text = element_text(color = "black", size = 14),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm"),
         axis.text.x = element_text(angle = 15, vjust = 0.95, hjust = 0.5))
 
 fig.ug.avg <-
   ggplot() +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
   geom_line(data = offset_data_UG,
             aes(x = point_x_pos, y = Oz, group = idx),
-            position = position_dodge2(width = .2), size = 1.5, alpha = .15) +
+            position = position_dodge2(width = .2), linewidth = 0.5, alpha = .15) +
   geom_point(data = offset_data_UG,
              aes(x = point_x_pos, y = Oz, group = idx, color = color),
-             position = position_dodge2(width = .2), shape = 1, stroke = 2, alpha = 0.5, size = 3) +
+             position = position_dodge2(width = .2), shape = 1, stroke = 0.6, alpha = 0.5, size = 1.2) +
   stat_summary(geom = "line", data = offset_data_UG,
-               aes(x = box_x_pos, y = Oz, group = nt), linewidth = 1.1) +
+               aes(x = box_x_pos, y = Oz, group = nt), linewidth = 0.5) +
   stat_summary(data = offset_data_UG,
                aes(x = box_x_pos, y = Oz, group = stim, color = color),
-               size = 1.1, linewidth = 1.1) +
+               size = 0.3, linewidth = 0.5) +
   facet_wrap(~ nt) +
   scale_color_identity() +
   labs(y = "Estimate [z]", x = element_blank(), title = "Ultimatum game") +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 7) +
   scale_x_continuous(breaks = c(1, 2), labels = c("Pre-Stim","Post-Stim"), limits = c(0.5, 2.5)) +
   theme(strip.background = element_blank(),
-        strip.text = element_text(color = "black", size = 14),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm"),
         axis.text.x = element_text(angle = 15, vjust = 0.95, hjust = 0.5))
 
@@ -240,15 +240,15 @@ offset_data_UG_task <- panel_C %>%
 
 fig.rl.task <-
   ggplot() +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
-  theme_pubr(base_size = 14) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
+  theme_pubr(base_size = 7) +
   facet_wrap(~nt) +
   geom_point(data = offset_data_RL_task,
              aes(x = point_x_pos, y = Oz, color = color),
-             alpha = .75, size = 1.5, stroke = 1.5, shape = 1) +
+             alpha = .75, size = 0.8, stroke = 0.5, shape = 1) +
   stat_summary(data = offset_data_RL_task,
                aes(x = group_x_pos, y = Oz, color = color, group = stim),
-               size = 1.25, linewidth = 1.25, position = position_identity()) +
+               size = 0.3, linewidth = 0.5, position = position_identity()) +
   scale_color_identity() +
   scale_fill_identity() +
   scale_x_continuous(breaks = c(1, 2, 3),
@@ -259,7 +259,7 @@ fig.rl.task <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm"),
         axis.text.x = element_text(angle = 15, vjust = 0.9, hjust = 0.6)) +
   coord_cartesian(ylim = c(-7.5, 7.5)) +
@@ -268,15 +268,15 @@ fig.rl.task <-
 
 fig.ug.task <-
   ggplot() +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
-  theme_pubr(base_size = 14) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
+  theme_pubr(base_size = 7) +
   facet_wrap(~nt) +
   geom_point(data = offset_data_UG_task,
              aes(x = point_x_pos, y = Oz, group = idx, color = color),
-             shape = 1, stroke = 1.75, alpha = 0.75, size = 1.5) +
+             shape = 1, stroke = 0.5, alpha = 0.75, size = 0.8) +
   stat_summary(data = offset_data_UG_task,
                aes(x = group_x_pos, y = Oz, group = stim, color = color),
-               size = 1.25, linewidth = 1.25) +
+               size = 0.3, linewidth = 0.5) +
   scale_color_identity() +
   scale_fill_identity() +
   scale_x_continuous(breaks = c(1, 2, 3),
@@ -287,7 +287,7 @@ fig.ug.task <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm")) +
   coord_cartesian(ylim = c(-7.5, 7.5)) +
   guides(color = "none", fill = "none") +
@@ -298,21 +298,27 @@ main_plot <-
   (fig.rl.trial | fig.ug.trial) /
   (fig.rl.avg   | fig.ug.avg) /
   (fig.rl.task  | fig.ug.task) +
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "a") &
+  theme(plot.tag = element_text(size = 8, face = "bold"),
+        plot.title = element_text(size = 7))
 
 final_plot <- plot_grid(main_plot, stacked_legends,
-                        ncol = 2, rel_widths = c(4, 1),
+                        ncol = 2, rel_widths = c(6, 1),
                         align = "h", axis = "tb")
 
-ggsave(file.path(res_dir, "figure2.png"),
-       plot = final_plot, device = "png",
-       width = 12, height = 10, dpi = 300)
+# Nature double column: 183 mm wide, 5-7 pt text, 8 pt bold panel labels
+ggsave(file.path(res_dir, "figure2.pdf"), plot = final_plot, device = cairo_pdf,
+       width = 183, height = 150, units = "mm", bg = "white")
+ggsave(file.path(res_dir, "figure2.png"), plot = final_plot,
+       width = 183, height = 150, units = "mm", dpi = 300, bg = "white")
 
 panel_a <- plot_grid((fig.rl.trial | fig.ug.trial) +
-                       plot_annotation(tag_levels = "a"), stacked_legends,
-                     ncol = 2, rel_widths = c(4, 1),
+                       plot_annotation(tag_levels = "a") &
+                       theme(plot.tag = element_text(size = 8, face = "bold"),
+                             plot.title = element_text(size = 7)),
+                     stacked_legends,
+                     ncol = 2, rel_widths = c(6, 1),
                      align = "h", axis = "tb")
 
-ggsave(file.path(res_dir, "figure2_panelA.png"),
-       plot = panel_a, device = "png",
-       width = 12, height = 4, dpi = 300)
+ggsave(file.path(res_dir, "figure2_panelA.png"), plot = panel_a,
+       width = 183, height = 55, units = "mm", dpi = 300, bg = "white")

@@ -42,7 +42,7 @@ library(effectsize)
 library(emmeans)
 
 # Read source data
-source_data <- read.csv(here::here("data/figures/figureExtended4_source_data.csv"), stringsAsFactors = FALSE)
+source_data <- read.csv(here::here("data/figures/figureExtended3_source_data.csv"), stringsAsFactors = FALSE)
 
 # Re-apply factor orderings
 source_data$stim <- factor(source_data$stim, levels = c("Pre-Stim", "Post-Stim"))
@@ -94,26 +94,26 @@ offset_data_UG <- ug.avg %>%
 
 fig.rl.avg <-
   ggplot() +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 7) +
   geom_hline(yintercept = 0,
              linetype = "dashed",
              color = "gray",
-             linewidth = 1) +
+             linewidth = 0.3) +
   stat_summary(
     data = offset_data_RL,
     aes(x = box_x_pos, y = Oz, group = stim, color = color),
-    linewidth = 1.5, size = 2, shape = 18, stroke = 2,
+    linewidth = 0.5, size = 0.6, shape = 18, stroke = 0.6,
   ) +
   geom_line(
     data = offset_data_RL,
     aes(x = point_x_pos, y = Oz, group = idx),
-    linewidth = 1.5,
+    linewidth = 0.5,
     alpha = .25) +
   geom_point(
     data = offset_data_RL,
     aes(x = point_x_pos, y = Oz, group = idx, color = color),
-    size = 4,
-    stroke = 2,
+    size = 1.2,
+    stroke = 0.5,
     alpha = .5,
     show.legend = F, shape = 1
   ) +
@@ -129,32 +129,32 @@ fig.rl.avg <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm")
   )
 
 fig.ug.avg <-
   ggplot() +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 7) +
   geom_hline(yintercept = 0,
              linetype = "dashed",
              color = "gray",
-             linewidth = 1) +
+             linewidth = 0.3) +
   stat_summary(
     data = offset_data_UG,
     aes(x = box_x_pos, y = Oz, group = stim, color = color),
-    linewidth = 1.5, size = 2, shape = 18, stroke = 2,
+    linewidth = 0.5, size = 0.6, shape = 18, stroke = 0.6,
   ) +
   geom_line(
     data = offset_data_UG,
     aes(x = point_x_pos, y = Oz, group = idx),
-    linewidth = 1.5,
+    linewidth = 0.5,
     alpha = .25) +
   geom_point(
     data = offset_data_UG,
     aes(x = point_x_pos, y = Oz, group = idx, color = color),
-    size = 4,
-    stroke = 2,
+    size = 1.2,
+    stroke = 0.5,
     alpha = .5, shape = 1,
     show.legend = F
   ) +
@@ -170,7 +170,7 @@ fig.ug.avg <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm")
   )
 
@@ -183,11 +183,11 @@ rl.trial.plot <- source_data %>%
 fig.rl.trial <-
   rl.trial.plot %>%
   ggplot(aes(x = trial, y = Oz, fill = color, group = stim)) +
-  theme_pubr(base_size = 14) +
+  theme_pubr(base_size = 7) +
   scale_color_identity() +
   scale_fill_identity() +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
-  stat_summary(aes(color = color), geom = "line", size = 1, linewidth = 1.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
+  stat_summary(aes(color = color), geom = "line", linewidth = 0.6) +
   stat_summary(
     geom = "ribbon", alpha = 0.35,
     show.legend = FALSE
@@ -197,7 +197,7 @@ fig.rl.trial <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm")) +
   coord_cartesian(ylim = c(-7, 7)) +
   theme(legend.key = element_rect(color = NA))
@@ -211,9 +211,9 @@ ug.trial.plot <- source_data %>%
 fig.ug.trial <-
   ug.trial.plot %>%
   ggplot(aes(x = trial, y = Oz, fill = color, group = stim)) +
-  theme_pubr(base_size = 14) +
-  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "gray") +
-  stat_summary(aes(color = color), geom = "line", size = 1, linewidth = 1.5) +
+  theme_pubr(base_size = 7) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = "gray") +
+  stat_summary(aes(color = color), geom = "line", linewidth = 0.6) +
   stat_summary(
     geom = "ribbon", alpha = 0.35, show.legend = FALSE) +
   scale_color_identity() +
@@ -223,13 +223,15 @@ fig.ug.trial <-
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = NA, fill = NA),
-        strip.text = element_text(color = "black"),
+        strip.text = element_text(color = "black", size = 7),
         panel.spacing = unit(0.2, "cm")) +
   coord_cartesian(ylim = c(-7, 7)) +
   theme(legend.key = element_rect(color = NA))
 
-main_plot <- ((fig.rl.avg / fig.ug.avg) | (fig.rl.trial / fig.ug.trial)) +
-  plot_annotation(tag_levels = 'a')
+main_plot <- ((fig.rl.avg | fig.rl.trial) / (fig.ug.avg | fig.ug.trial)) +  # a-b RL, c-d UG, as in the legend
+  plot_annotation(tag_levels = 'a') &
+  theme(plot.tag = element_text(size = 8, face = "bold"),
+        plot.title = element_text(size = 7))
 
 create_legend <- function() {
   legend_data <- data.frame(
@@ -241,21 +243,21 @@ create_legend <- function() {
 
   ggplot(legend_data, aes(x = x, y = y, color = stim)) +
     geom_point(size = 0) +
-    geom_line(size = 2) +
+    geom_line(linewidth = 0.8) +
     scale_color_manual(
       name = element_blank(),
       values = c("Pre-Stim" = "#c7e9c0", "Post-Stim" = "#006d2c")
     ) +
     theme_void() +
     theme(
-      legend.title      = element_text(face = "bold", size = 12),
-      legend.text       = element_text(size = 10),
-      legend.key.width  = unit(1, "cm"),
-      legend.key.height = unit(0.5, "cm"),
+      legend.title      = element_text(face = "bold", size = 7),
+      legend.text       = element_text(size = 6),
+      legend.key.width  = unit(0.5, "cm"),
+      legend.key.height = unit(0.3, "cm"),
       legend.margin     = margin(10, 0, 0, 0)
     ) +
     guides(color = guide_legend(
-      override.aes   = list(size = 2, alpha = 1),
+      override.aes   = list(linewidth = 0.8, alpha = 1),
       title.position = "top",
       title.hjust    = 0.5
     ))
@@ -267,9 +269,8 @@ final_plot <- plot_grid(main_plot, ne_legend,
                         ncol = 2, rel_widths = c(4, 0.5),
                         align = "h", axis = "tb")
 
-ggsave(here::here("results/from_source_data/Extended-Data_Figure3.png"),
-       plot   = final_plot,
-       device = "tiff",
-       width  = 12,
-       height = 8,
-       dpi    = 300)
+# Nature double column: 183 mm wide, 5-7 pt text, 8 pt bold panel labels
+ggsave(here::here("results/from_source_data/Extended-Data_Figure3.pdf"), plot = final_plot,
+       device = cairo_pdf, width = 183, height = 120, units = "mm", bg = "white")
+ggsave(here::here("results/from_source_data/Extended-Data_Figure3.png"), plot = final_plot,
+       width = 183, height = 120, units = "mm", dpi = 300, bg = "white")
