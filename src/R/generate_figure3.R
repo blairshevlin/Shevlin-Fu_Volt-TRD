@@ -68,7 +68,7 @@ rl.c.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 7) +
-  geom_vline(xintercept = "DBS", linewidth = 0.5, color = "grey70") +
+  geom_vline(xintercept = "DBS", linewidth = 0.5, linetype = "dashed", color = "grey60") +
   geom_boxplot(data = rl.beh.means[rl.beh.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 0.4, outlier.alpha = 0, show.legend = FALSE) +
   geom_point(data = rl.beh.means[rl.beh.means$sess %in% c("Baseline","Month 1","Month 3","Month 6"),],
@@ -77,12 +77,7 @@ rl.c.sess <-
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(x = element_blank(), y = "p(optimal)", title = "Choice [RL]",
        color = element_blank(), shape = element_blank()) +
-  scale_shape_manual(values = c(16, 4)) +
-  stat_compare_means(label = "p.signif",
-                     comparisons = list(c("Baseline","Month 1"), c("Baseline","Month 3"), c("Baseline","Month 6")),
-                     method = "t.test", paired = TRUE,  # rows are sorted by idx in every session
-                     bracket.size = 0.3, tip.length = 0.02, size = 2.5,
-                     step.increase = 0.12)
+  scale_shape_manual(values = c(16, 4))
 
 # RL RT (panel = "RL_RT")
 rl.rt.means <- source_data %>%
@@ -95,7 +90,7 @@ rl.logrt.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 7) +
-  geom_vline(xintercept = "DBS", linewidth = 0.5, color = "grey70") +
+  geom_vline(xintercept = "DBS", linewidth = 0.5, linetype = "dashed", color = "grey60") +
   geom_boxplot(data = rl.rt.means[rl.rt.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 0.4, outlier.alpha = 0, show.legend = FALSE) +
   geom_point(data = rl.rt.means[rl.rt.means$sess %in% c("Baseline","Month 1","Month 3","Month 6"),],
@@ -104,12 +99,7 @@ rl.logrt.sess <-
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(x = element_blank(), y = "log sec", title = "Response time [RL]",
        color = element_blank(), shape = element_blank()) +
-  scale_shape_manual(values = c(16, 4)) +
-  stat_compare_means(label = "p.signif",
-                     comparisons = list(c("Baseline","Month 1"), c("Baseline","Month 3"), c("Baseline","Month 6")),
-                     method = "t.test", paired = TRUE,  # rows are sorted by idx in every session
-                     bracket.size = 0.3, tip.length = 0.02, size = 2.5,
-                     step.increase = 0.12)
+  scale_shape_manual(values = c(16, 4))
 
 # UG choice (panel = "UG_choice")
 ug.beh.means <- source_data %>%
@@ -122,7 +112,7 @@ ug.c.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 7) +
-  geom_vline(xintercept = "DBS", linewidth = 0.5, color = "grey70") +
+  geom_vline(xintercept = "DBS", linewidth = 0.5, linetype = "dashed", color = "grey60") +
   geom_boxplot(data = ug.beh.means[ug.beh.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 0.4, outlier.alpha = 0, show.legend = FALSE) +
   geom_point(data = ug.beh.means[ug.beh.means$sess %in% c("Baseline","Month 1","Month 3","Month 6"),],
@@ -131,12 +121,7 @@ ug.c.sess <-
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(x = element_blank(), y = "p(accept)", title = "Choice [UG]",
        color = element_blank(), shape = element_blank()) +
-  scale_shape_manual(values = c(16, 4)) +
-  stat_compare_means(label = "p.signif",
-                     comparisons = list(c("Baseline","Month 1"), c("Baseline","Month 3"), c("Baseline","Month 6")),
-                     method = "t.test", paired = TRUE,  # rows are sorted by idx in every session
-                     bracket.size = 0.3, tip.length = 0.02, size = 2.5,
-                     step.increase = 0.12)
+  scale_shape_manual(values = c(16, 4))
 
 # UG RT (panel = "UG_RT")
 ug.rt.means <- source_data %>%
@@ -149,7 +134,7 @@ ug.logrt.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 7) +
-  geom_vline(xintercept = "DBS", linewidth = 0.5, color = "grey70") +
+  geom_vline(xintercept = "DBS", linewidth = 0.5, linetype = "dashed", color = "grey60") +
   geom_boxplot(data = ug.rt.means[ug.rt.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 0.4, outlier.alpha = 0, show.legend = FALSE) +
   geom_point(data = ug.rt.means[ug.rt.means$sess %in% c("Baseline","Month 1","Month 3","Month 6"),],
@@ -158,12 +143,7 @@ ug.logrt.sess <-
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(x = element_blank(), y = "log sec", title = "Response time [UG]",
        color = element_blank(), shape = element_blank()) +
-  scale_shape_manual(values = c(16, 4)) +
-  stat_compare_means(label = "p.signif",
-                     comparisons = list(c("Baseline","Month 1"), c("Baseline","Month 3"), c("Baseline","Month 6")),
-                     method = "t.test", paired = TRUE,  # rows are sorted by idx in every session
-                     bracket.size = 0.3, tip.length = 0.02, size = 2.5,
-                     step.increase = 0.12)
+  scale_shape_manual(values = c(16, 4))
 
 # UG mood (panel = "UG_mood")
 ug.mood.means <- source_data %>%
@@ -176,7 +156,7 @@ ug.mood.sess <-
   filter(sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6")) %>%
   ggplot(aes(x = sess, y = value)) +
   theme_pubr(base_size = 7) +
-  geom_vline(xintercept = "DBS", linewidth = 0.5, color = "grey70") +
+  geom_vline(xintercept = "DBS", linewidth = 0.5, linetype = "dashed", color = "grey60") +
   geom_boxplot(data = ug.mood.means[ug.mood.means$sess %in% c("Baseline","DBS","Month 1","Month 3","Month 6"),],
                linewidth = 0.4, outlier.alpha = 0, show.legend = FALSE) +
   geom_point(data = ug.mood.means[ug.mood.means$sess %in% c("Baseline","Month 1","Month 3","Month 6"),],
@@ -185,14 +165,43 @@ ug.mood.sess <-
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(x = element_blank(), y = "rating", title = "Mood [UG]",
        color = element_blank(), shape = element_blank()) +
-  scale_shape_manual(values = c(16, 4)) +
-  stat_compare_means(label = "p.signif",
-                     comparisons = list(c("Baseline","Month 1"), c("Baseline","Month 3"), c("Baseline","Month 6")),
-                     method = "t.test", paired = TRUE,  # rows are sorted by idx in every session
-                     bracket.size = 0.3, tip.length = 0.02, size = 2.5,
-                     step.increase = 0.12)
+  scale_shape_manual(values = c(16, 4))
 
-figure3_top <- rl.logrt.sess + rl.c.sess + ug.logrt.sess + ug.c.sess + ug.mood.sess +
+# Paired two-sided t-tests of each month vs Baseline, matched by participant.
+# Drawn by hand so each label sits left-aligned above its bracket, clear of the DBS line.
+add_baseline_brackets <- function(p) {
+  d      <- p$data
+  base   <- d[d$sess == "Baseline", ]
+  months <- c("Month 1", "Month 3", "Month 6")
+  pvals  <- sapply(months, function(m) {
+    mo <- d[d$sess == m, ]
+    t.test(mo$value[match(base$idx, mo$idx)], base$value, paired = TRUE)$p.value
+  })
+  labels <- as.character(cut(pvals, c(-Inf, 1e-4, 1e-3, 0.01, 0.05, Inf),
+                             c("****", "***", "**", "*", "ns")))
+  rng  <- diff(range(d$value, na.rm = TRUE))
+  y    <- max(d$value, na.rm = TRUE) + rng * c(0.08, 0.20, 0.32)
+  xend <- c(3, 4, 5)  # x positions of Month 1/3/6 (after Baseline and DBS)
+  tip  <- 0.03 * rng
+  p +
+    annotate("segment", x = 1, xend = xend, y = y, yend = y, linewidth = 0.3) +
+    annotate("segment", x = c(1, 1, 1, xend), xend = c(1, 1, 1, xend),
+             y = c(y, y), yend = c(y, y) - tip, linewidth = 0.3) +
+    annotate("text", x = 1.05, y = y, label = labels, hjust = 0,
+             vjust = ifelse(labels == "ns", -0.3, 0.3),  # asterisks sit high in the glyph box, so drop them to their bracket
+             size = ifelse(labels == "ns", 2.5, 2.5 + 0.7))  # stars 2 pt larger than "ns"
+}
+
+# stat_cor takes one label size per facet, in facet order: stars 2 pt larger than "ns"
+star_sizes <- function(d, ns_size) {
+  p <- sapply(split(d, droplevels(d$month)), function(x)
+    suppressWarnings(cor.test(x$nt_change, x$beh_change, method = "spearman")$p.value))
+  ifelse(p < 0.05, ns_size + 0.7, ns_size)
+}
+
+figure3_top <- add_baseline_brackets(rl.logrt.sess) + add_baseline_brackets(rl.c.sess) +
+  add_baseline_brackets(ug.logrt.sess) + add_baseline_brackets(ug.c.sess) +
+  add_baseline_brackets(ug.mood.sess) +
   plot_layout(guides = "collect", nrow = 1) & theme(legend.position = "none") &
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.2)))  # headroom so brackets are not clipped
 
@@ -229,7 +238,7 @@ fig.rl.rt.SE.simple <-
            aes(label = paste0(cut(..p..,
                                   breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                   labels = c("'****'","'***'","'**'","'*'","'ns'")))),
-           label.x = 0, size = 3, label.y = 1)
+           label.x = 0, size = star_sizes(rl.rt.SE, 3), label.y = 1)
 
 # Panel G: corr_DA_UG
 ug.mood.DA <- source_data %>%
@@ -261,7 +270,7 @@ fig.ug.m.DA.simple <-
            aes(label = paste0(cut(..p..,
                                   breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                   labels = c("'****'","'***'","'**'","'*'","'ns'")))),
-           label.x = -5, size = 3, label.y = 43)
+           label.x = -5, size = star_sizes(ug.mood.DA, 3), label.y = 43)
 
 figure3_bot <- (fig.rl.rt.SE.simple + fig.ug.m.DA.simple) +
   plot_layout(guides = "collect", nrow = 1) &
