@@ -46,6 +46,9 @@ early_late_UG <- source_data %>%
   filter(panel == "B") %>%
   mutate(
     nt = factor(nt, levels = c("DA", "5-HT", "NE")),
+    # Pre-stim cluster left of each tick, post-stim right; group means just outside each cluster
+    point_x_pos = ifelse(trial_period == "Early", 1, 2) + ifelse(stim == "Pre-Stim", -0.12, 0.12),
+    box_x_pos   = ifelse(trial_period == "Early", 1, 2) + ifelse(stim == "Pre-Stim", -0.30, 0.30),
     color = ifelse(stim == "Pre-Stim",
                    case_when(
                      nt == "5-HT" ~ "#9ecae1",
@@ -64,6 +67,9 @@ early_late_RL <- source_data %>%
   filter(panel == "C") %>%
   mutate(
     nt = factor(nt, levels = c("DA", "5-HT", "NE")),
+    # Pre-stim cluster left of each tick, post-stim right; group means just outside each cluster
+    point_x_pos = ifelse(trial_period == "Early", 1, 2) + ifelse(stim == "Pre-Stim", -0.12, 0.12),
+    box_x_pos   = ifelse(trial_period == "Early", 1, 2) + ifelse(stim == "Pre-Stim", -0.30, 0.30),
     color = ifelse(stim == "Pre-Stim",
                    case_when(
                      nt == "5-HT" ~ "#9ecae1",
@@ -80,11 +86,13 @@ early_late_RL <- source_data %>%
 # Panel B: UG early vs late
 panel_b <-
   early_late_UG %>%
-  ggplot(aes(x = trial_period, y = Oz, color = color)) +
-  geom_point(aes(group = interaction(idx, stim)), alpha = 0.3) +
-  geom_line(aes(group = interaction(idx, stim)), alpha = 0.3) +
-  stat_summary(aes(group = stim), size = 1, linewidth = 1) +
-  stat_summary(geom = "line", aes(group = stim), size = 2) +
+  ggplot(aes(y = Oz, color = color)) +
+  geom_line(aes(x = point_x_pos, group = interaction(idx, stim)), linewidth = 0.8, alpha = 0.3) +
+  geom_point(aes(x = point_x_pos, group = interaction(idx, stim)),
+             shape = 1, stroke = 2, size = 3, alpha = 0.5) +
+  stat_summary(aes(x = box_x_pos, group = stim), geom = "line", linewidth = 1.1) +
+  stat_summary(aes(x = box_x_pos, group = stim), size = 1.1, linewidth = 1.1) +
+  scale_x_continuous(breaks = c(1, 2), labels = c("Early", "Late"), limits = c(0.5, 2.5)) +
   facet_wrap(~nt) +
   scale_color_identity() +
   labs(y = "Estimate [z]", x = "Within task period",
@@ -100,11 +108,13 @@ panel_b <-
 # Panel C: RL early vs late
 panel_c <-
   early_late_RL %>%
-  ggplot(aes(x = trial_period, y = Oz, color = color)) +
-  geom_point(aes(group = interaction(idx, stim)), alpha = 0.3) +
-  geom_line(aes(group = interaction(idx, stim)), alpha = 0.3) +
-  stat_summary(aes(group = stim), size = 1, linewidth = 1) +
-  stat_summary(geom = "line", aes(group = stim), size = 2) +
+  ggplot(aes(y = Oz, color = color)) +
+  geom_line(aes(x = point_x_pos, group = interaction(idx, stim)), linewidth = 0.8, alpha = 0.3) +
+  geom_point(aes(x = point_x_pos, group = interaction(idx, stim)),
+             shape = 1, stroke = 2, size = 3, alpha = 0.5) +
+  stat_summary(aes(x = box_x_pos, group = stim), geom = "line", linewidth = 1.1) +
+  stat_summary(aes(x = box_x_pos, group = stim), size = 1.1, linewidth = 1.1) +
+  scale_x_continuous(breaks = c(1, 2), labels = c("Early", "Late"), limits = c(0.5, 2.5)) +
   facet_wrap(~nt) +
   scale_color_identity() +
   labs(y = "Estimate [z]", x = "Within task period", title = "Reversal learning") +
@@ -194,4 +204,5 @@ ggsave(here::here("results/from_source_data/figureS2.png"),
        device = "png",
        width  = 13,
        height = 6,
-       dpi    = 300)
+       dpi    = 300,
+       bg     = "white")  # plot_grid leaves the legend column transparent

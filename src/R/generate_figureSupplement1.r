@@ -52,6 +52,10 @@ source_data <- read.csv(here::here("data/figures/figureSupplement1_source_data.c
 # Re-apply factor orderings
 source_data$stim <- factor(source_data$stim, levels = c("Pre-Stim", "Post-Stim"))
 source_data$nt   <- factor(source_data$nt,   levels = c("DA", "5-HT"))
+# Light = pre-stimulation, dark = post-stimulation (dropped when this script moved to the CSV)
+source_data$color <- ifelse(source_data$stim == "Pre-Stim",
+                            ifelse(source_data$nt == "5-HT", "#9ecae1", "#fcbba1"),
+                            ifelse(source_data$nt == "5-HT", "#08519c", "#a50f15"))
 
 # Panels A & B: subject-level means (RL and UG)
 offset_data_RL_raw <- source_data %>%
@@ -137,7 +141,7 @@ for (nt_type in c("DA", "5-HT")) {
     cor_test <- cor.test(data_subset$Oz, data_subset$HDRS, method = "spearman")
 
     cat(sprintf("%s - %s:\n", task_label, nt_type))
-    cat(sprintf("  Pearson's r: %.3f\n", cor_test$estimate))
+    cat(sprintf("  Spearman's rho: %.3f\n", cor_test$estimate))
     cat(sprintf("  p-value: %.4f\n", cor_test$p.value))
     cat(sprintf("  n: %d\n\n", nrow(data_subset)))
   }
@@ -158,27 +162,23 @@ fig.rl.raw <-
   geom_line(
     data = offset_data_RL_raw,
     aes(x = point_x_pos, y = Oz, group = idx),
-    linewidth = 1, alpha = 0.4, color = "gray50"
+    linewidth = 1.5, alpha = 0.15
   ) +
   geom_point(
     data = offset_data_RL_raw,
     aes(x = point_x_pos, y = Oz, color = color),
-    size = 2.5, alpha = 0.7
+    shape = 1, stroke = 2, size = 3, alpha = 0.5
+  ) +
+  # Group mean ± SEM, same style as Fig. 2c,d and Supp. Fig. 5c,d
+  stat_summary(
+    data = offset_data_RL_raw,
+    aes(x = box_x_pos, y = Oz, group = nt),
+    fun = mean, geom = "line", linewidth = 1.1
   ) +
   stat_summary(
     data = offset_data_RL_raw,
-    aes(x = box_x_pos, y = Oz, color = color),
-    fun = mean,
-    fun.min = function(x) mean(x) - se(x),
-    fun.max = function(x) mean(x) + se(x),
-    geom = "errorbar",
-    linewidth = 2, width = 0.1, alpha = 1
-  ) +
-  stat_summary(
-    data = offset_data_RL_raw,
-    aes(x = box_x_pos, y = Oz, color = color),
-    fun = mean, geom = "point",
-    size = 6, shape = 18, alpha = 1
+    aes(x = box_x_pos, y = Oz, group = stim, color = color),
+    size = 1.1, linewidth = 1.1
   ) +
   scale_color_identity() +
   scale_x_continuous(
@@ -214,27 +214,23 @@ fig.ug.raw <-
   geom_line(
     data = offset_data_UG_raw,
     aes(x = point_x_pos, y = Oz, group = idx),
-    linewidth = 1, alpha = 0.4, color = "gray50"
+    linewidth = 1.5, alpha = 0.15
   ) +
   geom_point(
     data = offset_data_UG_raw,
     aes(x = point_x_pos, y = Oz, color = color),
-    size = 2.5, alpha = 0.7
+    shape = 1, stroke = 2, size = 3, alpha = 0.5
+  ) +
+  # Group mean ± SEM, same style as Fig. 2c,d and Supp. Fig. 5c,d
+  stat_summary(
+    data = offset_data_UG_raw,
+    aes(x = box_x_pos, y = Oz, group = nt),
+    fun = mean, geom = "line", linewidth = 1.1
   ) +
   stat_summary(
     data = offset_data_UG_raw,
-    aes(x = box_x_pos, y = Oz, color = color),
-    fun = mean,
-    fun.min = function(x) mean(x) - se(x),
-    fun.max = function(x) mean(x) + se(x),
-    geom = "errorbar",
-    linewidth = 2, width = 0.1, alpha = 1
-  ) +
-  stat_summary(
-    data = offset_data_UG_raw,
-    aes(x = box_x_pos, y = Oz, color = color),
-    fun = mean, geom = "point",
-    size = 6, shape = 18, alpha = 1
+    aes(x = box_x_pos, y = Oz, group = stim, color = color),
+    size = 1.1, linewidth = 1.1
   ) +
   scale_color_identity() +
   scale_x_continuous(
@@ -264,7 +260,7 @@ fig.rl.cor <-
   facet_wrap(~nt) +
   theme_pubr(base_size = 14) +
   scale_color_manual(values = c("DA" = "#fcbba1", "5-HT" = "#9ecae1")) +
-  labs(x = "HDRS", y = "Pre-Stim\nEstimate [Z]", title = "Reversal learning") +
+  labs(x = "HDRS-17", y = "Pre-Stim\nEstimate [Z]", title = "Reversal learning") +
   theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -274,7 +270,8 @@ fig.rl.cor <-
     panel.spacing    = unit(0.2, "cm"),
     legend.position  = "none"
   ) +
-  stat_cor(color = "black", method = "spearman", label.x.npc = "left", label.y = 200, size = 4)
+  stat_cor(color = "black", method = "spearman", cor.coef.name = "rho",
+           r.accuracy = 0.01, p.accuracy = 0.001, label.x.npc = "left", label.y = 200, size = 4)
 
 # Panel D: UG correlation with HDRS
 fig.ug.cor <-
@@ -285,7 +282,7 @@ fig.ug.cor <-
   facet_wrap(~nt) +
   theme_pubr(base_size = 14) +
   scale_color_manual(values = c("DA" = "#fcbba1", "5-HT" = "#9ecae1")) +
-  labs(x = "HDRS", y = "Pre-Stim\nEstimate [Z]", title = "Ultimatum game") +
+  labs(x = "HDRS-17", y = "Pre-Stim\nEstimate [Z]", title = "Ultimatum game") +
   theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -295,7 +292,8 @@ fig.ug.cor <-
     panel.spacing    = unit(0.2, "cm"),
     legend.position  = "none"
   ) +
-  stat_cor(color = "black", method = "spearman", label.x.npc = "left", label.y = 70, size = 4)
+  stat_cor(color = "black", method = "spearman", cor.coef.name = "rho",
+           r.accuracy = 0.01, p.accuracy = 0.001, label.x.npc = "left", label.y = 70, size = 4)
 
 create_prestim_legend <- function() {
   legend_data_pre <- data.frame(

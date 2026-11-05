@@ -38,7 +38,11 @@ source_data <- read.csv(here::here("data/figures/figureSupplement5_source_data.c
 
 # Re-apply factor orderings
 source_data$stim      <- factor(source_data$stim, levels = c("Pre-Stim","Post-Stim"))
-source_data$nt        <- factor(source_data$nt, levels = c("DA","SE","NE"))
+source_data$nt        <- factor(source_data$nt, levels = c("DA","5-HT"))
+# Light = pre-stimulation, dark = post-stimulation (dropped when this script moved to the CSV)
+source_data$color <- ifelse(source_data$stim == "Pre-Stim",
+                            ifelse(source_data$nt == "5-HT", "#9ecae1", "#fcbba1"),
+                            ifelse(source_data$nt == "5-HT", "#08519c", "#a50f15"))
 source_data$idx       <- factor(source_data$idx)
 
 # Panels A/B: trial-level data
@@ -361,4 +365,5 @@ ggsave(here::here("results/from_source_data/figureS5.png"),
        device = "png",
        width = 12,          # Width in inches
        height = 10,         # Height in inches
-       dpi = 300)           # Resolution (300 DPI for publication quality)
+       dpi = 300,           # Resolution (300 DPI for publication quality)
+       bg = "white")        # plot_grid leaves the legend column transparent

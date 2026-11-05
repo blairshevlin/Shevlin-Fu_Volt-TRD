@@ -750,8 +750,8 @@ cl.Oz.lme = cl.Oz %>%
   filter(!session %in% c("post stim")) %>%
   mutate(sess_f = factor(session, levels  = c("fmri","pre stim", "week 1", "month 1", "month 2", "month 3", "month 4", "month 5", "month 6")) ) %>%
   group_by(idx) %>%
-  mutate(baseline_HDRS = HDRS[session == "fmri"],#HDRS[session == "pre stim"],
-         baseline_MADRS = MADRS[session == "fmri"],#MADRS[session == "pre stim"],
+  mutate(baseline_HDRS = HDRS[session == "pre stim"],
+         baseline_MADRS = MADRS[session == "pre stim"],
          m6_HDRS = HDRS[session == "month 6"],
          m6_MADRS = MADRS[session == "month 6"],
          deltaPerDA_UG = (DA_Post_UG - DA_Pre_UG)/DA_Pre_UG,
@@ -760,7 +760,7 @@ cl.Oz.lme = cl.Oz %>%
          deltaPerDA_RL = (DA_Post_RL - DA_Pre_RL)/DA_Pre_RL,
          deltaPerSE_RL = (SE_Post_RL - SE_Pre_RL)/SE_Pre_RL,
          deltaPerNE_RL = (NE_Post_RL - NE_Pre_RL)/NE_Pre_RL,
-         deltaPerHDRS = (HDRS[session == "fmri"] - HDRS[session == "month 6"])/HDRS[session == "fmri"]
+         deltaPerHDRS = (HDRS[session == "pre stim"] - HDRS[session == "month 6"])/HDRS[session == "pre stim"]
   ) %>%
   filter(!session %in% c("pre stim","fmri")) %>%
   ungroup()

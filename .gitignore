@@ -53,6 +53,7 @@ Thumbs.db
 
 # Archived files
 /src/R/generate_figure3_archive.R
+/src/R/src/R/sensitivity_and_robustness_tests_archive.R
 .Rproj.user
 Shevlin-Fu_Volt-TRD.Rproj
 .Rhistory

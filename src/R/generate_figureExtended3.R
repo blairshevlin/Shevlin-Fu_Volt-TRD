@@ -99,16 +99,11 @@ fig.rl.avg <-
              linetype = "dashed",
              color = "gray",
              linewidth = 0.3) +
-  stat_summary(
-    data = offset_data_RL,
-    aes(x = box_x_pos, y = Oz, group = stim, color = color),
-    linewidth = 0.5, size = 0.6, shape = 18, stroke = 0.6,
-  ) +
   geom_line(
     data = offset_data_RL,
     aes(x = point_x_pos, y = Oz, group = idx),
     linewidth = 0.5,
-    alpha = .25) +
+    alpha = .15) +
   geom_point(
     data = offset_data_RL,
     aes(x = point_x_pos, y = Oz, group = idx, color = color),
@@ -117,6 +112,11 @@ fig.rl.avg <-
     alpha = .5,
     show.legend = F, shape = 1
   ) +
+  stat_summary(geom = "line", data = offset_data_RL,
+               aes(x = box_x_pos, y = Oz, group = 1), linewidth = 0.5) +
+  stat_summary(data = offset_data_RL,
+               aes(x = box_x_pos, y = Oz, group = stim, color = color),
+               size = 0.3, linewidth = 0.5) +
   coord_cartesian(ylim = c(-7, 7)) +
   scale_color_identity() +
   scale_x_continuous(
@@ -140,16 +140,11 @@ fig.ug.avg <-
              linetype = "dashed",
              color = "gray",
              linewidth = 0.3) +
-  stat_summary(
-    data = offset_data_UG,
-    aes(x = box_x_pos, y = Oz, group = stim, color = color),
-    linewidth = 0.5, size = 0.6, shape = 18, stroke = 0.6,
-  ) +
   geom_line(
     data = offset_data_UG,
     aes(x = point_x_pos, y = Oz, group = idx),
     linewidth = 0.5,
-    alpha = .25) +
+    alpha = .15) +
   geom_point(
     data = offset_data_UG,
     aes(x = point_x_pos, y = Oz, group = idx, color = color),
@@ -158,6 +153,11 @@ fig.ug.avg <-
     alpha = .5, shape = 1,
     show.legend = F
   ) +
+  stat_summary(geom = "line", data = offset_data_UG,
+               aes(x = box_x_pos, y = Oz, group = 1), linewidth = 0.5) +
+  stat_summary(data = offset_data_UG,
+               aes(x = box_x_pos, y = Oz, group = stim, color = color),
+               size = 0.3, linewidth = 0.5) +
   coord_cartesian(ylim = c(-7, 7)) +
   scale_color_identity() +
   scale_x_continuous(
