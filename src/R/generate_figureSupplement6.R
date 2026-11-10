@@ -198,4 +198,6 @@ ggsave(here::here("results/from_source_data/figureS6.png"),
        device = "png",
        width = 16,          # Width in inches
        height = 12,         # Height in inches
-       dpi = 300)           # Resolution (300 DPI for publication quality)
+       dpi = 300)
+ggsave(here::here("results/from_source_data/figureS6.pdf"), plot = final_participant_plot, device = cairo_pdf,
+       width = 16, height = 12, bg = "white")           # Resolution (300 DPI for publication quality)

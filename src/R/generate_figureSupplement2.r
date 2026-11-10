@@ -205,4 +205,6 @@ ggsave(here::here("results/from_source_data/figureS2.png"),
        width  = 13,
        height = 6,
        dpi    = 300,
-       bg     = "white")  # plot_grid leaves the legend column transparent
+       bg     = "white")
+ggsave(here::here("results/from_source_data/figureS2.pdf"), plot = final_plot, device = cairo_pdf,
+       width = 13, height = 6, bg = "white")  # plot_grid leaves the legend column transparent

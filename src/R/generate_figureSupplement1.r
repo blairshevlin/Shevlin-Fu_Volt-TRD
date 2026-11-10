@@ -377,3 +377,5 @@ ggsave(here::here("results/from_source_data/figureS1.png"),
        width  = 14,
        height = 10,
        dpi    = 300)
+ggsave(here::here("results/from_source_data/figureS1.pdf"), plot = final_plot_raw, device = cairo_pdf,
+       width = 14, height = 10, bg = "white")

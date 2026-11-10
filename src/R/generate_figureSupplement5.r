@@ -366,4 +366,6 @@ ggsave(here::here("results/from_source_data/figureS5.png"),
        width = 12,          # Width in inches
        height = 10,         # Height in inches
        dpi = 300,           # Resolution (300 DPI for publication quality)
-       bg = "white")        # plot_grid leaves the legend column transparent
+       bg = "white")
+ggsave(here::here("results/from_source_data/figureS5.pdf"), plot = final_plot, device = cairo_pdf,
+       width = 12, height = 10, bg = "white")        # plot_grid leaves the legend column transparent

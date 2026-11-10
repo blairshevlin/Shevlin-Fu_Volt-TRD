@@ -56,6 +56,13 @@ panel_C <- source_data %>% filter(panel == "C")  # UG mood vs HDRS change
 panel_D <- source_data %>% filter(panel == "D")  # UG choice vs HDRS change
 panel_E <- source_data %>% filter(panel == "E")  # UG RT vs HDRS change
 
+# stat_cor takes one label size per facet, in facet order: stars 2 pt larger than "ns" (as in Fig. 3)
+star_sizes <- function(d, ns_size) {
+  p <- sapply(split(d, droplevels(d$sess)), function(x)
+    suppressWarnings(cor.test(x$HDRS_change, x$beh_change, method = "spearman")$p.value))
+  ifelse(p < 0.05, ns_size + 1.6, ns_size)
+}
+
 HDRS.rl.choice =
   panel_A %>%
   ggplot(aes(x = HDRS_change, y = beh_change)) +
@@ -69,7 +76,7 @@ HDRS.rl.choice =
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "P(optimal) [RL]",
-       x = "HDRS Change from Baseline",
+       x = "HDRS-17 change from baseline",
        y = "Change from Baseline",
        shape = element_blank(),
        color = element_blank()) +
@@ -83,7 +90,7 @@ HDRS.rl.choice =
   stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(7,7,7), label.y = 1)
+  )),label.x.npc = "center", label.y = Inf, hjust = 0.5, vjust = 1.2, size = star_sizes(panel_A, 7))
 
 HDRS.rl.rt =
   panel_B %>%
@@ -98,7 +105,7 @@ HDRS.rl.rt =
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "Response time [RL]",
-       x = "HDRS Change from Baseline",
+       x = "HDRS-17 change from baseline",
        y = "Change from Baseline",
        shape = element_blank(),
        color = element_blank()) +
@@ -112,7 +119,7 @@ HDRS.rl.rt =
   stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(7,7,7), label.y = 1)
+  )),label.x.npc = "center", label.y = Inf, hjust = 0.5, vjust = 1.2, size = star_sizes(panel_B, 7))
 
 HDRS.ug.mood = panel_C %>%
   ggplot(aes(x = HDRS_change, y = beh_change)) +
@@ -126,7 +133,7 @@ HDRS.ug.mood = panel_C %>%
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "Mood [UG]",
-       x = "HDRS Change from Baseline",
+       x = "HDRS-17 change from baseline",
        y = "Change from Baseline",
        shape = element_blank(),
        color = element_blank()) +
@@ -140,7 +147,7 @@ HDRS.ug.mood = panel_C %>%
   stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(7,12,7), label.y = 85)
+  )),label.x.npc = "center", label.y = Inf, hjust = 0.5, vjust = 1.2, size = star_sizes(panel_C, 7))
 
 HDRS.ug.choice =
   panel_D %>%
@@ -155,7 +162,7 @@ HDRS.ug.choice =
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "P(accept) [UG]",
-       x = "HDRS Change from Baseline",
+       x = "HDRS-17 change from baseline",
        y = "Change from Baseline",
        shape = element_blank(),
        color = element_blank()) +
@@ -169,7 +176,7 @@ HDRS.ug.choice =
   stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(12,12,7), label.y = 1.25)
+  )),label.x.npc = "center", label.y = Inf, hjust = 0.5, vjust = 1.2, size = star_sizes(panel_D, 7))
 
 HDRS.ug.rt =
   panel_E %>%
@@ -184,7 +191,7 @@ HDRS.ug.rt =
               fill = "purple" ) +
   geom_point(size = 3,stroke = 1.5) +
   labs(title = "Response time [UG]",
-       x = "HDRS Change from Baseline",
+       x = "HDRS-17 change from baseline",
        y = "Change from Baseline",
        shape = element_blank(),
        color = element_blank()) +
@@ -198,18 +205,21 @@ HDRS.ug.rt =
   stat_cor(method="spearman",aes(label =paste0(cut(..p..,
                                                    breaks = c(-Inf, 0.0001, 0.001, 0.01, 0.05, Inf),
                                                    labels = c("'****'", "'***'", "'**'", "'*'", "'ns'"))
-  )),label.x = -15, size = c(7,7,7), label.y = 1)
+  )),label.x.npc = "center", label.y = Inf, hjust = 0.5, vjust = 1.2, size = star_sizes(panel_E, 7))
 
 
 figure4 = ( HDRS.rl.rt + HDRS.rl.choice)/(HDRS.ug.rt + HDRS.ug.choice + HDRS.ug.mood) +
   plot_annotation(tag_levels = 'a') +
   plot_layout(guides = "collect",nrow = 2) &
-  theme(legend.position = 'right')
+  theme(legend.position = 'right') &
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.18)))  # room for the labels pinned to each panel's top edge
 
 
-ggsave(here::here("results/from_source_data/figureS4_raw.png"),
+ggsave(here::here("results/from_source_data/figureS4.png"),
        plot = figure4,
        device = "png",
        width = 15,          # Width in inches
        height = 8,         # Height in inches
-       dpi = 300)           # Resolution (300 DPI for publication quality)
+       dpi = 300)
+ggsave(here::here("results/from_source_data/figureS4.pdf"), plot = figure4, device = cairo_pdf,
+       width = 15, height = 8, bg = "white")
