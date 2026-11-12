@@ -309,7 +309,7 @@ final_plot <- plot_grid(main_plot, stacked_legends,
 # Nature double column: 183 mm wide, 5-7 pt text, 8 pt bold panel labels
 ggsave(file.path(res_dir, "figure2.pdf"), plot = final_plot, device = cairo_pdf,
        width = 183, height = 150, units = "mm", bg = "white")
-ggsave(file.path(res_dir, "figure2.png"), plot = final_plot,
+ggsave(file.path(res_dir, "figure2.jpg"), plot = final_plot,
        width = 183, height = 150, units = "mm", dpi = 300, bg = "white")
 
 panel_a <- plot_grid((fig.rl.trial | fig.ug.trial) +
@@ -320,5 +320,5 @@ panel_a <- plot_grid((fig.rl.trial | fig.ug.trial) +
                      ncol = 2, rel_widths = c(6, 1),
                      align = "h", axis = "tb")
 
-ggsave(file.path(res_dir, "figure2_panelA.png"), plot = panel_a,
+ggsave(file.path(res_dir, "figure2_panelA.jpg"), plot = panel_a,
        width = 183, height = 55, units = "mm", dpi = 300, bg = "white")

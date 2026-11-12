@@ -215,9 +215,9 @@ figure4 = ( HDRS.rl.rt + HDRS.rl.choice)/(HDRS.ug.rt + HDRS.ug.choice + HDRS.ug.
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.18)))  # room for the labels pinned to each panel's top edge
 
 
-ggsave(here::here("results/from_source_data/figureS4.png"),
+ggsave(here::here("results/from_source_data/figureS4.jpg"),
        plot = figure4,
-       device = "png",
+       device = "jpeg",
        width = 15,          # Width in inches
        height = 8,         # Height in inches
        dpi = 300)

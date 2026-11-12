@@ -272,5 +272,5 @@ final_plot <- plot_grid(main_plot, ne_legend,
 # Nature double column: 183 mm wide, 5-7 pt text, 8 pt bold panel labels
 ggsave(here::here("results/from_source_data/Extended-Data_Figure3.pdf"), plot = final_plot,
        device = cairo_pdf, width = 183, height = 120, units = "mm", bg = "white")
-ggsave(here::here("results/from_source_data/Extended-Data_Figure3.png"), plot = final_plot,
+ggsave(here::here("results/from_source_data/Extended-Data_Figure3.jpg"), plot = final_plot,
        width = 183, height = 120, units = "mm", dpi = 300, bg = "white")

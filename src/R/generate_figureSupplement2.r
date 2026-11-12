@@ -199,9 +199,9 @@ final_plot <- plot_grid(full_supp_temporal_fig, stacked_legends,
                         ncol = 2, rel_widths = c(4, 1),
                         align = "h", axis = "tb")
 
-ggsave(here::here("results/from_source_data/figureS2.png"),
+ggsave(here::here("results/from_source_data/figureS2.jpg"),
        plot   = final_plot,
-       device = "png",
+       device = "jpeg",
        width  = 13,
        height = 6,
        dpi    = 300,

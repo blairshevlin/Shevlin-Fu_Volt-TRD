@@ -198,9 +198,9 @@ figure3 = add_stim_brackets(rl.logrt.sess, "mLogRT") + add_stim_brackets(rl.c.se
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.2)))  # headroom so brackets are not clipped
 
 
-ggsave(here::here("results/from_source_data/figureS3.png"),
+ggsave(here::here("results/from_source_data/figureS3.jpg"),
        plot = figure3,
-       device = "png",
+       device = "jpeg",
        width = 15,          # Width in inches
        height = 4,         # Height in inches
        dpi = 300)

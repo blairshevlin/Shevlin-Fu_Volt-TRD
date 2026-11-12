@@ -84,5 +84,5 @@ fig.1E <- fig.hdrs.change + plot_layout(widths = c(1))
 # Printed size of panel e inside Fig. 1; confirm against the Fig. 1 layout
 ggsave(file.path(res_dir, "figure1E.pdf"), plot = fig.1E, device = cairo_pdf,
        width = 60, height = 60, units = "mm")
-ggsave(file.path(res_dir, "figure1E.png"), plot = fig.1E,
+ggsave(file.path(res_dir, "figure1E.jpg"), plot = fig.1E,
        width = 60, height = 60, units = "mm", dpi = 300)

@@ -131,5 +131,5 @@ final_figure <- p1 + arrow1 + p2 + arrow2 + p3 +
 # Nature double column: 183 mm wide, 5-7 pt text
 ggsave(file.path(res_dir, "Extended-Data_Figure2.pdf"), plot = final_figure, device = cairo_pdf,
        width = 183, height = 65, units = "mm")
-ggsave(file.path(res_dir, "Extended-Data_Figure2.png"), plot = final_figure,
+ggsave(file.path(res_dir, "Extended-Data_Figure2.jpg"), plot = final_figure,
        width = 183, height = 65, units = "mm", dpi = 300)

@@ -284,5 +284,5 @@ figure3 <- figure3_top / figure3_bot +
 
 ggsave(file.path(res_dir, "figure3.pdf"), plot = figure3, device = cairo_pdf,
        width = 183, height = 120, units = "mm")
-ggsave(file.path(res_dir, "figure3.png"), plot = figure3,
+ggsave(file.path(res_dir, "figure3.jpg"), plot = figure3,
        width = 183, height = 120, units = "mm", dpi = 300)

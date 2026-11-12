@@ -371,9 +371,9 @@ final_plot_raw <- plot_grid(main_plot_raw, stacked_legends,
                             ncol = 2, rel_widths = c(4, 1),
                             align = "h", axis = "tb")
 
-ggsave(here::here("results/from_source_data/figureS1.png"),
+ggsave(here::here("results/from_source_data/figureS1.jpg"),
        plot   = final_plot_raw,
-       device = "png",
+       device = "jpeg",
        width  = 14,
        height = 10,
        dpi    = 300)

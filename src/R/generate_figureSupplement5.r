@@ -360,9 +360,9 @@ final_plot <- plot_grid(main_plot, stacked_legends,
                         ncol = 2, rel_widths = c(4, 1),
                         align = "h", axis = "tb")
 
-ggsave(here::here("results/from_source_data/figureS5.png"),
+ggsave(here::here("results/from_source_data/figureS5.jpg"),
        plot = final_plot,
-       device = "png",
+       device = "jpeg",
        width = 12,          # Width in inches
        height = 10,         # Height in inches
        dpi = 300,           # Resolution (300 DPI for publication quality)

@@ -939,9 +939,9 @@ combined_HDRS_NT <- (RL_DA + RL_SE + RL_NE) / (UG_DA + UG_SE + UG_NE)
 # Display the plot
 combined_HDRS_NT
 
-ggsave(res_dir / "Extended-Data_Figure4_9-17-25.png", 
+ggsave(res_dir / "Extended-Data_Figure4_9-17-25.jpg", 
        plot = combined_HDRS_NT,
-       device = "png",
+       device = "jpeg",
        width = 10,          # Width in inches
        height = 6,         # Height in inches  
        dpi = 300)           # Resolution (300 DPI for publication quality)
@@ -1426,9 +1426,9 @@ stacked_legends <- plot_grid(prestim_legend, poststim_legend,
                              ncol = 1, align = "v")
 
 
-ggsave(res_dir / "neurotransmitter_legend.png", 
+ggsave(res_dir / "neurotransmitter_legend.jpg", 
        plot = stacked_legends,
-       device = "png",
+       device = "jpeg",
        width = 4,          # Width in inches
        height = 4,         # Height in inches  
        dpi = 300)    

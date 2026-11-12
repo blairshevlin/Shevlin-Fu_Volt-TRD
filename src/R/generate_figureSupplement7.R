@@ -138,8 +138,8 @@ fig.S7 <- (fig.profiles.rl + fig.synergy.rl) +
         plot.title    = element_text(size = 18, face = "bold"),
         plot.subtitle = element_text(size = 12, color = "grey40")) 
 
-ggsave(file.path(res_dir, "figureS7.png"),
-       plot = fig.S7, device = "png",
+ggsave(file.path(res_dir, "figureS7.jpg"),
+       plot = fig.S7, device = "jpeg",
        width = 16, height = 8, dpi = 300)
 ggsave(file.path(res_dir, "figureS7.pdf"), plot = fig.S7, device = cairo_pdf,
        width = 16, height = 8, bg = "white")

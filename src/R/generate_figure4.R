@@ -141,5 +141,5 @@ fig.4 <- (fig.profiles + fig.synergy) +
 # Nature double column: 183 mm wide, 5-7 pt text, 8 pt bold panel labels
 ggsave(file.path(res_dir, "figure4.pdf"), plot = fig.4, device = cairo_pdf,
        width = 183, height = 85, units = "mm")
-ggsave(file.path(res_dir, "figure4.png"), plot = fig.4,
+ggsave(file.path(res_dir, "figure4.jpg"), plot = fig.4,
        width = 183, height = 85, units = "mm", dpi = 300)

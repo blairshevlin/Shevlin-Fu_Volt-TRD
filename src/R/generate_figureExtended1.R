@@ -93,6 +93,6 @@ extendedFig1 <- fig.hdrs.trajectory
 # Nature double column: 183 mm wide, 5-7 pt text
 ggsave(file.path(res_dir, "Extended-Data_Figure1.pdf"), plot = extendedFig1, device = cairo_pdf,
        width = 183, height = 110, units = "mm")
-ggsave(file.path(res_dir, "Extended-Data_Figure1.png"), plot = extendedFig1,
+ggsave(file.path(res_dir, "Extended-Data_Figure1.jpg"), plot = extendedFig1,
        width = 183, height = 110, units = "mm", dpi = 300)
 

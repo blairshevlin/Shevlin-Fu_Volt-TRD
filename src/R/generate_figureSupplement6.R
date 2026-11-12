@@ -193,9 +193,9 @@ participant_plot <- (fig.rl.trial.byparticipant | fig.ug.trial.byparticipant) +
 final_participant_plot <- plot_grid(participant_plot, stacked_legends,
                                     ncol = 2, rel_widths = c(5, 1),
                                     align = "h", axis = "tb")
-ggsave(here::here("results/from_source_data/figureS6.png"),
+ggsave(here::here("results/from_source_data/figureS6.jpg"),
        plot = final_participant_plot,
-       device = "png",
+       device = "jpeg",
        width = 16,          # Width in inches
        height = 12,         # Height in inches
        dpi = 300)
