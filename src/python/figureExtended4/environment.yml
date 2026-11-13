@@ -1,0 +1,12 @@
+# conda env create -f environment.yml && conda activate calibration
+name: calibration
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.9
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - pillow
+  - openpyxl

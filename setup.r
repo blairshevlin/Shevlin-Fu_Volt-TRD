@@ -47,7 +47,8 @@ required_packages <- c(
   "emmeans",
   "caTools",
   # Data import/export
-  "readxl"
+  "readxl",
+  "writexl"
 )
 
 # Check which packages are missing
