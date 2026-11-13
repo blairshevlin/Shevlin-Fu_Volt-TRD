@@ -41,6 +41,7 @@ All data are in the `data/` folder. All data have been deidentified.
 - `data/clinical/` - Clinical assessments for each participant
 - `data/nt/` - Neurotransmitter estimates at 10Hz sampling rate
   - **Note:** Until publication, only processed data (`data/nt/processed/`) will be available
+  - `data/nt/validation/` - Binned in vitro calibration results of the concentration estimation model (Extended Data Figure 4b)
 - `data/figures/` - Figure source data CSVs (one per figure, see below)
 
 ## Figure Source Data
@@ -60,6 +61,7 @@ Each CSV contains:
 | Figure 4 | `data/figures/figure4_source_data.csv` |
 | Extended Data Figure 1 | `data/figures/figureExtended1_source_data.csv` |
 | Extended Data Figure 2 | `data/figures/figureExtended2_source_data.csv` |
+| Extended Data Figure 4 Panel B | `data/figures/figureExtended4_source_data.xlsx` (one sheet per panel) |
 | Supplementary Figure 1 | `data/figures/figureSupplement1_source_data.csv` |
 | Supplementary Figure 2 | `data/figures/figureSupplement2_source_data.csv` |
 | Supplementary Figure 3 | `data/figures/figureSupplement3_source_data.csv` |
@@ -78,6 +80,7 @@ All code for generating figures and conducting statistical analyses are in the `
 - `power_mde_analysis.R` - Runs Minimum Effect Size (MDE) analysis
 - `export_sourcedata.R` - Exports figure source data CSVs to `data/figures/` (run once before generating figures)
 - `generate_figureXX.R` - Generates the corresponding figure from its source data CSV (XX = figure number from main text). Output figures are saved to `results/from_source_data/`.
+- `src/python/figureExtended4/assemble_figure.py` - Generates Extended Data Figure 4 panel b (Python) from `data/figures/figureExtended4_source_data.xlsx`. Written by the co-authors who built the concentration estimation model and released under the MIT license (`src/python/figureExtended4/LICENSE`). Panel a is BioRender artwork and is not generated.
 
 Run time for each script is less than 5 minutes.
 
@@ -87,6 +90,7 @@ Run time for each script is less than 5 minutes.
 2. Export figure source data: `source("src/R/export_sourcedata.R")` — writes all CSVs to `data/figures/`
 3. Execute figure generation scripts: `source("src/R/generate_figure2.R")`, etc. — output saved to `results/from_source_data/`
 4. Run statistical analyses: `source("src/R/statistical_tests.R")`
+5. Extended Data Figure 4 panel b (Python): `conda env create -f src/python/figureExtended4/environment.yml`, `conda activate calibration`, then `python src/python/figureExtended4/assemble_figure.py` — writes `Extended-Data_Figure4b.tif` and `.svg` to `results/from_source_data/`. Layout check: `cd src/python/figureExtended4 && python -m unittest -v test_figure_layout`
 
 ## Citation
 

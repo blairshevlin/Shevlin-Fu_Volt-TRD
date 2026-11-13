@@ -761,6 +761,40 @@ cat("  Figure Extended 3...\n")
 }
 
 
+# ===== Extended FIGURE 4 =====
+# Panel b: in vitro calibration of the concentration estimation model. Inputs are the
+# binned test-set predictions in data/nt/validation/ (one CSV per analyte on the x-axis).
+# Panel a is a schematic with no data. Nature requires one workbook per figure, one sheet per panel.
+cat(" Extended Figure 4...\n")
+{
+  source_data <- map_dfr(c("DA", "5HT", "NE", "pH"), function(x) {
+    read.csv(here::here("data/nt/validation", paste0(x, "_bins.csv")), check.names = FALSE) %>%
+      rename(bin = 1, true_mean = paste(x, "Mean True"), true_sem = paste(x, "x_SEM")) %>%
+      pivot_longer(-c(bin, true_mean, true_sem),
+                   names_to = c("analyte", "stat"),
+                   names_pattern = "^(\\S+) (?:Residual )?(Mean Pred|SEM)$") %>%
+      pivot_wider(names_from = stat, values_from = value) %>%
+      transmute(panel     = "b",
+                plot      = x,
+                bin,
+                true_mean,
+                true_sem,
+                true_unit = ifelse(x == "pH", "pH", "nM"),
+                analyte,
+                measure   = ifelse(analyte == x, "predicted", "error (predicted - true)"),
+                mean      = `Mean Pred`,
+                sem       = SEM,
+                unit      = ifelse(analyte == "pH", "pH", "nM"))
+  }) %>%
+    filter(!is.na(true_mean))  # the top pH bin is empty (pH 8.1 sits on its upper edge) and is not plotted
+
+  writexl::write_xlsx(list("Extended Data Figure 4b" = source_data),
+                      here::here("data/figures/figureExtended4_source_data.xlsx"))
+
+  rm(source_data)
+}
+
+
 # ===== FIGURE SUPPLEMENT 1 =====
 
 cat("  Figure Supplement 1...\n")
