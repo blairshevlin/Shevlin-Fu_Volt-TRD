@@ -20,6 +20,7 @@
 # 2025/09/16    Blair Shevlin                          adapted "statistical_tests.R" to use alternative z-scoring
 # 2025/11/14    Blair Shevlin                          revised ANOVA table generation to include all metrics
 # 2026/02/23    Blair Shevlin                          exploring behavioral analyses and clinical correlates of NT change
+# 2026/13/11    Blair Shevlin                          moved code from "statistical_tests_alt-z.R" to this file
 
 rm(list = ls())
 
@@ -521,15 +522,15 @@ generate_anova_summary_tables <- function(anova_summaries, output_dir = "results
   
   # Save long format (recommended for publication)
   long_doc <- read_docx() %>%
-    body_add_par("Supplementary Table 13", style = "heading 1") %>%
+    body_add_par("Supplementary Table 23", style = "heading 1") %>%
     body_add_par("Robustness Analysis of Neurotransmitter Quantification Metrics", 
                  style = "heading 2") %>%
     body_add_flextable(long_table)
   
-  print(long_doc, target = file.path(output_dir, "Table_13_ANOVA_metrics_long.docx"))
+  print(long_doc, target = file.path(output_dir, "Table_23_ANOVA_metrics_long.docx"))
   
   cat("Tables generated successfully!\n")
-  cat(sprintf("Long format: %s\n", file.path(output_dir, "Table_13_ANOVA_metrics_long.docx")))
+  cat(sprintf("Long format: %s\n", file.path(output_dir, "Table_23_ANOVA_metrics_long.docx")))
   return(list(
     formatted_data = formatted_data,
     long_table = long_table
@@ -538,6 +539,49 @@ generate_anova_summary_tables <- function(anova_summaries, output_dir = "results
 
 anova_res = generate_anova_summary_tables(anova_summaries)
 
+
+##################################################################
+# SUPPLEMENTARY FIGURE 5 STATISTICS                              #
+# Cross-task ("shared") z-scoring, Oz metric, 500 ms post-event. #
+# Previously statistical_tests_alt-z.R (removed). Runs in local() #
+# so its objects do not overwrite same-named ones used below.    #
+##################################################################
+local({
+  shared = function(task_name) tasks.EST.alt %>%
+    filter(task == task_name, event == "Shared") %>%
+    mutate(stim = factor(stim, levels = c("Pre-Stim","Post-Stim")))
+
+  rl.OR = rl.beh %>% filter(sess %in% c("Pre-Stim","Post-Stim")) %>%
+    mutate(stim = factor(sess, levels = c("Pre-Stim","Post-Stim")))
+  ug.OR = ug.beh %>% filter(sess %in% c("Pre-Stim","Post-Stim")) %>%
+    mutate(stim = factor(sess, levels = c("Pre-Stim","Post-Stim")),
+           offer_bin = ifelse(offer < 4, "Low", ifelse(offer > 6, "High", "Middle")))
+
+  rl = merge(shared("RL"), rl.OR, by = c("idx","stim","trial","rt")) %>%
+    mutate(block_type = factor(cond, levels = c("Mixed","Negative","Positive")))
+  ug = merge(shared("UG"), ug.OR, by = c("idx","stim","trial","rt")) %>%
+    mutate(offer_bin_f = factor(offer_bin, levels = c("Middle","Low","High")))
+  contrasts(rl$stim) <- c(-1,1)
+  contrasts(ug$stim) <- c(-1,1)
+
+  # Panels c-f: stimulation x block type (RL) and stimulation x offer amount (UG), participant-level means
+  rl.aov = rl %>% group_by(idx,stim,nt,block_type) %>% summarise(oz = mean(Oz), .groups = "drop")
+  ug.aov = ug %>% group_by(idx,stim,nt,offer_bin_f) %>% summarise(oz = mean(Oz), .groups = "drop")
+  for (n in c("DA","SE")) {
+    cat("\nSupp Fig 5, RL", n, "\n"); print(summary(aov(oz ~ stim * block_type, data = filter(rl.aov, nt == n))))
+    cat("\nSupp Fig 5, UG", n, "\n"); print(summary(aov(oz ~ stim * offer_bin_f, data = filter(ug.aov, nt == n))))
+  }
+
+  # Task x stimulation interaction across both tasks
+  combo = bind_rows(
+    RL = rl %>% group_by(idx,stim,nt) %>% summarise(oz = mean(Oz), .groups = "drop"),
+    UG = ug %>% group_by(idx,stim,nt) %>% summarise(oz = mean(Oz), .groups = "drop"),
+    .id = "task") %>%
+    mutate(task = factor(task, levels = c("RL","UG")))
+  for (n in c("DA","SE")) {
+    cat("\nSupp Fig 5 text, task x stimulation,", n, "\n"); print(summary(aov(oz ~ stim * task, data = filter(combo, nt == n))))
+  }
+})
 
 #########################
 # Alternative Z-Scoring #
@@ -938,13 +982,6 @@ combined_HDRS_NT <- (RL_DA + RL_SE + RL_NE) / (UG_DA + UG_SE + UG_NE)
 
 # Display the plot
 combined_HDRS_NT
-
-ggsave(res_dir / "Extended-Data_Figure4_9-17-25.jpg", 
-       plot = combined_HDRS_NT,
-       device = "jpeg",
-       width = 10,          # Width in inches
-       height = 6,         # Height in inches  
-       dpi = 300)           # Resolution (300 DPI for publication quality)
 
 
 # Potentially this is driven by HDRS outlier
@@ -1352,86 +1389,6 @@ test(rl_c_slopes, null = 0)
 test(ug_c_slopes, null = 0)
 
 
-##
-# Alternative legend for all NT #
-
-create_prestim_legend <- function() {
-  # Dummy data for Pre-Stim legend
-  legend_data_pre <- data.frame(
-    nt = factor(c("DA", "5-HT", "NE"), levels = c("DA", "5-HT", "NE")),
-    color = c("#fcbba1", "#9ecae1", "#c7e9c0"),
-    x = 1,
-    y = 1
-  )
-  
-  ggplot(legend_data_pre, aes(x = x, y = y, color = nt)) +
-    geom_point(size = 0) +  # Invisible points
-    geom_line(size = 2) +   # This creates the line legend
-    scale_color_manual(
-      name = "Pre-Stim",
-      values = c("DA" = "#fcbba1", "5-HT" = "#9ecae1", "NE" = "#c7e9c0")
-    ) +
-    theme_void() +
-    theme(
-      legend.title = element_text(face = "bold", size = 12),
-      legend.text = element_text(size = 10),
-      legend.key.width = unit(1, "cm"),
-      legend.key.height = unit(0.5, "cm"),
-      legend.margin = margin(0, 0, 10, 0)
-    ) +
-    guides(color = guide_legend(
-      override.aes = list(size = 2, alpha = 1),
-      title.position = "top",
-      title.hjust = 0.5
-    ))
-}
-
-create_poststim_legend <- function() {
-  # Dummy data for Post-Stim legend
-  legend_data_post <- data.frame(
-    nt = factor(c("DA", "5-HT", "NE"), levels = c("DA", "5-HT", "NE")),
-    color = c("#a50f15", "#08519c", "#006d2c"),
-    x = 1,
-    y = 1
-  )
-  
-  ggplot(legend_data_post, aes(x = x, y = y, color = nt)) +
-    geom_point(size = 0) +  # Invisible points
-    geom_line(size = 2) +   # This creates the line legend
-    scale_color_manual(
-      name = "Post-Stim",
-      values = c("DA" = "#a50f15", "5-HT" = "#08519c", "NE" = "#006d2c")
-    ) +
-    theme_void() +
-    theme(
-      legend.title = element_text(face = "bold", size = 12),
-      legend.text = element_text(size = 10),
-      legend.key.width = unit(1, "cm"),
-      legend.key.height = unit(0.5, "cm"),
-      legend.margin = margin(10, 0, 0, 0)
-    ) +
-    guides(color = guide_legend(
-      override.aes = list(size = 2, alpha = 1),
-      title.position = "top",
-      title.hjust = 0.5
-    ))
-}
-
-# Extract the legends
-prestim_legend <- get_legend(create_prestim_legend())
-poststim_legend <- get_legend(create_poststim_legend())
-
-# Stack the legends vertically
-stacked_legends <- plot_grid(prestim_legend, poststim_legend, 
-                             ncol = 1, align = "v")
-
-
-ggsave(res_dir / "neurotransmitter_legend.jpg", 
-       plot = stacked_legends,
-       device = "jpeg",
-       width = 4,          # Width in inches
-       height = 4,         # Height in inches  
-       dpi = 300)    
 ############################################################
 # Does Baseline HDRS predict context-specific changes in NT?
 ############################################################

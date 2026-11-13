@@ -76,7 +76,7 @@ Each CSV contains:
 
 All code for generating figures and conducting statistical analyses are in the `src/` folder:
 
-- `process_nt.r` - Converts raw estimates into processed data used for all analyses
+- `process_nt.R` - Converts raw estimates into processed data used for all analyses
 - `statistical_tests.R` - Runs all statistical analyses reported in the main text
 - `sensitivity_and_robustness_tests.R` - Runs additional analyses verifying robustness and reliability of analyses reported in the main text
 - `power_mde_analysis.R` - Runs Minimum Effect Size (MDE) analysis

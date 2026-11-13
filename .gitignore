@@ -26,6 +26,7 @@ Thumbs.db
 /src/R/generate_figure3_archive.R
 /src/R/generate_figureSupplement_DAxSE_RawVsOz.R
 /src/R/generate_power_mde_report.R
+/src/R/sensitivity_and_robustness_tests_archive.R
 /src/R/statistical_tests_robust.R
 
 # Processed NT data not loaded by any analysis (kept locally only)

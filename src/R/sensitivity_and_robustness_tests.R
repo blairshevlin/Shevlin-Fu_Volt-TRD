@@ -33,6 +33,7 @@
 # 2026/08/16    Blair Shevlin                           added multi-method correction table (Bonferroni/Sidak/Holm/Hochberg/Hommel/BH/BY) per Xiaosi Gu's request to check whether Bonferroni is overly conservative for the primary family; see comment block before build_correction_table()
 # 2026/08/17    Blair Shevlin                           added two literal permutation-test variants for test (c) per Blair/PI's explicit request ("shuffled deltaDA x deltaSE, M6 HDRS scores"), distinct from the existing Freedman-Lane test above -- Option A: full-label permutation refitting the full interaction model; Option B: permutation test of the raw deltaDA_UG*deltaSE_UG product against HDRS (Pearson + exact Spearman). Both independently cross-checked in Python (obs interaction=-0.1419 matches model_DAxSE exactly; Option A perm p~=0.012; Option B Pearson perm p~=0.013, Spearman perm p~=0.045-0.049). See src/R/permutation_responder_robustness_plan.md sec 1.2-1.3 for full reasoning and the multiplicity/framing caveat repeated in-line below -- NEITHER variant is pre-approved for the rebuttal.
 # 2026/08/18    Blair Shevlin                           consolidated sensitivity/robustness analyses (bootstrap CIs, LOO, influence diagnostics, permutation tests, multiplicity correction) into a single script per Blair's request; MDE/Batten-effect-size content intentionally excluded (lives in power_mde_analysis.R)
+# 2026/11/13    Blair Shevlin                           relabelled tables to final SI numbering: code Table 27 -> SI 27; 28 -> SI 28 (bootstrap) + 29 (influence); 29 -> SI 30 Month 1 column; 30 -> SI 30 Month 6 column + 31 (LOO/influence); 31 -> SI 32 (bootstrap/permutation) + 33 (LOO/influence). summary_table_* object names are unchanged
 # 2026/08/20    Blair Shevlin                           added Fig 4 panel B (synergy_score / product_DAxSE -> Month-6 HDRS, raw Pearson correlation) bootstrap CI, LOO, and Cook's D/DFBETAS diagnostics as Table 31, extending the Table 28/30 R1 diagnostic battery to the one Fig 4 quantity it hadn't yet been applied to; permutation p-value intentionally left as an open discrepancy (see comment below) pending a fresh R run
 
 rm(list = ls())
@@ -356,18 +357,18 @@ data_m6 = cl.Oz.lme %>%
          deltaDA_UG,deltaSE_UG,deltaNE_UG,
          deltaDA_RL,deltaSE_RL,deltaNE_RL)
 
-# Month 1 DA x 5-HT -> HDRS interaction model (used as-is for the Table 29
+# Month 1 DA x 5-HT -> HDRS interaction model (used as-is for the Supplementary Table 30, Month 1 column,
 # bootstrap/permutation battery below -- NOT redefined there)
 model_UG_m1 <- lm(HDRS ~ deltaDA_UG * deltaSE_UG, data = data_m1)
 print(summary(model_UG_m1))
 
 # Month 6 DA x 5-HT -> HDRS interaction model -- this is test (c), the
-# manuscript's "key interaction," and feeds both Table 27 and Table 30 below.
+# manuscript's "key interaction," and feeds Supplementary Table 27 and Supplementary Tables 30 (Month 6 column) and 31 below.
 model_DAxSE = lm(HDRS ~ deltaDA_UG * deltaSE_UG, data = data_m6)
 print(summary(model_DAxSE))
 
 ################################################
-# TABLE 27 -- ROBUSTNESS: BONFERRONI-WITHIN-3 #
+# SUPPLEMENTARY TABLE 27 -- ROBUSTNESS: BONFERRONI-WITHIN-3 #
 # FOR THE"KEY INTERACTION                     #
 ###############################################
 
@@ -442,8 +443,8 @@ correction_table_activity2 = build_correction_table(
 print(correction_table_activity2 %>% as.data.frame())
 
 ##########################################################
-# TABLE 28 -- ROBUSTNESS: BOOTSTRAP CIs AND INFLUENCE    #
-# DIAGNOSTICS FOR FIGURE 3 PANELS F & G                  #
+# SUPPLEMENTARY TABLES 28 (BOOTSTRAP CIs) AND 29        #
+# (INFLUENCE DIAGNOSTICS) FOR FIGURE 3 PANELS F & G      #
 ##########################################################
 
 boot_spearman_ci = function(x, y, B = 2000, seed = 20260815, conf = 0.95) {
@@ -686,9 +687,9 @@ read_docx() %>%
   print(target = res_dir / "Fig3fg_influence_diagnostics_combined.docx")
 
 ##########################################################
-# TABLE 30 -- ROBUSTNESS: BOOTSTRAP CIs, LOO, INFLUENCE  #
-# DIAGNOSTICS, AND PERMUTATION TEST FOR THE MONTH-6      #
-# CLINICAL OUTCOME MODEL                                 #
+# SUPPLEMENTARY TABLES 30 (MONTH 6 COLUMN: BOOTSTRAP,   #
+# PERMUTATION) AND 31 (LOO, INFLUENCE DIAGNOSTICS) FOR  #
+# THE MONTH-6 CLINICAL OUTCOME MODEL                     #
 ##########################################################
 
 boot_lm_coefs = function(data, model_formula, B = 2000, seed = 20260815, conf = 0.95) {
@@ -814,8 +815,8 @@ model_DAxSE_perm_fulllabel = permutation_test_full_relabel(
 print(model_DAxSE_perm_fulllabel)
 
 ##########################################################
-# TABLE 29 -- NEW: MONTH-1 DA x 5-HT -> HDRS INTERACTION #
-# BOOTSTRAP CI + PERMUTATION TEST ONLY                   #
+# SUPPLEMENTARY TABLE 30, MONTH 1 COLUMN: DA x 5-HT ->   #
+# HDRS INTERACTION, BOOTSTRAP CI + PERMUTATION TEST ONLY #
 ##########################################################
 
 model_UG_m1_boot_result = boot_lm_coefs(data_m1, HDRS ~ deltaDA_UG * deltaSE_UG)
@@ -831,8 +832,8 @@ model_UG_m1_perm_fulllabel = permutation_test_full_relabel(
 print(model_UG_m1_perm_fulllabel)
 
 ############################################################
-# TABLE 31 -- ROBUSTNESS: BOOTSTRAP CI, LOO, AND INFLUENCE #
-# DIAGNOSTICS FOR FIGURE 4 PANEL B                         #
+# SUPPLEMENTARY TABLES 32 (BOOTSTRAP CI, PERMUTATION) AND #
+# 33 (LOO, INFLUENCE DIAGNOSTICS) FOR FIGURE 4 PANEL B     #
 ############################################################
 
 data_m6 = data_m6 %>%
@@ -956,12 +957,12 @@ permutation_test_product_corr = function(data, product_col, outcome_col, method 
 fig4b_perm = permutation_test_product_corr(data_m6, "product_DAxSE", "HDRS", method = "pearson")
 print(fig4b_perm)
 
-##############
-# Table 31  #
-#############
+#################################
+# Supplementary Tables 32-33    #
+#################################
 
 summary_table_31 = tibble(
-  supp_table = "31",
+  supp_table = "32-33",
   model = "Fig 4 panel B: cor(product_DAxSE, HDRS), Pearson (synergy_score vs Month-6 HDRS)",
   r_estimate = unname(fig4b_cortest$estimate),
   r_p_value = fig4b_cortest$p.value,
@@ -981,21 +982,21 @@ summary_table_31 = tibble(
 )
 print(summary_table_31 %>% as.data.frame())
 
-cat("\n================ SUPPLEMENTARY TABLES 27-31: RUN COMPLETE ================\n")
-cat("Table 27 (primary/exploratory multiplicity correction): see summary_table_27,\n")
+cat("\n================ SUPPLEMENTARY TABLES 27-33: RUN COMPLETE ================\n")
+cat("SI Table 27 (primary/exploratory multiplicity correction): see summary_table_27,\n")
 cat("  primary_family_table, correction_table_3test, correction_table_activity2\n")
-cat("Table 28 (Fig 3f/g bootstrap CIs + influence diagnostics): see summary_table_28,\n")
+cat("SI Tables 28-29 (Fig 3f/g bootstrap CIs; influence diagnostics): see summary_table_28,\n")
 cat("  summary_table_28_influence_headline, fig3_boot_ci, fig3_influence_pub\n")
-cat("Table 29 (Month 1 DAx5-HT->HDRS bootstrap + permutation only): see summary_table_29\n")
-cat("Table 30 (Month 6 DAx5-HT->HDRS full battery): see summary_table_30\n")
-cat("Table 31 (Fig 4 panel B, synergy_score->HDRS Pearson r: bootstrap CI, LOO,\n")
+cat("SI Table 30, Month 1 column (DAx5-HT->HDRS bootstrap + permutation only): see summary_table_29\n")
+cat("SI Tables 30-31, Month 6 (DAx5-HT->HDRS full battery): see summary_table_30\n")
+cat("SI Tables 32-33 (Fig 4 panel B, synergy_score->HDRS Pearson r: bootstrap CI, LOO,\n")
 cat("  Cook's D/DFBETAS, permutation [OPEN DISCREPANCY, not rebuttal-approved]):\n")
 cat("  see summary_table_31\n")
 cat("============================================================================\n")
 
 
 ##########################################################
-# FINAL SUMMARY: HEADLINE NUMBERS FOR TABLES 27-30        #
+# FINAL SUMMARY: HEADLINE NUMBERS FOR SI TABLES 27-31     #
 ##########################################################
 
 summary_table_27 = primary_family_table %>%
@@ -1015,12 +1016,12 @@ print(summary_table_28)
 
 summary_table_28_influence_headline = fig3_influence_pub %>%
   filter(flagged) %>%
-  transmute(supp_table = "28", panel_label, month, subject,
+  transmute(supp_table = "29", panel_label, month, subject,
             cooks_d_rank_rank, loo_delta = loo_delta_f, loo_p = loo_p_f)
 print(summary_table_28_influence_headline)
 
 summary_table_29 = tibble(
-  supp_table = "29",
+  supp_table = "30 (Month 1)",
   model = "Month 1: HDRS ~ deltaDA_UG * deltaSE_UG",
   interaction_estimate = coef(model_UG_m1)["deltaDA_UG:deltaSE_UG"],
   interaction_p_value = tidy(model_UG_m1) %>% filter(term == "deltaDA_UG:deltaSE_UG") %>% pull(p.value),
@@ -1033,7 +1034,7 @@ summary_table_29 = tibble(
 print(summary_table_29)
 
 summary_table_30 = tibble(
-  supp_table = "30",
+  supp_table = "30-31 (Month 6)",
   model = "Month 6: HDRS ~ deltaDA_UG * deltaSE_UG (test c, key interaction)",
   interaction_estimate = coef(model_DAxSE)["deltaDA_UG:deltaSE_UG"],
   interaction_p_value = tidy(model_DAxSE) %>% filter(term == "deltaDA_UG:deltaSE_UG") %>% pull(p.value),
@@ -1049,11 +1050,11 @@ summary_table_30 = tibble(
 )
 print(summary_table_30)
 
-cat("\n================ SUPPLEMENTARY TABLES 27-30: RUN COMPLETE ================\n")
-cat("Table 27 (primary/exploratory multiplicity correction): see summary_table_27,\n")
+cat("\n================ SUPPLEMENTARY TABLES 27-31: RUN COMPLETE ================\n")
+cat("SI Table 27 (primary/exploratory multiplicity correction): see summary_table_27,\n")
 cat("  primary_family_table, correction_table_3test, correction_table_activity2\n")
-cat("Table 28 (Fig 3f/g bootstrap CIs + influence diagnostics): see summary_table_28,\n")
+cat("SI Tables 28-29 (Fig 3f/g bootstrap CIs; influence diagnostics): see summary_table_28,\n")
 cat("  summary_table_28_influence_headline, fig3_boot_ci, fig3_influence_pub\n")
-cat("Table 29 (Month 1 DAx5-HT->HDRS bootstrap + permutation only): see summary_table_29\n")
-cat("Table 30 (Month 6 DAx5-HT->HDRS full battery): see summary_table_30\n")
+cat("SI Table 30, Month 1 column (DAx5-HT->HDRS bootstrap + permutation only): see summary_table_29\n")
+cat("SI Tables 30-31, Month 6 (DAx5-HT->HDRS full battery): see summary_table_30\n")
 cat("============================================================================\n")

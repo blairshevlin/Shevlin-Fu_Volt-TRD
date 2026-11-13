@@ -17,7 +17,7 @@
 #
 # Date            Programmers                         Descriptions of Change
 # ====         ================                       ======================
-# 2025/11/4    Blair Shevlin                          adapted code from supplementary_analyses.r to generate figure supplement 2
+# 2025/11/4    Blair Shevlin                          adapted code from supplementary_analyses.R to generate figure supplement 2
 # 2026/03/19   Blair Shevlin                          refactored to read from source data CSV
 
 # Reads source data from data/figures/figureSupplement2_source_data.csv
