@@ -27,3 +27,8 @@ Thumbs.db
 /src/R/generate_figureSupplement_DAxSE_RawVsOz.R
 /src/R/generate_power_mde_report.R
 /src/R/statistical_tests_robust.R
+
+# Processed NT data not loaded by any analysis (kept locally only)
+/data/nt/processed/UG_RL_NT-Continuous_7-14-25.RData
+/data/nt/processed/UG_RL_NT-Continuous_9-16-25.RData
+/data/nt/processed/UG_RL_NT-Raw_Model_Output_11-25-25.RData
