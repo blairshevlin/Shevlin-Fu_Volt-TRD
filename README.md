@@ -1,10 +1,10 @@
 # Deep Brain Stimulation and Neurotransmitter Changes in Treatment-Resistant Depression
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20090427.svg)](https://doi.org/10.5281/zenodo.20090427)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24206763.svg)](https://doi.org/10.5281/zenodo.24206763)
 
 This repository contains data and code supporting:
 
-**Shevlin, Fu et al. (2026)** "Dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex"
+**Shevlin, Fu et al. (2026)** "Dopamine and serotonin predict depression relief after brain cingulate stimulation"
 
 ## Overview
 
@@ -40,13 +40,14 @@ All data are in the `data/` folder. All data have been deidentified.
 - `data/behavior/` - Behavioral data for each task (RL and UG)
 - `data/clinical/` - Clinical assessments for each participant
 - `data/nt/` - Neurotransmitter estimates at 10Hz sampling rate
-  - **Note:** Until publication, only processed data (`data/nt/processed/`) will be available
   - `data/nt/validation/` - Binned in vitro calibration results of the concentration estimation model (Extended Data Figure 4b)
-- `data/figures/` - Figure source data CSVs (one per figure, see below)
+- `data/figures/` - Figure source data (one file per figure, see below)
 
 ## Figure Source Data
 
-Per Nature journal transparency requirements, the data underlying each figure's graphical representations are provided as CSV files in `data/figures/`. These are the files submitted as Source Data with the manuscript. The CSVs are not tracked by git (see `.gitignore`) — run `src/R/export_sourcedata.R` to generate them locally.
+Per Nature journal transparency requirements, the data underlying each figure's graphical representations are provided in `data/figures/` and are tracked in this repository. These are the files submitted as Source Data with the manuscript. To regenerate them, run `src/R/export_sourcedata.R`.
+
+Most figures have one CSV. Extended Data Figure 4 is an `.xlsx` workbook with one sheet per panel (`Extended Data Figure 4b`), in long format with one row per bin and analyte.
 
 Each CSV contains:
 - `panel` — identifies the sub-panel within the figure (e.g., `"A"`, `"B"`, `"RL_choice"`)
@@ -55,30 +56,31 @@ Each CSV contains:
 
 | Figure | Source data file |
 |---|---|
-| Figure 1 Panel C | `data/figures/figure1_panel_source_data.csv` |
+| Figure 1 Panel E | `data/figures/figure1_panel_E_source_data.csv` |
 | Figure 2 | `data/figures/figure2_source_data.csv` |
 | Figure 3 | `data/figures/figure3_source_data.csv` |
 | Figure 4 | `data/figures/figure4_source_data.csv` |
 | Extended Data Figure 1 | `data/figures/figureExtended1_source_data.csv` |
 | Extended Data Figure 2 | `data/figures/figureExtended2_source_data.csv` |
+| Extended Data Figure 3 | `data/figures/figureExtended3_source_data.csv` |
 | Extended Data Figure 4 Panel B | `data/figures/figureExtended4_source_data.xlsx` (one sheet per panel) |
 | Supplementary Figure 1 | `data/figures/figureSupplement1_source_data.csv` |
-| Supplementary Figure 2 | `data/figures/figureSupplement2_source_data.csv` |
+| Supplementary Figure 2 | `data/figures/figureSupplement2_source_data.csv`, `data/figures/figureSupplement2_statistics.csv` |
 | Supplementary Figure 3 | `data/figures/figureSupplement3_source_data.csv` |
 | Supplementary Figure 4 | `data/figures/figureSupplement4_source_data.csv` |
 | Supplementary Figure 5 | `data/figures/figureSupplement5_source_data.csv` |
 | Supplementary Figure 6 | `data/figures/figureSupplement6_source_data.csv` |
+| Supplementary Figure 7 | `data/figures/figureSupplement7_source_data.csv` |
 
 ## Scripts
 
 All code for generating figures and conducting statistical analyses are in the `src/` folder:
 
 - `process_nt.r` - Converts raw estimates into processed data used for all analyses
-  - **Note:** Requires access to `data/nt/raw/`. This script will not run until raw data is released upon publication
 - `statistical_tests.R` - Runs all statistical analyses reported in the main text
 - `sensitivity_and_robustness_tests.R` - Runs additional analyses verifying robustness and reliability of analyses reported in the main text
 - `power_mde_analysis.R` - Runs Minimum Effect Size (MDE) analysis
-- `export_sourcedata.R` - Exports figure source data CSVs to `data/figures/` (run once before generating figures)
+- `export_sourcedata.R` - Regenerates the figure source data files in `data/figures/` (already included in the repository)
 - `generate_figureXX.R` - Generates the corresponding figure from its source data CSV (XX = figure number from main text). Output figures are saved to `results/from_source_data/`.
 - `src/python/figureExtended4/assemble_figure.py` - Generates Extended Data Figure 4 panel b (Python) from `data/figures/figureExtended4_source_data.xlsx`. Written by the co-authors who built the concentration estimation model and released under the MIT license (`src/python/figureExtended4/LICENSE`). Panel a is BioRender artwork and is not generated.
 
@@ -87,7 +89,7 @@ Run time for each script is less than 5 minutes.
 ## Usage
 
 1. Run `source("setup.R")` to install and load required packages
-2. Export figure source data: `source("src/R/export_sourcedata.R")` — writes all CSVs to `data/figures/`
+2. (Optional) Regenerate figure source data: `source("src/R/export_sourcedata.R")` — rewrites the files in `data/figures/`
 3. Execute figure generation scripts: `source("src/R/generate_figure2.R")`, etc. — output saved to `results/from_source_data/`
 4. Run statistical analyses: `source("src/R/statistical_tests.R")`
 5. Extended Data Figure 4 panel b (Python): `conda env create -f src/python/figureExtended4/environment.yml`, `conda activate calibration`, then `python src/python/figureExtended4/assemble_figure.py` — writes `Extended-Data_Figure4b.tif` and `.svg` to `results/from_source_data/`. Layout check: `cd src/python/figureExtended4 && python -m unittest -v test_figure_layout`
@@ -100,17 +102,17 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 ```bibtex
 @software{shevlin2026analysis,
   author = {Shevlin, Blair},
-  title = {Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex},
+  title = {Analysis code for ``Dopamine and serotonin predict depression relief after brain cingulate stimulation''},
   year = {2026},
   publisher = {Zenodo},
-  doi = {10.5281/zenodo.22084826},
-  url = {https://doi.org/10.5281/zenodo.22084826}
+  doi = {10.5281/zenodo.24206763},
+  url = {https://doi.org/10.5281/zenodo.24206763}
 }
 ```
 
 ### APA:
 ```
-Shevlin, B. R. K. (2026). Analysis code for dopamine and serotonin transients predict depressive symptom relief following deep brain stimulation of human subcallosal cingulate cortex. Zenodo. https://doi.org/10.5281/zenodo.22084826
+Shevlin, B. R. K. (2026). Analysis code for “Dopamine and serotonin predict depression relief after brain cingulate stimulation”. Zenodo. https://doi.org/10.5281/zenodo.24206763
 ```
 
 ## License

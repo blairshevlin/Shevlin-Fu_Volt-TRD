@@ -1,60 +1,29 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.so
 
-# Backup files
+# Backup and Office lock files
 *.bak
+*.orig
 ~$*.xls*
 ~$*.doc*
 ~$*.ppt*
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Virtual Environment files
-.env
-.venv
-env/
-venv/
-ENV/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
 # OS generated files
 .DS_Store
-.directory
-.gdb_history
-ehthumbs.db
-Icon?
-*.orig
-old
 Thumbs.db
-.Spotlight-V100
-.Trashes
 
-# Raw untiled R files
-/src/R/Untitled-1.r
+# R / RStudio
+.Rproj.user/
+.Rhistory
 
-# Exploratory files
-/src/R/generate_figure4_withRL.R
-/src/R/statistical_tests_robust.R
-/src/R/generate_figureSupplement_DAxSE_RawVsOz.R
-/src/R/generate_figure3_archive.R
-/src/R/analysis_responder_concordance.R
-/src/R/generate_power_mde_report.R
-
-# Claude Settings
+# Claude settings
 .claude/
 
-# Archived files
+# Local scratch and exploratory scripts (not part of the paper's analyses)
+/src/R/Untitled-1.r
+/src/R/analysis_responder_concordance.R
 /src/R/generate_figure3_archive.R
-/src/R/src/R/sensitivity_and_robustness_tests_archive.R
-.Rproj.user
-Shevlin-Fu_Volt-TRD.Rproj
-.Rhistory
-/results/Figure 3.pptx
+/src/R/generate_figureSupplement_DAxSE_RawVsOz.R
+/src/R/generate_power_mde_report.R
+/src/R/statistical_tests_robust.R

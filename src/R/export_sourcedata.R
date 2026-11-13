@@ -20,8 +20,7 @@
 # 2026/03/19    Blair Shevlin                         wrote original code
 #
 # Generates figure source data CSVs for all figures in the manuscript:
-#   Shevlin, Fu et al. - "Dopamine and serotonin transients predict depressive
-#   symptom relief following deep brain stimulation of human subcallosal cingulate cortex"
+#   Shevlin, Fu et al. - "Dopamine and serotonin predict depression relief after brain cingulate stimulation"
 #
 # Each section below corresponds to one figure and writes a CSV to data/figures/.
 # CSVs contain a `panel` column (labels which subplot each row belongs to) and a
