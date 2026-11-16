@@ -77,11 +77,11 @@ Each CSV contains:
 All code for generating figures and conducting statistical analyses are in the `src/` folder:
 
 - `process_nt.R` - Converts raw estimates into processed data used for all analyses
-- `statistical_tests.R` - Runs all statistical analyses reported in the main text
-- `sensitivity_and_robustness_tests.R` - Runs additional analyses verifying robustness and reliability of analyses reported in the main text
-- `power_mde_analysis.R` - Runs Minimum Effect Size (MDE) analysis
+- `process_nt_raw.R` - Converts raw model outputs (before z-scoring) into processed data for Supplementary Figure 1
+- `main_analyses.R` - Runs every statistical analysis reported in the main text, figure legends and Methods, including the full output of the Supplementary Tables those numbers come from (Supplementary Tables 3–5, 21 and 27–33). Prints all results to the console
+- `supplementary_information.R` - Runs the analyses reported only in the Supplementary Information: Supplementary Tables 1–2, 6–20, 23–26 and 34–35, and the statistics for Supplementary Figure 5. Prints all results to the console
 - `export_sourcedata.R` - Regenerates the figure source data files in `data/figures/` (already included in the repository)
-- `generate_figureXX.R` - Generates the corresponding figure from its source data CSV (XX = figure number from main text). Output figures are saved to `results/from_source_data/`.
+- `generate_figureXX.R`, `generate_figureExtendedXX.R`, `generate_figureSupplementXX.R` - Generate the corresponding main, Extended Data, or Supplementary figure from its source data file (XX = figure number). Output figures are saved to `results/from_source_data/`.
 - `src/python/figureExtended4/assemble_figure.py` - Generates Extended Data Figure 4 panel b (Python) from `data/figures/figureExtended4_source_data.xlsx`. Written by the co-authors who built the concentration estimation model and released under the MIT license (`src/python/figureExtended4/LICENSE`). Panel a is BioRender artwork and is not generated.
 
 Run time for each script is less than 5 minutes.
@@ -91,7 +91,7 @@ Run time for each script is less than 5 minutes.
 1. Run `source("setup.R")` to install and load required packages
 2. (Optional) Regenerate figure source data: `source("src/R/export_sourcedata.R")` — rewrites the files in `data/figures/`
 3. Execute figure generation scripts: `source("src/R/generate_figure2.R")`, etc. — output saved to `results/from_source_data/`
-4. Run statistical analyses: `source("src/R/statistical_tests.R")`
+4. Run statistical analyses: `source("src/R/main_analyses.R")` (main text) and `source("src/R/supplementary_information.R")` (Supplementary Information)
 5. Extended Data Figure 4 panel b (Python): `conda env create -f src/python/figureExtended4/environment.yml`, `conda activate calibration`, then `python src/python/figureExtended4/assemble_figure.py` — writes `Extended-Data_Figure4b.tif` and `.svg` to `results/from_source_data/`. Layout check: `cd src/python/figureExtended4 && python -m unittest -v test_figure_layout`
 
 ## Citation

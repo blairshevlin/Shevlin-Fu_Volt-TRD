@@ -33,3 +33,6 @@ Thumbs.db
 /data/nt/processed/UG_RL_NT-Continuous_7-14-25.RData
 /data/nt/processed/UG_RL_NT-Continuous_9-16-25.RData
 /data/nt/processed/UG_RL_NT-Raw_Model_Output_11-25-25.RData
+
+# Optional Word exports of SI tables (export_docx = TRUE in the analysis scripts)
+/results/si_tables/

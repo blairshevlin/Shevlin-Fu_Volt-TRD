@@ -255,7 +255,7 @@ cat("  Figure 2...\n")
 
 
 # Per-participant session means for Figure 3 and Supplementary Figure 3.
-# Trial exclusions must match statistical_tests.R, which computes the reported P values.
+# Trial exclusions must match main_analyses.R, which computes the reported P values.
 behaviour_means <- function() {
   beh_dir <- here::here("data/behavior")
   rl.beh  <- read.csv(file.path(beh_dir, "rl-data_deid_07-10-25.csv"))
