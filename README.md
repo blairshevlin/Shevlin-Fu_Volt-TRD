@@ -4,7 +4,7 @@
 
 This repository contains data and code supporting:
 
-**Shevlin, Fu et al. (2026)** "Dopamine and serotonin predict depression relief after brain cingulate stimulation"
+**Shevlin, Fu et al. (2026)** "Dopamine and serotonin predict depression relief after cingulate stimulation"
 
 ## Overview
 
@@ -102,7 +102,7 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 ```bibtex
 @software{shevlin2026analysis,
   author = {Shevlin, Blair},
-  title = {Analysis code for ``Dopamine and serotonin predict depression relief after brain cingulate stimulation''},
+  title = {Analysis code for ``Dopamine and serotonin predict depression relief after cingulate stimulation''},
   year = {2026},
   publisher = {Zenodo},
   doi = {10.5281/zenodo.24206763},
@@ -112,7 +112,7 @@ Individuals may use or adapt the code provided they follow the terms of the lice
 
 ### APA:
 ```
-Shevlin, B. R. K. (2026). Analysis code for “Dopamine and serotonin predict depression relief after brain cingulate stimulation”. Zenodo. https://doi.org/10.5281/zenodo.24206763
+Shevlin, B. R. K. (2026). Analysis code for “Dopamine and serotonin predict depression relief after cingulate stimulation”. Zenodo. https://doi.org/10.5281/zenodo.24206763
 ```
 
 ## License
